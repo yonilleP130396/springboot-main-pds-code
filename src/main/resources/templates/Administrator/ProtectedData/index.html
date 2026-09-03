@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>NIPMB | Dashboard</title>
+
+    <!-- =====================================================
+         TAILWIND CSS
+    ====================================================== -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+
+                    colors: {
+                        navy: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    },
+
+                    fontFamily: {
+                        arial: [
+                            'Arial',
+                            'Helvetica',
+                            'sans-serif'
+                        ]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+    <!-- Existing fonts -->
+    <link rel="stylesheet"
+        href="/css/fonts.css">
+
+
+    <!-- =====================================================
+         SESSION CHECK
+    ====================================================== -->
+    <script>
+
+        function checkSessionAndRedirect() {
+
+            fetch('/api/session-status', {
+                credentials: 'include'
+            })
+
+            .then(function (response) {
+
+                if (response.status === 401) {
+
+                    window.top.location.href = '/login';
+
+                }
+
+            })
+
+            .catch(function (err) {
+
+                console.log(
+                    "Error checking session",
+                    err
+                );
+
+            });
+
+        }
+
+        setInterval(
+            checkSessionAndRedirect,
+            1000
+        );
+
+    </script>
+
+
+    <script>
+
+        function preventBack() {
+
+            window.history.forward();
+
+        }
+
+        setTimeout(
+            preventBack,
+            0
+        );
+
+        window.onunload = function () {
+            null;
+        };
+
+    </script>
+
+
+    <!-- =====================================================
+         CUSTOM CSS
+    ====================================================== -->
+    <style>
+
+        /* =================================================
+           RESET
+        ================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif !important;
+        }
+
+
+        body {
+
+            background: #f1f5f9;
+
+        }
+
+
+        button,
+        input,
+        select,
+        textarea,
+        a {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif !important;
+
+        }
+
+
+        /* =================================================
+           APPLICATION
+        ================================================= */
+
+        #app {
+
+            width: 100%;
+            height: 100dvh;
+
+            display: flex;
+            flex-direction: column;
+
+            overflow: hidden;
+
+        }
+
+
+        /* =================================================
+           HEADER
+        ================================================= */
+
+        #header {
+
+            width: 100%;
+
+            height: 64px;
+            min-height: 64px;
+
+            background: #ffffff;
+
+            border-bottom:
+                1px solid #e5e7eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 16px;
+
+            position: relative;
+
+            z-index: 1000;
+
+        }
+
+
+        /* =================================================
+           MAIN BODY
+        ================================================= */
+
+        #content-wrapper {
+
+            width: 100%;
+
+            flex: 1;
+
+            min-height: 0;
+
+            display: flex;
+
+            overflow: hidden;
+
+            position: relative;
+
+        }
+
+
+        /* =================================================
+           SIDEBAR
+        ================================================= */
+
+        #sidebar {
+
+            width: 270px;
+            min-width: 270px;
+
+            height: 100%;
+
+            background:
+                #0f172a;
+
+            color: white;
+
+            flex-shrink: 0;
+
+            overflow: hidden;
+
+            transition:
+                width 0.25s ease,
+                min-width 0.25s ease,
+                transform 0.25s ease;
+
+            position: relative;
+
+            z-index: 900;
+
+        }
+
+
+        /* Desktop collapsed */
+
+        #sidebar.collapsed {
+
+            width: 0;
+            min-width: 0;
+
+        }
+
+
+        /* =================================================
+           SIDEBAR SCROLL
+        ================================================= */
+
+        #sidebar-scroll {
+
+            width: 270px;
+
+            height: 100%;
+
+            overflow-y: auto;
+
+            overflow-x: hidden;
+
+            scrollbar-width: thin;
+
+            scrollbar-color:
+                #475569
+                #0f172a;
+
+        }
+
+
+        #sidebar-scroll::-webkit-scrollbar {
+
+            width: 7px;
+
+        }
+
+
+        #sidebar-scroll::-webkit-scrollbar-track {
+
+            background:
+                #0f172a;
+
+        }
+
+
+        #sidebar-scroll::-webkit-scrollbar-thumb {
+
+            background:
+                #475569;
+
+            border-radius:
+                10px;
+
+        }
+
+
+        #sidebar-scroll::-webkit-scrollbar-thumb:hover {
+
+            background:
+                #64748b;
+
+        }
+
+
+        /* =================================================
+           SIDEBAR BRAND
+        ================================================= */
+
+        .sidebar-brand {
+
+            width: 270px;
+
+            height: 64px;
+            min-height: 64px;
+
+            display: flex;
+
+            align-items: center;
+
+            padding:
+                0 18px;
+
+            background:
+                #0b1220;
+
+            border-bottom:
+                1px solid #1e293b;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 10;
+
+        }
+
+
+        .sidebar-brand img {
+
+            width: 40px;
+            height: 40px;
+
+            min-width: 40px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            margin-right: 12px;
+
+        }
+
+
+        .sidebar-brand span {
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* =================================================
+           SIDEBAR MENU
+        ================================================= */
+
+        .sidebar-menu {
+
+            list-style: none;
+
+            margin: 0;
+
+            padding:
+                12px 10px 30px 10px;
+
+            width: 270px;
+
+        }
+
+
+        .sidebar-item {
+
+            margin-bottom: 3px;
+
+        }
+
+
+        .sidebar-link {
+
+            width: 100%;
+
+            min-height: 44px;
+
+            padding:
+                10px 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            color:
+                #cbd5e1;
+
+            text-decoration: none;
+
+            border-radius:
+                7px;
+
+            font-size: 14px;
+
+            line-height: 18px;
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease,
+                color 0.15s ease;
+
+            border: none;
+
+            background:
+                transparent;
+
+            text-align: left;
+
+        }
+
+
+        .sidebar-link:hover {
+
+            color: white;
+
+            background:
+                #1e293b;
+
+        }
+
+
+        .sidebar-link.active {
+
+            color: white;
+
+            background:
+                #2563eb;
+
+        }
+
+
+        .sidebar-icon {
+
+            width: 20px;
+
+            min-width: 20px;
+
+            text-align: center;
+
+            font-size: 17px;
+
+        }
+
+
+        .sidebar-text {
+
+            flex: 1;
+
+            white-space: normal;
+
+            text-align: left;
+
+        }
+
+
+        .sidebar-arrow {
+
+            font-size: 11px;
+
+            transition:
+                transform 0.2s ease;
+
+        }
+
+
+        .sidebar-item.open
+        > .sidebar-link
+        .sidebar-arrow {
+
+            transform:
+                rotate(90deg);
+
+        }
+
+
+        /* =================================================
+           SUBMENU
+        ================================================= */
+
+        .submenu {
+
+            display: none;
+
+            list-style: none;
+
+            margin: 0;
+
+            padding:
+                4px 0 4px 30px;
+
+        }
+
+
+        .sidebar-item.open
+        > .submenu {
+
+            display: block;
+
+        }
+
+
+        .submenu a {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 8px;
+
+            color:
+                #94a3b8;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            line-height: 17px;
+
+            padding:
+                8px 9px;
+
+            border-radius:
+                6px;
+
+            transition:
+                all 0.15s ease;
+
+        }
+
+
+        .submenu a:hover {
+
+            color: white;
+
+            background:
+                #1e293b;
+
+        }
+
+
+        .submenu a.active {
+
+            color: white;
+
+            background:
+                #1d4ed8;
+
+        }
+
+
+        .submenu a i {
+
+            margin-top: 3px;
+
+            font-size: 7px;
+
+            min-width: 10px;
+
+        }
+
+
+        /* =================================================
+           MAIN CONTENT
+        ================================================= */
+
+        #main-content {
+
+            flex: 1;
+
+            min-width: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+
+            background:
+                #f1f5f9;
+
+            transition:
+                width 0.25s ease;
+
+        }
+
+
+        /* IMPORTANT:
+           iframe always fills available width
+        */
+
+        #content-frame {
+
+            display: block;
+
+            width: 100%;
+
+            height: 100%;
+
+            min-width: 0;
+
+            min-height: 0;
+
+            flex: 1;
+
+            border: none;
+
+            background:
+                #ffffff;
+
+        }
+
+
+        /* =================================================
+           HEADER BUTTON
+        ================================================= */
+
+        .header-btn {
+
+            width: 40px;
+
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: none;
+
+            background:
+                transparent;
+
+            border-radius:
+                7px;
+
+            color:
+                #334155;
+
+            cursor: pointer;
+
+            font-size: 20px;
+
+        }
+
+
+        .header-btn:hover {
+
+            background:
+                #f1f5f9;
+
+        }
+
+
+        /* =================================================
+           USER
+        ================================================= */
+
+        .user-container {
+
+            position: relative;
+
+        }
+
+
+        .user-button {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                5px 8px;
+
+            border: none;
+
+            background:
+                transparent;
+
+            border-radius:
+                8px;
+
+            cursor: pointer;
+
+        }
+
+
+        .user-button:hover {
+
+            background:
+                #f1f5f9;
+
+        }
+
+
+        .user-image {
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border:
+                2px solid #e2e8f0;
+
+        }
+
+
+        .user-name {
+
+            font-size: 14px;
+
+            color:
+                #334155;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =================================================
+           USER DROPDOWN
+        ================================================= */
+
+        .user-dropdown {
+
+            position: absolute;
+
+            right: 0;
+
+            top: 52px;
+
+            width: 270px;
+
+            max-width:
+                calc(100vw - 20px);
+
+            background:
+                white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                10px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0,0,0,0.15);
+
+            overflow: hidden;
+
+            display: none;
+
+            z-index: 2000;
+
+        }
+
+
+        .user-dropdown.show {
+
+            display: block;
+
+        }
+
+
+        .user-header {
+
+            background:
+                #1d4ed8;
+
+            color: white;
+
+            padding:
+                20px;
+
+            text-align: center;
+
+        }
+
+
+        .user-header img {
+
+            width: 70px;
+            height: 70px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border:
+                3px solid white;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .user-actions {
+
+            padding:
+                12px;
+
+            display: flex;
+
+            gap: 8px;
+
+        }
+
+
+        .user-actions form {
+
+            flex: 1;
+
+        }
+
+
+        .user-actions button {
+
+            width: 100%;
+
+            padding:
+                9px 10px;
+
+            border-radius:
+                6px;
+
+            border:
+                1px solid #d1d5db;
+
+            background:
+                white;
+
+            cursor: pointer;
+
+        }
+
+
+        .user-actions button:hover {
+
+            background:
+                #f8fafc;
+
+        }
+
+
+        /* =================================================
+           MOBILE OVERLAY
+        ================================================= */
+
+        #mobile-overlay {
+
+            display: none;
+
+        }
+
+
+        /* =================================================
+           TABLET
+        ================================================= */
+
+        @media (max-width: 1024px) {
+
+            #sidebar {
+
+                width: 240px;
+                min-width: 240px;
+
+            }
+
+
+            #sidebar-scroll {
+
+                width: 240px;
+
+            }
+
+
+            .sidebar-brand,
+            .sidebar-menu {
+
+                width: 240px;
+
+            }
+
+
+            .sidebar-link {
+
+                font-size: 13px;
+
+            }
+
+        }
+
+
+        /* =================================================
+           MOBILE
+        ================================================= */
+
+        @media (max-width: 768px) {
+
+            #header {
+
+                height: 58px;
+                min-height: 58px;
+
+                padding:
+                    0 10px;
+
+            }
+
+
+            #content-wrapper {
+
+                position: relative;
+
+            }
+
+
+            #sidebar {
+
+                position: absolute;
+
+                left: 0;
+
+                top: 0;
+
+                bottom: 0;
+
+                width: 270px;
+
+                min-width: 270px;
+
+                height: 100%;
+
+                transform:
+                    translateX(0);
+
+                box-shadow:
+                    5px 0 25px
+                    rgba(0,0,0,0.25);
+
+                z-index: 950;
+
+            }
+
+
+            #sidebar.collapsed {
+
+                width: 270px;
+
+                min-width: 270px;
+
+                transform:
+                    translateX(-100%);
+
+            }
+
+
+            #sidebar-scroll {
+
+                width: 270px;
+
+            }
+
+
+            .sidebar-brand,
+            .sidebar-menu {
+
+                width: 270px;
+
+            }
+
+
+            #main-content {
+
+                width: 100%;
+
+                min-width: 0;
+
+            }
+
+
+            #mobile-overlay {
+
+                display: block;
+
+                position: absolute;
+
+                inset: 0;
+
+                background:
+                    rgba(0,0,0,0.45);
+
+                z-index: 900;
+
+                opacity: 0;
+
+                visibility: hidden;
+
+                transition:
+                    opacity 0.2s ease;
+
+            }
+
+
+            #mobile-overlay.show {
+
+                opacity: 1;
+
+                visibility: visible;
+
+            }
+
+
+            .user-name {
+
+                display: none;
+
+            }
+
+
+            .user-button {
+
+                padding:
+                    4px;
+
+            }
+
+
+            .user-button > i {
+
+                display: none;
+
+            }
+
+
+            .user-dropdown {
+
+                top: 48px;
+
+            }
+
+        }
+
+
+        /* =================================================
+           SMALL MOBILE
+        ================================================= */
+
+        @media (max-width: 480px) {
+
+            #header {
+
+                padding:
+                    0 7px;
+
+            }
+
+
+            .header-btn {
+
+                width: 38px;
+
+                height: 38px;
+
+            }
+
+
+            .user-image {
+
+                width: 34px;
+                height: 34px;
+
+            }
+
+
+            .user-dropdown {
+
+                position: fixed;
+
+                top: 63px;
+
+                right: 8px;
+
+                width:
+                    calc(100vw - 16px);
+
+                max-width:
+                    none;
+
+            }
+
+
+            footer {
+
+                font-size:
+                    10px !important;
+
+            }
+
+        }
+
+
+        /* =================================================
+           LANDSCAPE MOBILE
+        ================================================= */
+
+        @media (max-height: 500px)
+        and (max-width: 768px) {
+
+            #header {
+
+                height: 52px;
+                min-height: 52px;
+
+            }
+
+        }
+
+
+        /* =================================================
+           PRINT
+        ================================================= */
+
+        @media print {
+
+            #header,
+            #sidebar,
+            footer {
+
+                display: none !important;
+
+            }
+
+
+            #main-content {
+
+                width: 100% !important;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div id="app">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header id="header">
+
+
+        <!-- LEFT SIDE -->
+
+        <div class="flex items-center gap-1 sm:gap-2">
+
+            <button
+                id="sidebarToggle"
+                type="button"
+                class="header-btn"
+                title="Toggle Sidebar">
+
+                <i class="bi bi-list"></i>
+
+            </button>
+
+
+            <a
+                th:href="@{/protecteddata/mainpage}"
+                target="content-frame"
+                class="hidden sm:block
+                       text-sm
+                       font-semibold
+                       text-slate-700
+                       hover:text-blue-600
+                       no-underline">
+
+                Home
+
+            </a>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div class="flex items-center gap-1 sm:gap-2">
+
+
+            <!-- SEARCH -->
+
+            <button
+                type="button"
+                class="header-btn"
+                title="Search">
+
+                <i class="bi bi-search"></i>
+
+            </button>
+
+
+            <!-- FULLSCREEN -->
+
+            <button
+                id="fullscreenBtn"
+                type="button"
+                class="header-btn hidden sm:flex"
+                title="Fullscreen">
+
+                <i
+                    id="fullscreenIcon"
+                    class="bi bi-arrows-fullscreen">
+                </i>
+
+            </button>
+
+
+            <!-- USER -->
+
+            <div class="user-container">
+
+                <button
+                    id="userButton"
+                    type="button"
+                    class="user-button">
+
+                    <img
+                        src="/images/signal-2025-01-20-115314.png"
+                        class="user-image"
+                        alt="User Image">
+
+
+                    <span
+                        class="user-name"
+                        th:text="${username}">
+
+                        Username
+
+                    </span>
+
+
+                    <i
+                        class="bi bi-chevron-down
+                               text-xs
+                               text-slate-500">
+                    </i>
+
+                </button>
+
+
+                <!-- USER DROPDOWN -->
+
+                <div
+                    id="userDropdown"
+                    class="user-dropdown">
+
+
+                    <div class="user-header">
+
+                        <img
+                            src="/images/signal-2025-01-20-115314.png"
+                            alt="User Image">
+
+
+                        <p
+                            class="font-bold"
+                            th:text="${username}">
+
+                            Username
+
+                        </p>
+
+
+                        <p class="text-xs mt-1 opacity-80">
+
+                            NIPMB ADMIN
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="user-actions">
+
+
+                        <form
+                            th:action="@{/profile}"
+                            method="POST">
+
+                            <button type="submit">
+
+                                <i class="bi bi-person"></i>
+
+                                Profile
+
+                            </button>
+
+                        </form>
+
+
+                        <form
+                            th:action="@{/logout}"
+                            method="POST">
+
+                            <button type="submit">
+
+                                <i class="bi bi-box-arrow-right"></i>
+
+                                Logout
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENT WRAPPER
+    ====================================================== -->
+
+    <div id="content-wrapper">
+
+
+        <!-- MOBILE OVERLAY -->
+
+        <div id="mobile-overlay"></div>
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside id="sidebar">
+
+
+            <div id="sidebar-scroll">
+
+
+                <!-- BRAND -->
+
+                <div class="sidebar-brand">
+
+                    <img
+                        src="/images/signal-2025-01-20-115314.png"
+                        alt="NIPMB Logo">
+
+
+                    <span>
+
+                        NIPDS MANAGEMENT
+
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     MENU
+                ================================================== -->
+
+                <ul class="sidebar-menu">
+
+
+                    <!-- DASHBOARD -->
+
+                    <li class="sidebar-item">
+
+                        <a
+                            th:href="@{/protecteddata/mainpage}"
+                            target="content-frame"
+                            class="sidebar-link active">
+
+                            <i
+                                class="bi bi-speedometer
+                                       sidebar-icon">
+                            </i>
+
+                            <span class="sidebar-text">
+
+                                Dashboard
+
+                            </span>
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- ADD PERSONNEL -->
+
+                    <li class="sidebar-item">
+
+                        <a
+                            th:href="@{/protecteddata/personnelform}"
+                            target="content-frame"
+                            class="sidebar-link">
+
+                            <i
+                                class="bi bi-person-fill-add
+                                       sidebar-icon">
+                            </i>
+
+                            <span class="sidebar-text">
+
+                                Add Personnel
+
+                            </span>
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- MANAGE ACCOUNTS -->
+
+                    <li class="sidebar-item">
+
+                        <a
+                            th:href="@{/create_user}"
+                            target="content-frame"
+                            class="sidebar-link">
+
+                            <i
+                                class="bi bi-person-vcard-fill
+                                       sidebar-icon">
+                            </i>
+
+                            <span class="sidebar-text">
+
+                                Manage Accounts
+
+                            </span>
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- =================================================
+                         INVALID DATA
+                    ================================================== -->
+
+                    <li class="sidebar-item dropdown-item">
+
+                        <button
+                            type="button"
+                            class="sidebar-link dropdown-toggle">
+
+                            <i
+                                class="bi bi-box-arrow-in-right
+                                       sidebar-icon">
+                            </i>
+
+
+                            <span class="sidebar-text">
+
+                                Records of Invalid Data
+
+                            </span>
+
+
+                            <i
+                                class="bi bi-chevron-right
+                                       sidebar-arrow">
+                            </i>
+
+                        </button>
+
+
+                        <ul class="submenu">
+
+
+                            <li>
+
+                                <a
+                                    th:href="@{/protecteddata/nomilitaryschooling}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Military Schooling
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    th:href="@{/protecteddata/not-in-the-system}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Not In System
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a
+                                    th:href="@{/protecteddata/invalidregion}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Invalid Address
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- =================================================
+                         PRINT REPORTS
+                    ================================================== -->
+
+                    <li class="sidebar-item dropdown-item">
+
+                        <button
+                            type="button"
+                            class="sidebar-link dropdown-toggle">
+
+                            <i
+                                class="bi bi-folder-fill
+                                       sidebar-icon">
+                            </i>
+
+
+                            <span class="sidebar-text">
+
+                                Print Reports
+
+                            </span>
+
+
+                            <i
+                                class="bi bi-chevron-right
+                                       sidebar-arrow">
+                            </i>
+
+                        </button>
+
+
+                        <ul class="submenu">
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/searchsoi}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>SOI</span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/j1format}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>J1 Reports</span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/gainandlosses}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>Gain And Losses</span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/consolidatedpersonnelstrength}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Consolidated Personnel Strength
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/consolidatedfosprofile}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Consolidated FOS Profile Of Officer
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/consolidatedratesandrating}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Consolidated Rates And Rating Profile
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/groupingofrating}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Groupings Of Rating
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/femalerosteroftroops}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Female Roster Of Troops
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/stationlist}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Station List
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/dueforretirement}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Roster Of Troops Due For Retirement
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/awoldeserter}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        List Of AWOL/Deserter
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/intelligenceeligibilitylist}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Intelligence Eligibility List Of PN Officers And EP
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/monthlyactualroster}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Actual Roster Of Military Personnel
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/religiousprofile}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Religious Profile
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a
+                                    th:href="@{/printreport/sexdisaggregateddata}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Monthly Sex-Disaggregated Data (SDD)
+                                    </span>
+
+                                </a>
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- =================================================
+                         SIGNATURE
+                    ================================================== -->
+
+                    <li class="sidebar-item dropdown-item">
+
+                        <button
+                            type="button"
+                            class="sidebar-link dropdown-toggle">
+
+                            <i
+                                class="bi bi-pen-fill
+                                       sidebar-icon">
+                            </i>
+
+
+                            <span class="sidebar-text">
+
+                                Signature
+
+                            </span>
+
+
+                            <i
+                                class="bi bi-chevron-right
+                                       sidebar-arrow">
+                            </i>
+
+                        </button>
+
+
+                        <ul class="submenu">
+
+                            <li>
+
+                                <a
+                                    th:href="@{/signature}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Names
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- =================================================
+                         Organization
+                    ================================================== -->
+
+                    <li class="sidebar-item dropdown-item">
+
+                        <button
+                            type="button"
+                            class="sidebar-link dropdown-toggle">
+
+                            <i
+                                class="bi bi-database-fill
+                                       sidebar-icon">
+                            </i>
+
+
+                            <span class="sidebar-text">
+
+                                Organinzation
+
+                            </span>
+
+
+                            <i
+                                class="bi bi-chevron-right
+                                       sidebar-arrow">
+                            </i>
+
+                        </button>
+
+
+                        <ul class="submenu">
+
+                            <li>
+
+                                <a
+                                    th:href="@{/registered-office}"
+                                    target="content-frame">
+
+                                    <i class="bi bi-circle-fill"></i>
+
+                                    <span>
+                                        Registered Office
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                </ul>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================== -->
+
+        <main id="main-content">
+
+            <iframe
+                id="content-frame"
+                name="content-frame"
+                src="/protecteddata/mainpage"
+                title="NIPMB Content">
+
+            </iframe>
+
+        </main>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer
+        class="h-9 min-h-9
+               bg-slate-900
+               text-white
+               flex
+               items-center
+               justify-between
+               px-3 sm:px-4
+               text-xs">
+
+        <div>
+
+            Copyright &copy; 2024-2025
+
+            <span class="font-bold">
+
+                NIPDS MANAGEMENT
+
+            </span>.
+
+            All rights reserved.
+
+        </div>
+
+
+        <div class="hidden sm:block">
+
+            @JavaMan:2024-2025
+
+        </div>
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script>
+
+    /* =====================================================
+       ELEMENTS
+    ====================================================== */
+
+    const sidebar =
+        document.getElementById('sidebar');
+
+    const sidebarToggle =
+        document.getElementById('sidebarToggle');
+
+    const mobileOverlay =
+        document.getElementById('mobile-overlay');
+
+    const contentFrame =
+        document.getElementById('content-frame');
+
+
+    /* =====================================================
+       MOBILE CHECK
+    ====================================================== */
+
+    function isMobile() {
+
+        return window.innerWidth <= 768;
+
+    }
+
+
+    /* =====================================================
+       SIDEBAR TOGGLE
+    ====================================================== */
+
+    sidebarToggle.addEventListener(
+        'click',
+        function () {
+
+            if (isMobile()) {
+
+                sidebar.classList.toggle(
+                    'collapsed'
+                );
+
+                mobileOverlay.classList.toggle(
+                    'show',
+                    !sidebar.classList.contains(
+                        'collapsed'
+                    )
+                );
+
+            } else {
+
+                sidebar.classList.toggle(
+                    'collapsed'
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       MOBILE OVERLAY
+    ====================================================== */
+
+    mobileOverlay.addEventListener(
+        'click',
+        function () {
+
+            sidebar.classList.add(
+                'collapsed'
+            );
+
+            mobileOverlay.classList.remove(
+                'show'
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       SIDEBAR DROPDOWN
+    ====================================================== */
+
+    document
+        .querySelectorAll('.dropdown-toggle')
+        .forEach(function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+                    const parent =
+                        this.closest(
+                            '.dropdown-item'
+                        );
+
+                    parent.classList.toggle(
+                        'open'
+                    );
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       SIDEBAR LINKS
+    ====================================================== */
+
+    document
+        .querySelectorAll(
+            '#sidebar a[target="content-frame"]'
+        )
+        .forEach(function (link) {
+
+            link.addEventListener(
+                'click',
+                function () {
+
+
+                    /*
+                     * Remove active
+                     */
+
+                    document
+                        .querySelectorAll(
+                            '#sidebar a[target="content-frame"]'
+                        )
+                        .forEach(function (item) {
+
+                            item.classList.remove(
+                                'active'
+                            );
+
+                        });
+
+
+                    /*
+                     * Add active
+                     */
+
+                    this.classList.add(
+                        'active'
+                    );
+
+
+                    /*
+                     * Close mobile sidebar
+                     */
+
+                    if (isMobile()) {
+
+                        sidebar.classList.add(
+                            'collapsed'
+                        );
+
+                        mobileOverlay.classList.remove(
+                            'show'
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       USER DROPDOWN
+    ====================================================== */
+
+    const userButton =
+        document.getElementById(
+            'userButton'
+        );
+
+    const userDropdown =
+        document.getElementById(
+            'userDropdown'
+        );
+
+
+    userButton.addEventListener(
+        'click',
+        function (event) {
+
+            event.stopPropagation();
+
+            userDropdown.classList.toggle(
+                'show'
+            );
+
+        }
+    );
+
+
+    document.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                !userDropdown.contains(
+                    event.target
+                ) &&
+                !userButton.contains(
+                    event.target
+                )
+            ) {
+
+                userDropdown.classList.remove(
+                    'show'
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       FULLSCREEN
+    ====================================================== */
+
+    const fullscreenBtn =
+        document.getElementById(
+            'fullscreenBtn'
+        );
+
+    const fullscreenIcon =
+        document.getElementById(
+            'fullscreenIcon'
+        );
+
+
+    fullscreenBtn.addEventListener(
+        'click',
+        function () {
+
+            if (!document.fullscreenElement) {
+
+                document.documentElement
+                    .requestFullscreen()
+                    .then(function () {
+
+                        fullscreenIcon.className =
+                            'bi bi-fullscreen-exit';
+
+                    })
+                    .catch(function (error) {
+
+                        console.log(
+                            'Fullscreen error:',
+                            error
+                        );
+
+                    });
+
+            } else {
+
+                document.exitFullscreen();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       FULLSCREEN CHANGE
+    ====================================================== */
+
+    document.addEventListener(
+        'fullscreenchange',
+        function () {
+
+            if (document.fullscreenElement) {
+
+                fullscreenIcon.className =
+                    'bi bi-fullscreen-exit';
+
+            } else {
+
+                fullscreenIcon.className =
+                    'bi bi-arrows-fullscreen';
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       RESIZE
+    ====================================================== */
+
+    window.addEventListener(
+        'resize',
+        function () {
+
+            if (!isMobile()) {
+
+                mobileOverlay.classList.remove(
+                    'show'
+                );
+
+                /*
+                 * Do not force sidebar state
+                 * on desktop.
+                 */
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       ESCAPE = CLOSE MOBILE SIDEBAR
+    ====================================================== */
+
+    document.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key === 'Escape' &&
+                isMobile()
+            ) {
+
+                sidebar.classList.add(
+                    'collapsed'
+                );
+
+                mobileOverlay.classList.remove(
+                    'show'
+                );
+
+                userDropdown.classList.remove(
+                    'show'
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+
+<!-- Existing security -->
+<script src="/js/security.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NIPMB | Office Directory</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    },
+                    fontFamily: {
+                        arial: ['Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .table-row {
+            transition: background-color .2s ease;
+        }
+
+        .table-row:hover {
+            background-color: #eff6ff;
+        }
+
+        .action-button {
+            transition: all .2s ease;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="font-arial min-h-screen bg-slate-100 text-slate-800">
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="border-b border-slate-200 bg-white shadow-sm">
+
+    <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+
+        <div class="flex flex-col gap-4
+                    md:flex-row md:items-center md:justify-between">
+
+            <!-- TITLE -->
+
+            <div>
+
+                <div class="flex items-center gap-2">
+
+                    <div
+                        class="flex h-9 w-9 items-center justify-center
+                               rounded-xl bg-blue-600 text-white shadow">
+
+                        <i class="fas fa-building"></i>
+
+                    </div>
+
+                    <span
+                        class="text-sm font-bold uppercase
+                               tracking-wider text-blue-600">
+
+                        NIPMB
+
+                    </span>
+
+                </div>
+
+
+                <h1
+                    class="mt-2 text-2xl font-bold tracking-tight
+                           text-slate-900 sm:text-3xl">
+
+                    Office Directory
+
+                </h1>
+
+
+                <p class="mt-1 text-sm text-slate-500">
+
+                    View and manage registered offices
+
+                </p>
+
+            </div>
+
+
+            <!-- BREADCRUMB -->
+
+            <nav class="flex items-center gap-2 text-sm">
+
+                <a
+                    href="/protecteddata/mainpage"
+                    class="font-semibold text-blue-600
+                           transition hover:text-blue-800">
+
+                    <i class="fas fa-home mr-1"></i>
+
+                    Home
+
+                </a>
+
+
+                <i
+                    class="fas fa-chevron-right
+                           text-xs text-slate-400">
+                </i>
+
+
+                <span class="font-medium text-slate-500">
+
+                    Offices
+
+                </span>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="w-full px-4 py-6 sm:px-6 lg:px-8">
+
+
+    <!-- =====================================================
+         TOOLBAR
+    ====================================================== -->
+
+    <div
+        class="mb-6 flex flex-col gap-4
+               lg:flex-row lg:items-center lg:justify-between">
+
+
+        <!-- PAGE DESCRIPTION -->
+
+        <div>
+
+            <h2 class="text-lg font-bold text-slate-900">
+
+                Registered Offices
+
+            </h2>
+
+            <p class="text-sm text-slate-500">
+
+                List of offices registered in the system
+
+            </p>
+
+        </div>
+
+
+        <!-- ADD BUTTON -->
+
+        <a
+            href="/protecteddata/office/add"
+            class="inline-flex items-center justify-center
+                   gap-2 rounded-xl bg-blue-600
+                   px-4 py-2.5 text-sm font-bold
+                   text-white shadow-sm transition
+                   hover:bg-blue-700">
+
+            <i class="fas fa-plus"></i>
+
+            Add Office
+
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTENT CARD
+    ====================================================== -->
+
+    <div
+        class="overflow-hidden rounded-2xl
+               border border-slate-200 bg-white shadow-sm">
+
+
+        <!-- =================================================
+             SEARCH BAR
+        ================================================== -->
+
+        <div
+            class="border-b border-slate-200
+                   bg-slate-50/50 px-5 py-4">
+
+            <div
+                class="flex flex-col gap-3
+                       md:flex-row md:items-center
+                       md:justify-between">
+
+
+                <!-- SEARCH -->
+
+                <div class="relative w-full md:max-w-md">
+
+                    <i
+                        class="fas fa-search absolute left-3
+                               top-1/2 -translate-y-1/2
+                               text-slate-400">
+                    </i>
+
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search office..."
+                        class="w-full rounded-xl
+                               border border-slate-300
+                               bg-white py-2.5 pl-10 pr-4
+                               text-sm text-slate-800
+                               outline-none transition
+                               focus:border-blue-500
+                               focus:ring-2 focus:ring-blue-100">
+
+                </div>
+
+
+                <!-- RECORD COUNT -->
+
+                <div
+                    class="text-sm text-slate-500">
+
+                    Total Offices:
+
+                    <span
+                        id="officeCount"
+                        class="font-bold text-slate-900">
+
+                        0
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TABLE
+        ================================================== -->
+
+        <div class="overflow-x-auto">
+
+            <table
+                class="w-full min-w-[800px]
+                       text-left text-sm">
+
+                <!-- TABLE HEADER -->
+
+                <thead class="bg-slate-50">
+
+                <tr
+                    class="text-[11px] font-bold
+                           uppercase tracking-wider
+                           text-slate-500">
+
+                    <th class="px-5 py-3">
+                        #
+                    </th>
+
+                    <th class="px-5 py-3">
+                        Office
+                    </th>
+
+                    <th class="px-5 py-3">
+                        Description
+                    </th>
+
+                    <th class="px-5 py-3">
+                        Status
+                    </th>
+
+                    <th class="px-5 py-3 text-center">
+                        Actions
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <!-- TABLE BODY -->
+
+                <tbody
+                    id="officeTableBody"
+                    class="divide-y divide-slate-100">
+
+
+                <!-- SAMPLE DATA -->
+
+                <tr class="table-row">
+
+                    <td
+                        class="px-5 py-4 font-semibold
+                               text-slate-500">
+
+                        1
+
+                    </td>
+
+
+                    <td
+                        class="px-5 py-4">
+
+                        <div
+                            class="flex items-center gap-3">
+
+
+                            <div
+                                class="flex h-9 w-9
+                                       items-center justify-center
+                                       rounded-lg bg-blue-100
+                                       text-blue-600">
+
+                                <i class="fas fa-building"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <p
+                                    class="font-bold text-slate-900">
+
+                                    Office of the Chief
+
+                                </p>
+
+                                <p
+                                    class="text-xs text-slate-500">
+
+                                    OCH
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td
+                        class="px-5 py-4 text-slate-600">
+
+                        Main administrative office
+
+                    </td>
+
+
+                    <td class="px-5 py-4">
+
+                        <span
+                            class="inline-flex items-center
+                                   gap-1 rounded-full
+                                   bg-emerald-100 px-3 py-1
+                                   text-xs font-bold
+                                   text-emerald-700">
+
+                            <span
+                                class="h-1.5 w-1.5
+                                       rounded-full
+                                       bg-emerald-500">
+                            </span>
+
+                            Active
+
+                        </span>
+
+                    </td>
+
+
+                    <td class="px-5 py-4">
+
+                        <div
+                            class="flex justify-center gap-2">
+
+
+                            <!-- VIEW -->
+
+                            <button
+                                type="button"
+                                onclick="viewOffice('Office of the Chief')"
+                                title="View"
+                                class="action-button flex h-8 w-8
+                                       items-center justify-center
+                                       rounded-lg bg-slate-100
+                                       text-slate-600
+                                       hover:bg-blue-100
+                                       hover:text-blue-700">
+
+                                <i class="fas fa-eye text-xs"></i>
+
+                            </button>
+
+
+                            <!-- EDIT -->
+
+                            <button
+                                type="button"
+                                onclick="editOffice(1)"
+                                title="Edit"
+                                class="action-button flex h-8 w-8
+                                       items-center justify-center
+                                       rounded-lg bg-slate-100
+                                       text-slate-600
+                                       hover:bg-blue-100
+                                       hover:text-blue-700">
+
+                                <i class="fas fa-edit text-xs"></i>
+
+                            </button>
+
+
+                            <!-- DELETE -->
+
+                            <button
+                                type="button"
+                                onclick="deleteOffice(1)"
+                                title="Delete"
+                                class="action-button flex h-8 w-8
+                                       items-center justify-center
+                                       rounded-lg bg-red-50
+                                       text-red-600
+                                       hover:bg-red-100">
+
+                                <i class="fas fa-trash text-xs"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <tr class="table-row">
+
+                    <td
+                        class="px-5 py-4 font-semibold
+                               text-slate-500">
+
+                        2
+
+                    </td>
+
+
+                    <td class="px-5 py-4">
+
+                        <div
+                            class="flex items-center gap-3">
+
+
+                            <div
+                                class="flex h-9 w-9
+                                       items-center justify-center
+                                       rounded-lg bg-blue-100
+                                       text-blue-600">
+
+                                <i class="fas fa-building"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <p
+                                    class="font-bold text-slate-900">
+
+                                    Personnel Office
+
+                                </p>
+
+                                <p
+                                    class="text-xs text-slate-500">
+
+                                    PO
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td
+                        class="px-5 py-4 text-slate-600">
+
+                        Personnel administration
+
+                    </td>
+
+
+                    <td class="px-5 py-4">
+
+                        <span
+                            class="inline-flex items-center
+                                   gap-1 rounded-full
+                                   bg-emerald-100 px-3 py-1
+                                   text-xs font-bold
+                                   text-emerald-700">
+
+                            <span
+                                class="h-1.5 w-1.5
+                                       rounded-full
+                                       bg-emerald-500">
+                            </span>
+
+                            Active
+
+                        </span>
+
+                    </td>
+
+
+                    <td class="px-5 py-4">
+
+                        <div
+                            class="flex justify-center gap-2">
+
+                            <button
+                                type="button"
+                                onclick="viewOffice('Personnel Office')"
+                                title="View"
+                                class="action-button flex h-8 w-8
+                                       items-center justify-center
+                                       rounded-lg bg-slate-100
+                                       text-slate-600
+                                       hover:bg-blue-100
+                                       hover:text-blue-700">
+
+                                <i class="fas fa-eye text-xs"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                onclick="editOffice(2)"
+                                title="Edit"
+                                class="action-button flex h-8 w-8
+                                       items-center justify-center
+                                       rounded-lg bg-slate-100
+                                       text-slate-600
+                                       hover:bg-blue-100
+                                       hover:text-blue-700">
+
+                                <i class="fas fa-edit text-xs"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                onclick="deleteOffice(2)"
+                                title="Delete"
+                                class="action-button flex h-8 w-8
+                                       items-center justify-center
+                                       rounded-lg bg-red-50
+                                       text-red-600
+                                       hover:bg-red-100">
+
+                                <i class="fas fa-trash text-xs"></i>
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div
+            id="emptyState"
+            class="hidden px-6 py-16 text-center">
+
+
+            <div
+                class="mx-auto flex h-14 w-14
+                       items-center justify-center
+                       rounded-full bg-slate-100
+                       text-slate-400">
+
+                <i class="fas fa-building text-xl"></i>
+
+            </div>
+
+
+            <h3
+                class="mt-4 text-sm font-bold
+                       text-slate-900">
+
+                No offices found
+
+            </h3>
+
+
+            <p
+                class="mt-1 text-sm text-slate-500">
+
+                There are currently no offices matching your search.
+
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER / PAGINATION
+        ================================================== -->
+
+        <div
+            class="flex flex-col gap-3
+                   border-t border-slate-200
+                   bg-white px-5 py-4
+                   sm:flex-row sm:items-center
+                   sm:justify-between">
+
+
+            <p class="text-sm text-slate-500">
+
+                Showing
+
+                <span
+                    id="showingCount"
+                    class="font-semibold text-slate-700">
+
+                    2
+
+                </span>
+
+                offices
+
+            </p>
+
+
+            <div class="flex items-center gap-1">
+
+
+                <button
+                    type="button"
+                    disabled
+                    class="flex h-9 items-center
+                           justify-center rounded-lg
+                           border border-slate-200
+                           bg-slate-50 px-3
+                           text-sm font-medium
+                           text-slate-400">
+
+                    <i class="fas fa-chevron-left"></i>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="flex h-9 min-w-9
+                           items-center justify-center
+                           rounded-lg bg-blue-600
+                           px-3 text-sm font-bold
+                           text-white">
+
+                    1
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="flex h-9 items-center
+                           justify-center rounded-lg
+                           border border-slate-200
+                           bg-white px-3
+                           text-sm font-medium
+                           text-slate-600
+                           hover:bg-slate-50">
+
+                    <i class="fas fa-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =========================================================
+       INITIAL COUNT
+    ========================================================= */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            updateOfficeCount();
+
+        }
+    );
+
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    document
+        .getElementById('searchInput')
+        .addEventListener(
+            'input',
+            function () {
+
+                const searchValue =
+                    this.value.toLowerCase().trim();
+
+
+                const rows =
+                    document.querySelectorAll(
+                        '#officeTableBody tr'
+                    );
+
+
+                let visibleCount = 0;
+
+
+                rows.forEach(function (row) {
+
+                    const text =
+                        row.textContent.toLowerCase();
+
+
+                    if (
+                        text.includes(searchValue)
+                    ) {
+
+                        row.classList.remove('hidden');
+
+                        visibleCount++;
+
+                    } else {
+
+                        row.classList.add('hidden');
+
+                    }
+
+                });
+
+
+                document
+                    .getElementById('showingCount')
+                    .textContent =
+                    visibleCount;
+
+
+                document
+                    .getElementById('officeCount')
+                    .textContent =
+                    visibleCount;
+
+
+                const emptyState =
+                    document.getElementById(
+                        'emptyState'
+                    );
+
+
+                if (visibleCount === 0) {
+
+                    emptyState.classList.remove(
+                        'hidden'
+                    );
+
+                } else {
+
+                    emptyState.classList.add(
+                        'hidden'
+                    );
+
+                }
+
+            }
+        );
+
+
+    /* =========================================================
+       COUNT
+    ========================================================= */
+
+    function updateOfficeCount() {
+
+        const rows =
+            document.querySelectorAll(
+                '#officeTableBody tr'
+            );
+
+
+        const count =
+            rows.length;
+
+
+        document
+            .getElementById('officeCount')
+            .textContent =
+            count;
+
+
+        document
+            .getElementById('showingCount')
+            .textContent =
+            count;
+
+    }
+
+
+    /* =========================================================
+       VIEW OFFICE
+    ========================================================= */
+
+    function viewOffice(officeName) {
+
+        Swal.fire({
+
+            title: officeName,
+
+            text:
+                'Office details will be displayed here.',
+
+            icon: 'info',
+
+            confirmButtonColor:
+                '#2563eb',
+
+            confirmButtonText:
+                'Close'
+
+        });
+
+    }
+
+
+    /* =========================================================
+       EDIT OFFICE
+    ========================================================= */
+
+    function editOffice(id) {
+
+        window.location.href =
+            '/protecteddata/office/edit/' + id;
+
+    }
+
+
+    /* =========================================================
+       DELETE OFFICE
+    ========================================================= */
+
+    function deleteOffice(id) {
+
+        Swal.fire({
+
+            title:
+                'Delete Office?',
+
+            text:
+                'This action cannot be undone.',
+
+            icon:
+                'warning',
+
+            showCancelButton:
+                true,
+
+            confirmButtonColor:
+                '#dc2626',
+
+            cancelButtonColor:
+                '#2563eb',
+
+            confirmButtonText:
+                'Yes, delete it!',
+
+            cancelButtonText:
+                'Cancel'
+
+        }).then(function (result) {
+
+            if (result.isConfirmed) {
+
+                /*
+                 * Replace this with your
+                 * Spring Boot DELETE endpoint.
+                 */
+
+                console.log(
+                    'Delete office:',
+                    id
+                );
+
+
+                Swal.fire({
+
+                    title:
+                        'Deleted!',
+
+                    text:
+                        'Office has been deleted.',
+
+                    icon:
+                        'success',
+
+                    confirmButtonColor:
+                        '#2563eb'
+
+                });
+
+            }
+
+        });
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

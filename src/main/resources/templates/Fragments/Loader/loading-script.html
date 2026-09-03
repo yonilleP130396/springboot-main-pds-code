@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="loadingScript">
+
+<script>
+
+(function () {
+
+    "use strict";
+
+    // Prevent duplicate initialization
+    if (window.__loadingScriptInitialized) {
+        return;
+    }
+
+    window.__loadingScriptInitialized = true;
+
+
+    // ==========================================
+    // GET LOADER
+    // ==========================================
+
+    function getLoader() {
+        return document.getElementById("globalLoading");
+    }
+
+
+    // ==========================================
+    // SHOW LOADER
+    // ==========================================
+
+    function showLoading() {
+
+        const loader = getLoader();
+
+        if (!loader) return;
+
+        loader.classList.remove("hidden");
+        loader.classList.add("flex");
+    }
+
+
+    // ==========================================
+    // HIDE LOADER
+    // ==========================================
+
+    function hideLoading() {
+
+        const loader = getLoader();
+
+        if (!loader) return;
+
+        loader.classList.add("hidden");
+        loader.classList.remove("flex");
+    }
+
+
+    // ==========================================
+    // PAGE READY
+    // ==========================================
+
+    function pageReady() {
+
+        hideLoading();
+
+    }
+
+
+    // ==========================================
+    // LINK CLICK
+    // ==========================================
+
+    document.addEventListener("click", function (event) {
+
+        const link = event.target.closest("a");
+
+        if (!link) return;
+
+
+        const href = link.getAttribute("href");
+
+        // Ignore links without href
+        if (!href) return;
+
+        // Ignore #
+        if (href === "#") return;
+
+        // Ignore same-page anchors
+        if (href.startsWith("#")) return;
+
+        // Ignore JavaScript links
+        if (href.startsWith("javascript:")) return;
+
+        // Ignore new tab
+        if (link.target === "_blank") return;
+
+        // Ignore downloads
+        if (link.hasAttribute("download")) return;
+
+        // Ignore email
+        if (href.startsWith("mailto:")) return;
+
+        // Ignore telephone
+        if (href.startsWith("tel:")) return;
+
+
+        // ======================================
+        // SHOW LOADER
+        // ======================================
+
+        showLoading();
+
+    });
+
+
+    // ==========================================
+    // FORM SUBMIT
+    // ==========================================
+
+    document.addEventListener("submit", function (event) {
+
+        if (!event.target) return;
+
+        showLoading();
+
+    });
+
+
+    // ==========================================
+    // NEW PAGE READY
+    // ==========================================
+
+    window.addEventListener("pageshow", function () {
+
+        pageReady();
+
+    });
+
+
+    // ==========================================
+    // DOM READY
+    // ==========================================
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            pageReady,
+            { once: true }
+        );
+
+    } else {
+
+        pageReady();
+
+    }
+
+
+    // ==========================================
+    // SAFETY TIMEOUT
+    // ==========================================
+    // Prevent loader from staying forever.
+
+    let safetyTimer = setTimeout(function () {
+
+        hideLoading();
+
+    }, 15000);
+
+
+    // Clear timeout when page is ready
+
+    window.addEventListener("pageshow", function () {
+
+        clearTimeout(safetyTimer);
+
+    }, { once: true });
+
+
+})();
+
+</script>
+
+</th:block>
+
+</html>

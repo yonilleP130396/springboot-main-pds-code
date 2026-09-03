@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>NIPMB | Page 2</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>AdminLTE v4 | Dashboard</title>
+  <!--begin::Primary Meta Tags-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="AdminLTE v4 | Dashboard" />
+  <meta name="author" content="ColorlibHQ" />
+  <meta name="description"
+    content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
+  <meta name="keywords"
+    content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard" />
+  <!--end::Primary Meta Tags-->
+  <!--begin::Fonts-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+    integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!--end::Fonts-->
+  <!--begin::Third Party Plugin(OverlayScrollbars)-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+    integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!--end::Third Party Plugin(OverlayScrollbars)-->
+  <!--begin::Third Party Plugin(Bootstrap Icons)-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!--end::Third Party Plugin(Bootstrap Icons)-->
+  <!--begin::Required Plugin(AdminLTE)-->
+  <link rel="stylesheet" href="/css/adminlte.css" />
+  <!--end::Required Plugin(AdminLTE)-->
+  <!-- apexcharts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+    integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+  <!-- jsvectormap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+    integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+
+  <!--fontawesome-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+  <style>
+    .form-label {
+      margin-top: 10px;
+    }
+
+    hr {
+      margin-top: 50px;
+    }
+  </style>
+
+  <!--rankwithoutrating:script for dropdown-->
+  <script>
+    // Fetch the ranks from the Spring Boot REST API
+    fetch('/api/rank')
+      .then(response => response.json())
+      .then(data => {
+        let ranks = data;
+        let rankSelect = document.getElementById("rank");
+
+        // Populate the dropdown with rank names and rank codes
+        ranks.forEach(rank => {
+          let option = document.createElement("option");
+          option.value = rank.name;
+          option.textContent = rank.name;
+          rankSelect.appendChild(option);
+        });
+      });
+
+    function updateRankWithoutRating() {
+      var selectedRank = document.getElementById("rank").value;
+
+      fetch('/api/rank')
+        .then(response => response.json())
+        .then(ranks => {
+          for (var i = 0; i < ranks.length; i++) {
+            if (ranks[i].name === selectedRank) {
+              document.getElementById("rankwithoutrating").value = ranks[i].rankwithoutrating;
+              document.getElementById("rankcode").value = ranks[i].rankcode; // set rankcode
+              break;
+            }
+          }
+        });
+    }
+  </script>
+
+  <!--end:rankwithoutrating:script for dropdown-->
+  <!--compulsary retirement-->
+  <script>
+    // Function to calculate the compulsory retirement date
+    function calculateDate() {
+      var birthday = document.getElementById("birthdate").value;
+      if (birthday) {
+        var birthDate = new Date(birthday);
+        birthDate.setFullYear(birthDate.getFullYear() + 57);  // Adding 57 years
+        var newDate = birthDate.toISOString().split('T')[0];  // Format the date as YYYY-MM-DD
+        document.getElementById("compulsoryRetirement").value = newDate;  // Set the result in the input field
+      }
+    }
+
+    // Add an event listener to the birthday field for the 'change' event
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("birthdate").addEventListener("change", function () {
+        calculateDate();
+      });
+    });
+  </script>
+  <!--end:compulsary retirement-->
+
+
+  <!--Start: Script for getting for place api -->
+  <script th:inline="javascript">
+    let regionCode = /*[[${personnel.region} ?: '']]*/ '';
+    let provinceCode = /*[[${personnel.province} ?: '']*/ '';
+    let municipalityCode = /*[[${personnel.municipality} ?: '']*/ '';
+    let barangayCode = /*[[${personnel.barangay} ?: '']*/ '';
+
+
+
+    // Load regions from PSGC API
+    function loadRegions() {
+      return fetch("https://psgc.gitlab.io/api/regions.json")
+        .then(response => response.json())
+        .then(data => {
+          const regionDropdown = document.getElementById("regionDropdown");
+          regionDropdown.innerHTML = "<option value=''>Select a region...</option>";
+          data.forEach(region => {
+            const option = document.createElement("option");
+            option.value = region.code;
+            option.text = `${region.regionName}`;
+            regionDropdown.appendChild(option);
+          });
+        });
+    }
+
+    function loadProvinces() {
+      const regionCode = document.getElementById("regionDropdown").value;
+      const provinceDropdown = document.getElementById("provinceDropdown");
+      const municipalityDropdown = document.getElementById("municipalityDropdown");
+      const barangayDropdown = document.getElementById("barangayDropdown");
+
+      provinceDropdown.innerHTML = "<option value=''>Select a province...</option>";
+      municipalityDropdown.innerHTML = "<option value=''>Select a municipality...</option>";
+      barangayDropdown.innerHTML = "<option value=''>Select a barangay...</option>";
+
+      if (regionCode === "130000000") {
+        return fetch(`https://psgc.gitlab.io/api/regions/${regionCode}/cities.json`)
+          .then(response => response.json())
+          .then(data => {
+            const municipalityDropdown = document.getElementById("municipalityDropdown");
+            municipalityDropdown.innerHTML = "<option value=''>Select a municipality...</option>";
+            data.forEach(city => {
+              const option = document.createElement("option");
+              option.value = city.code;
+              option.text = city.name;
+              municipalityDropdown.appendChild(option);
+            });
+          });
+      } else {
+        return fetch(`https://psgc.gitlab.io/api/regions/${regionCode}/provinces.json`)
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(province => {
+              const option = document.createElement("option");
+              option.value = province.code;
+              option.text = province.name;
+              provinceDropdown.appendChild(option);
+            });
+          });
+      }
+    }
+
+    function loadMunicipalities() {
+      const provinceCode = document.getElementById("provinceDropdown").value;
+      const municipalityDropdown = document.getElementById("municipalityDropdown");
+      const barangayDropdown = document.getElementById("barangayDropdown");
+
+      municipalityDropdown.innerHTML = "<option value=''>Select a municipality...</option>";
+      barangayDropdown.innerHTML = "<option value=''>Select a barangay...</option>";
+
+      if (provinceCode) {
+        return fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities.json`)
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(municipality => {
+              const option = document.createElement("option");
+              option.value = municipality.code;
+              option.text = municipality.name;
+              municipalityDropdown.appendChild(option);
+            });
+          });
+      }
+
+      return Promise.resolve(); // fallback
+    }
+
+    function loadBarangays() {
+      const municipalityCode = document.getElementById("municipalityDropdown").value;
+      const barangayDropdown = document.getElementById("barangayDropdown");
+
+      barangayDropdown.innerHTML = "<option value=''>Select a barangay...</option>";
+
+      if (municipalityCode) {
+        return fetch(`https://psgc.gitlab.io/api/cities-municipalities/${municipalityCode}/barangays.json`)
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(barangay => {
+              const option = document.createElement("option");
+              option.value = barangay.code;
+              option.text = barangay.name;
+              barangayDropdown.appendChild(option);
+            });
+          });
+      }
+
+      return Promise.resolve();
+    }
+
+
+    // Load regions on page load
+    window.onload = function () {
+      loadRegions().then(() => {
+        const savedRegion = document.getElementById("savedRegion").value;
+        if (savedRegion) {
+          document.getElementById("regionDropdown").value = savedRegion;
+          loadProvinces().then(() => {
+            const savedProvince = document.getElementById("savedProvince").value;
+            if (savedProvince) {
+              document.getElementById("provinceDropdown").value = savedProvince;
+              loadMunicipalities().then(() => {
+                const savedMunicipality = document.getElementById("savedMunicipality").value;
+                if (savedMunicipality) {
+                  document.getElementById("municipalityDropdown").value = savedMunicipality;
+                  loadBarangays().then(() => {
+                    const savedBarangay = document.getElementById("savedBarangay").value;
+                    if (savedBarangay) {
+                      document.getElementById("barangayDropdown").value = savedBarangay;
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    };
+
+
+  </script>
+  <!--End:: Script for getting for place api -->
+
+</head>
+
+<body>
+  <div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+      <!--begin::Row-->
+      <div class="row">
+        <div class="col-sm-12">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item mt-2"><a th:href="@{/user/protecteddata/mainpage}">Home</a></li>
+            <li class="breadcrumb-item active mt-2" aria-current="page">Add Personnel</li>
+          </ol>
+        </div>
+      </div>
+      <!--end::Row-->
+    </div>
+    <div class="wrapper">
+      <div class="content-wrapper">
+        <section class="content">
+          <div class="container-fluid">
+  
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <form th:action="@{/user/protecteddata/check}" method="get" class="d-flex justify-content-end align-items-center">
+                      <input type="text"
+                             class="form-control me-2"
+                             name="afpsn"
+                             th:value="${afpsn}"
+                             placeholder="Enter Serial Number"
+                             style="max-width: 300px;">
+                      <button type="submit" class="btn btn-success mb-2">Check Serial Number if it Exist</button>
+                    </form>
+  
+                    <!-- Show result -->
+                    <div th:if="${message}" class="mt-3">
+                      <div th:class="'alert ' + ${alertClass}" role="alert" th:text="${message}"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <!--end::Container-->
+  </div>
+  <!--end::App Content Header-->
+  <!--begin::App Content-->
+  <div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+
+      
+      <!--begin::Row-->
+      <div class="row ">
+        <div class="mw-100">
+          <!-- begin: form-->
+          <div class="">
+            <!-- /.card-header -->
+            <div class="card-body">
+              <!--end::Header-->
+              <!--begin::Form-->
+              <div class="card card-info card-outline mb-4">
+                <!--begin::Header-->
+                <div class="card-header">
+                  <h3 class="card-title" th:text="${personnel.id == null ? 'Add Personnel' : 'Edit Personnel'}"></h3>
+                </div>
+
+                <input type="hidden" id="savedRegion" th:value="${savedRegion}">
+                <input type="hidden" id="savedProvince" th:value="${savedProvince}">
+                <input type="hidden" id="savedMunicipality" th:value="${savedMunicipality}">
+                <input type="hidden" id="savedBarangay" th:value="${savedBarangay}">
+
+                <form
+                  th:action="@{${personnel.id} == null ? '/user/protecteddata/save_add' : '/user/protecteddata/' + ${personnel.id} + '/save_edit'}"
+                  th:object="${personnel}" method="post">
+                  <!--begin::Body-->
+                  <div class="card-body">
+                    <input type="hidden" th:field="*{id}" />
+                    <!--begin::Row-->
+                    <div class="row g-3">
+                      <div class="col-md-4">
+                        <input type="hidden" name="userId" id="userId"
+                          th:value="${personnel != null and personnel.userId != null and personnel.userId != null} ? ${personnel.userId} : ${userId}" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label for="rankwithoutrating" class="form-label"> </label>
+                        <input class="form-control" type="hidden" th:field="*{rankwithoutrating}" id="rankwithoutrating"
+                          required>
+                      </div>
+                    </div>
+
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label for="unit" class="form-label fw-bold">Unit :</label>
+                        <select class="form-select" name="unit" id="unit" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each="unit : ${units}">
+                            <option th:value="${unit.id}" th:text="${unit.name}"
+                              th:selected="${personnel != null and personnel.unit != null and personnel.unit.id == unit.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label for="subunit" class="form-label fw-bold">Sub-Unit :</label>
+                        <select class="form-select" id="subunit" name="subunit" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each="subunit : ${subunit}">
+                            <option th:value="${subunit.id}" th:text="${subunit.name}"
+                              th:selected="${personnel != null and personnel.subunit != null and personnel.subunit.id == subunit.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label for="otherSubunit" class="form-label fw-bold">Other SubUnit :</label>
+                        <div class="input-group has-validation">
+                          <input type="text" th:field="*{otherSubunit}" id="otherSubunit" class="form-control"
+                            aria-describedby="inputGroupPrepend" title="Only letters are allowed"
+                            pattern="^[a-zA-ZñÑ- ]+$" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="col-md-4">
+                        <label for="rank" class="form-label fw-bold">Rank :</label>
+                        <select class="form-select" th:field="*{rank}" name="rank" id="rank"
+                          onchange="updateRankWithoutRating()" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each="rank : ${ranks}">
+                            <option th:value="${rank.name}" th:text="${rank.name}"
+                              th:selected="${personnel != null and personnel.rank != null and personnel.rank == rank.name}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">First Name :</label>
+                        <input type="text" class="form-control" id="firstname" th:field="*{firstname}"
+                          pattern="^[a-zA-ZñÑ ]+$" title="Only letters are allowed" required />
+                      </div>
+                      <div class="col-md-4">
+                        <label for="middlename" class="form-label fw-bold">Middle Name :</label>
+                        <input type="text" class="form-control" id="middlename" th:field="*{middlename}"
+                          aria-describedby="inputGroupPrepend" title="Only letters are allowed"
+                          pattern="^[a-zA-ZñÑ ]+$" />
+
+                      </div>
+                    </div>
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label for="lastname" class="form-label fw-bold">Last Name :</label>
+                        <input type="text" class="form-control" id="lastname" th:field="*{lastname}"
+                          title="Only letters are allowed" pattern="^[a-zA-ZñÑ ]+$" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label for="extension" class="form-label fw-bold">Extension :</label>
+                        <input type="text" class="form-control" title="Only letters and dots are allowed" id="extension"
+                          th:field="*{extension}" pattern="^[a-zA-Z .]+$" />
+                      </div>
+                      <div class="col-md-4">
+                        <label for="afpsn" class="form-label fw-bold">Serial Number</label>
+                        <div class="input-group has-validation">
+                          <input type="text" class="form-control" id="afpsn" th:field="*{afpsn}"
+                            aria-describedby="inputGroupPrepend" pattern="[oO0-9-]+"
+                            title="Only 'o', 'O', numbers, and hyphens are allowed" required />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label for="emailAddress" class="form-label fw-bold">Email Address :</label>
+                        <input type="email" class="form-control" th:field="*{emailAddress}" id="emailAddress" />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Phone Number :</label>
+                        <input type="text" class="form-control" placeholder="ex: 09123456789" name="phone" id="mobileNumber" th:field="*{mobileNumber}" value="" maxlength="11" pattern="\d{11}"
+                          title="Please enter exactly 11 digits." oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off"
+                          required>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Birthday :</label>
+                        <div class="input-group has-validation">
+                          <input type="date" id="birthdate" th:field="*{birthdate}" class="form-control"
+                            aria-describedby="inputGroupPrepend" required />
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END: row-->
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Gender :</label>
+                        <select class="form-select" name="sex" id="sex" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each="gender : ${gender}">
+                            <option th:value="${gender.id}" th:text="${gender.name}"
+                              th:selected="${personnel != null and personnel.sex != null and personnel.sex.id == gender.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Civil Status :</label>
+                        <select class="form-select" id="civilStatus" name="civilStatus" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each=" civilstatus : ${ civilstatus}">
+                            <option th:value="${ civilstatus.id}" th:text="${ civilstatus.name}"
+                              th:selected="${personnel != null and personnel.civilStatus != null and personnel.civilStatus.id ==  civilstatus.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Blood Type :</label>
+                        <div class="input-group has-validation">
+                          <select class="form-select" id="bloodType" name="bloodType" required>
+                            <option selected value="">Choose...</option>
+                            <th:block th:each=" bloodtype : ${ bloodtype}">
+                              <option th:value="${ bloodtype.id}" th:text="${ bloodtype.name}"
+                                th:selected="${personnel != null and personnel.bloodType != null and personnel.bloodType.id ==  bloodtype.id}">
+                              </option>
+                            </th:block>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END: row-->
+                    <!--start:row-->
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Religion :</label>
+                        <input type="text" id="religion" th:field="*{religion}" class="form-control"
+                          aria-describedby="inputGroupPrepend" pattern="^[a-zA-ZñÑ ]+$" required />
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Ethnicity :</label>
+                        <input type="text" id="ethnicity" th:field="*{ethnicity}" class="form-control"
+                          aria-describedby="inputGroupPrepend" pattern="^[a-zA-ZñÑ ]+$" required />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Service Provider :</label>
+                        <div class="input-group has-validation">
+                          <select class="form-select" id="serviceProvider" name="serviceProvider">
+                            <option selected value="">Choose...</option>
+                            <th:block th:each=" serviceprovider : ${ serviceprovider}">
+                              <option th:value="${ serviceprovider.id}" th:text="${ serviceprovider.name}"
+                                th:selected="${personnel != null and personnel.serviceProvider != null and personnel.serviceProvider.id ==  serviceprovider.id}">
+                              </option>
+                            </th:block>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- END: row-->
+
+
+                    <!--start:row-->
+                    <hr>
+                    <!--start:row-->
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label class="form-label fw-bold">Region :</label>
+                        <select class="form-select" id="regionDropdown" onchange="loadProvinces()" th:field="*{region}"
+                          required>
+
+                          <option selected value="">Choose...</option>
+                        </select>
+
+                      </div>
+                    </div>
+                    <!--end:row-->
+                    <div class="row g-3">
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold">Province :</label>
+                        <select class="form-select" id="provinceDropdown" onchange="loadMunicipalities()"
+                          th:field="*{province}">
+                          <option selected value="">Choose...</option>
+
+                        </select>
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold">Municipality :</label>
+                        <select class="form-select" id="municipalityDropdown" onchange="loadBarangays()"
+                          th:field="*{municipality}" required>
+                          <option selected value="">Choose...</option>
+
+                        </select>
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold">Barangay :</label>
+                        <select class="form-select" id="barangayDropdown" th:field="*{barangay}">
+                          <option selected value="">Choose...</option>
+
+                        </select>
+                      </div>
+
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold">Street / House Number :</label>
+                        <input type="text" class="form-control" th:field="*{houseNumber}" id="houseNumber"
+                          aria-describedby="inputGroupPrepend" pattern="^[a-zA-Z0-9ñÑ ,-.]+$" />
+                      </div>
+                    </div>
+                    <!-- END: row-->
+
+                    <hr>
+                    <!--start: code here-->
+                    <!--start:row-->
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Branch Of Service :</label>
+                        <select class="form-select" name="bos" id="bos" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each=" bos : ${ bos}">
+                            <option th:value="${ bos.id}" th:text="${ bos.bosname}"
+                              th:selected="${personnel != null and personnel.bos != null and personnel.bos.id ==  bos.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+                      <!--start:row-->
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Source Commissions :</label>
+                        <input type="text" class="form-control" th:field="*{sourceComms}" id="sourceComms"
+                          aria-describedby="inputGroupPrepend" pattern="^[a-zA-ZñÑ ]+$" required />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Class :</label>
+                        <div class="input-group has-validation">
+                          <input type="text" class="form-control" th:field="*{classType}" id="classType"
+                            aria-describedby="inputGroupPrepend" pattern="^[a-zA-ZñÑ0-9- ]+$" required />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- END: row-->
+
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Fos & Rating :</label>
+                        <select class="form-select" name="fosRating" id="fosRating" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each=" fosrating : ${fosrating}">
+                            <option th:value="${ fosrating.id}" th:text="${ fosrating.fosratingname}"
+                              th:selected="${personnel != null and personnel.fosRating != null and personnel.fosRating.id ==  fosrating.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+                      <!--start:row-->
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Authority :</label>
+                        <input type="text" class="form-control" th:field="*{authority}" id="authority"
+                          aria-describedby="inputGroupPrepend" pattern="^[a-zA-Z0-9#ñÑ/ ]+$" required />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Military Category :</label>
+                        <div class="input-group has-validation">
+                          <select class="form-select" name="militaryStatus" id="militaryStatus" required>
+                            <option selected value="">Choose...</option>
+                            <th:block th:each="militarystatus : ${militarystatus}">
+                              <option th:value="${militarystatus.id}" th:text="${militarystatus.name}"
+                                th:selected="${personnel != null and personnel.militaryStatus != null and personnel.militaryStatus.id == militarystatus.id}">
+                              </option>
+                            </th:block>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- END: row-->
+                    <!-- Start: row-->
+
+                    <!-- Start: row-->
+
+                    <div class="row g-3">
+
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold">Staff Specialization :</label>
+                        <select class="form-select" name="staffSpecialization" id="staffSpecialization" >
+                          <option selected value="">Choose...</option>
+                          <th:block th:each=" staffspecialization : ${staffspecialization}">
+                            <option th:value="${ staffspecialization.name}" th:text="${ staffspecialization.name}"
+                              th:selected="${personnel != null and personnel.staffSpecialization != null and personnel.staffSpecialization ==  staffspecialization.name}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+                      
+
+                      <!--start:row-->
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold">Sub-Specialization :</label>
+                      <select class="form-select" name="subSpecialization" id="subSpecialization">
+                        <option selected value="">Choose...</option>
+                        <th:block th:each=" subspecialization : ${subspecialization}">
+                          <option th:value="${ subspecialization.name}" th:text="${ subspecialization.name}"
+                            th:selected="${personnel != null and personnel.subSpecialization != null and personnel.subSpecialization ==  subspecialization.name}">
+                          </option>
+                        </th:block>
+                      </select>
+                      </div>
+
+                      
+
+
+                    </div>
+                    <!-- END: row-->
+                    <!--start:row-->
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Physical Profile :</label>
+                        <select class="form-select" name="physicalProfile" id="physicalProfile" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each="physicalprofile : ${physicalprofile}">
+                            <option th:value="${physicalprofile.id}" th:text="${physicalprofile.name}"
+                              th:selected="${personnel != null and personnel.physicalProfile != null and personnel.physicalProfile.id == physicalprofile.id}">
+                            </option>
+                          </th:block>
+                        </select>
+                      </div>
+
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Entered Military Service :</label>
+                        <div class="input-group has-validation">
+                          <input type="date" class="form-control" th:field="*{dateEnterMilitaryService}"
+                            id="dateEnterMilitaryService" aria-describedby="inputGroupPrepend" required />
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Date ETE/ETAD :</label>
+                        <div class="input-group has-validation">
+                          <input type="date" class="form-control" aria-describedby="inputGroupPrepend"
+                            th:field="*{dateEteEtad}" id="dateEteEtad" />
+                        </div>
+                      </div>
+                    </div>
+                    <!--end:row-->
+                    <!--start:row-->
+                    <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold ">Rank Code :</label>
+                        <input type="text" id="rankcode" th:field="*{rankCode}" class="form-control"
+                          aria-describedby="inputGroupPrepend" readonly />
+                      </div>
+
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Compulsary Retirement :</label>
+                        <input type="text" id="compulsoryRetirement" th:field="*{compulsoryRetirement}"
+                          class="form-control" aria-describedby="inputGroupPrepend" readonly required />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold">Security Clearance Level :</label>
+                        <div class="input-group has-validation">
+                          <select class="form-select" name="securityLevel" id="securityLevel" required>
+                            <option selected value="">Choose...</option>
+                            <th:block th:each="securitylevel : ${securitylevel}">
+                              <option th:value="${securitylevel.id}" th:text="${securitylevel.name}"
+                                th:selected="${personnel != null and personnel.securityLevel != null and personnel.securityLevel.id == securitylevel.id}">
+                              </option>
+                            </th:block>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <!--end:row-->
+                     <!--end:row-->
+                     <div class="row g-3">
+
+                      <div class="col-md-4">
+                        <label class="form-label fw-bold ">Personnel Status in Service :</label>
+                        <select th:field="*{status_definition_category}" class="form-select" required>
+                          <option selected value="">Choose...</option>
+                          <th:block th:each="personnelstatusinmilitary : ${personnelstatusinmilitary}">
+                              <option th:value="${personnelstatusinmilitary.data_value}" th:text="${personnelstatusinmilitary.name}"
+                                th:selected="${personnel != null and personnel.status_definition_category != null and personnel.status_definition_category == personnelstatusinmilitary.data_value }">
+                              </option>
+                            </th:block>
+                        </select>
+                      </div>
+                      
+
+                    </div>
+                    <!--end:row-->
+                    <!--start:row-->
+                    <div class="row g-4">
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold d-none">Field Duty :</label>
+                        <input type="hidden" id="fieldduty" th:field="*{fieldduty}" class="form-control"
+                          aria-describedby="inputGroupPrepend" readonly />
+                      </div>
+
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold d-none">Sea Duty :</label>
+                        <input type="hidden" id="seadduty" th:field="*{seadduty}" class="form-control"
+                          aria-describedby="inputGroupPrepend" readonly />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold d-none">Present Assignment :</label>
+                        <div class="input-group has-validation">
+                          <input type="hidden" id="presentassignment" th:field="*{presentassignment}"
+                            class="form-control" aria-describedby="inputGroupPrepend" readonly />
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold d-none">Required Duty :</label>
+                        <div class="input-group has-validation">
+                          <input type="hidden" id="requiredduty" th:field="*{requiredduty}" class="form-control"
+                            aria-describedby="inputGroupPrepend" readonly />
+                        </div>
+                      </div>
+                    </div>
+                    <!--end:row-->
+                    <!--start:row-->
+                    <div class="row g-4">
+
+                      <div class="col-md-3">
+                        <label class="form-label fw-bold d-none">sorted number Duty :</label>
+                        <div class="input-group has-validation">
+                          <input type="hidden" id="sortednumber" th:field="*{sortednumber}" class="form-control"
+                            aria-describedby="inputGroupPrepend" readonly />
+                        </div>
+                      </div>
+                    </div>
+                    <!--end:row-->
+
+                    <br>
+                    <!-- end drow -->
+                    <!--end::card Body-->
+                    <!--begin::Footer-->
+                    <div class="card-footer">
+                      <button class="btn btn-primary float-end" type="submit">Submit Form</button>
+                    </div>
+                    <!--end::Footer-->
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!--end: form-->
+        </div>
+      </div>
+      <!--end: Row-->
+    </div>
+  </div>
+<!-- Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title text-white" id="errorModalLabel">Personnel Exists</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-danger fw-bold" id="errorModalBody">
+        <!-- Error message will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  let personnelExistsMessage = /*[[${existingdataerror} ?: '']]*/ '';
+
+  if (personnelExistsMessage !== '') {
+      document.addEventListener('DOMContentLoaded', function () {
+          // Set the message inside the modal
+          document.getElementById('errorModalBody').textContent = personnelExistsMessage;
+
+          // Show the modal using Bootstrap
+          const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+          errorModal.show();
+      });
+  }
+  /*]]>*/
+</script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+  <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+  <script src="/js/adminlte.js"></script>
+  <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $('#example').DataTable({
+        "stateSave": true,
+        "ordering": false,
+        "searching": true,
+        "pageLength": 50,
+        "lengthMenu": [50, 100, 150, 200, 250],
+
+      }); // Initialize DataTables
+    });
+  </script>
+
+  <!--end::OverlayScrollbars Configure-->
+  <!-- OPTIONAL SCRIPTS -->
+  <!-- sortablejs -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+    integrity="sha256-ipiJrswvAR4VAx/th+6zWsdeYmVae0iJuiR+6OqHJHQ=" crossorigin="anonymous"></script>
+  <!-- sortablejs -->
+  <script>
+    const connectedSortables = document.querySelectorAll('.connectedSortable');
+    connectedSortables.forEach((connectedSortable) => {
+      let sortable = new Sortable(connectedSortable, {
+        group: 'shared',
+        handle: '.card-header',
+      });
+    });
+
+    const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
+    cardHeaders.forEach((cardHeader) => {
+      cardHeader.style.cursor = 'move';
+    });
+  </script>
+
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+  
+      function checkAfpsn() {
+          let input = document.getElementById("afpsn");
+          let value = input.value.trim();
+  
+          let staffDiv = document.getElementById("staffSpecialization").closest(".col-md-6");
+          let subDiv = document.getElementById("subSpecialization").closest(".col-md-6");
+  
+          if (value.length > 0) {
+              let firstChar = value.charAt(0);
+  
+              if (!isNaN(firstChar)) {
+                  staffDiv.style.display = "none";
+                  subDiv.style.display = "block";
+              } 
+              else if (firstChar.toLowerCase() === 'o') {
+                  subDiv.style.display = "none";
+                  staffDiv.style.display = "block";
+              } 
+              else {
+                  staffDiv.style.display = "block";
+                  subDiv.style.display = "block";
+              }
+          } else {
+              staffDiv.style.display = "block";
+              subDiv.style.display = "block";
+          }
+      }
+  
+      let afpsnInput = document.getElementById("afpsn");
+  
+      // run agad pag load
+      checkAfpsn();
+  
+      // listeners
+      afpsnInput.addEventListener("input", checkAfpsn);
+      afpsnInput.addEventListener("change", checkAfpsn);
+  
+  });
+  </script>
+
+
+</body>
+
+</html>

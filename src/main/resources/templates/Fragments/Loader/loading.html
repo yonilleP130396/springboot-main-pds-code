@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="globalLoading"
+     id="globalLoading"
+     class="fixed inset-0 z-[999999] hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+
+    <div class="text-center">
+
+        <div class="mx-auto h-14 w-14 animate-spin rounded-full border-4 border-slate-600 border-t-blue-500"></div>
+
+        <p class="mt-4 text-sm font-semibold text-white">
+            Please wait...
+        </p>
+
+        <p class="mt-1 text-xs text-slate-300">
+            Loading...
+        </p>
+
+    </div>
+
+</div>
+
+</html>

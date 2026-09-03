@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>NIPMB | SOI</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+      name="viewport"
+    />
+    <!-- Bootstrap 3.3.6 -->
+    <link
+      rel="stylesheet"
+      href="/adminlte-2.3.10/bootstrap/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"
+    />
+    <!-- Ionicons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/adminlte-2.3.10/dist/css/AdminLTE.min.css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link
+      rel="stylesheet"
+      href="/adminlte-2.3.10/dist/css/skins/_all-skins.min.css"
+    />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="">
+    <div class="">
+      <!-- Content Wrapper. Contains page content -->
+      <div class="">
+        <!-- Content Header (Page header) -->
+        <div class="container-fluid">
+          <!--begin::Row-->
+          <div class="row p-2 mt-2">
+            <div class="col-sm-6 mt-2">
+              <h3 class="mb-0">Print SOI</h3>
+            </div>
+            <div class="col-sm-6 p-2" style="margin-top: 20px">
+              <ol class="breadcrumb pull-right">
+                <li class="breadcrumb-item mt-2">
+                  <a th:href="@{/protecteddata/mainpage}">Home</a>
+                </li>
+                <li class="breadcrumb-item active mt-2" aria-current="page">
+                  Print SOI
+                </li>
+              </ol>
+            </div>
+          </div>
+          <!--end::Row-->
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="error-page">
+            <h2 class="headline text-yellow">
+              <img
+                src="/images/signal-2025-01-20-115314.png"
+                class="user-image rounded-circle shadow"
+                style="width: 170; height: 170px; margin-top: -30px"
+                alt="User Image"
+              />
+            </h2>
+
+            <div class="error-content">
+              <h3>Search Personnel by Serial Number.</h3>
+
+              <p>
+                Use the search form below to find personnel records by serial
+                number.<br />
+                Ensure the serial number is entered correctly for accurate
+                results.<br /></p>
+
+              <form
+                th:action="@{/printreport/soi}"
+                method="post"
+                class="search-form"
+              >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Search"
+                  />
+
+                  <div class="input-group-btn">
+                    <button
+                      type="submit"
+                      name="submit"
+                      class="btn btn-warning btn-flat"
+                    >
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- /.input-group -->
+              </form>
+            </div>
+            <!-- /.error-content -->
+          </div>
+          <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery 2.2.3 -->
+    <script src="/adminlte-2.3.10/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/adminlte-2.3.10/bootstrap/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="/adminlte-2.3.10/plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/adminlte-2.3.10/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="/adminlte-2.3.10/dist/js/demo.js"></script>
+  </body>
+</html>

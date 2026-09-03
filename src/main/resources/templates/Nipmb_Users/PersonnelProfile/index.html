@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>NIPMB | Personnel Profile</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NIPMB | Personnel Profile</title>
+    <!--begin::Primary Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="NIPMB | Personnel Profile" />
+    <meta name="author" content="ColorlibHQ" />
+    <meta name="description"
+        content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
+    <meta name="keywords"
+        content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard" />
+    <!--end::Primary Meta Tags-->
+    <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+    <!--end::Fonts-->
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+        integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+    <!--begin::Third Party Plugin(Bootstrap Icons)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+    <!--end::Third Party Plugin(Bootstrap Icons)-->
+    <!--begin::Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="/css/adminlte.css" />
+    <!--end::Required Plugin(AdminLTE)-->
+    <!-- apexcharts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+    <!-- jsvectormap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+        integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+
+
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+
+    <style>
+        /* Customize the search input field */
+        .dataTables_filter input {
+
+            margin-bottom: 15px;
+
+        }
+
+        .custom-green {
+            background-color: #65d96a;
+            /* Your desired green */
+            color: white;
+        }
+
+        .custom-bg-secondary {
+            background-color: #6c757d !important;
+            /* Default Bootstrap 5 Secondary Color */
+            color: white !important;
+            /* Ensures text is white */
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row mt-2 p-2">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Profile</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item mt-2"><a th:href="@{/user/protecteddata/mainpage}">Home</a></li>
+                        <li class="breadcrumb-item active mt-2" aria-current="page">Profile</li>
+                    </ol>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <!-- Main content -->
+        <section class="content p-10">
+            <div class="container-fluid ">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- Profile Image -->
+                        <div class="card card-primary card-outline ">
+                            <div class="card-body box-profile">
+
+                                <div class="text-center" th:if="${profilePicture != null}">
+                                    <img class="profile-user-img img-fluid img-circle" th:src="@{'/api/profilepicture/images/' + ${profilePicture.profileFileName}}"
+                                        style="border-radius: 50%; width:140px; height:140px;"
+                                        alt="User profile picture">
+                                </div>
+                                <div class="text-center" th:if="${profilePicture == null}">
+                                    <img class="profile-user-img img-fluid img-circle" src="/images/profile.jpg"
+                                        style="border-radius: 50%; width:140px; height:140px;"
+                                        alt="User profile picture">
+                                </div>
+
+                                <h4 class="profile-username text-center"><span
+                                        th:text="${personneldata.rankwithoutrating+ ' ' + personneldata.firstname+ ' '+personneldata.middlename+' '+personneldata.lastname+' '+personneldata.extension+' '+personneldata.afpsn+' '+personneldata.bos.bosname}"></span>
+                                </h4>
+
+                                <p class="text-muted text-center"><span
+                                        th:text="${personneldata.fosRating.fosratingname}"></span></p>
+
+
+                                        <!-- <form th:action="@{/api/profilepicture/edit-profile-picture}" method="post" enctype="multipart/form-data">
+                                            <input type="hidden" name="personnelID" th:value="${personneldata.id}" />
+                                            <input type="file" name="file" accept=".png, .jpg, .jpeg" required />
+                                            <button type="submit">Upload profile picture</button>
+                                        </form> -->
+                                        <form th:action="@{/api/profilepicture/edit-profile-picture}" 
+      method="post" enctype="multipart/form-data">
+    
+    <input type="hidden" name="personnelID" th:value="${personneldata.id}" />
+
+    <!-- Hide actual file input -->
+    <input type="file" id="fileInput" name="file" accept=".png, .jpg, .jpeg" style="display:none" required />
+
+    <!-- Custom upload button -->
+    <button class="btn btn-primary d-flex mb-2 mx-auto" type="button" onclick="document.getElementById('fileInput').click()">Upload 2x2 Picture</button>
+
+    <!-- Auto-submit when file chosen -->
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                this.form.submit();
+            }
+        });
+    </script>
+</form>
+
+                
+                                        <div th:if="${message}">
+                                            <p style="color:green;" th:text="${message}"></p>
+                                        </div>
+                                        
+                                        <div th:if="${error}">
+                                            <p style="color:red;" th:text="${error}"></p>
+                                        </div>
+
+
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>Entered Military Service</b>
+                                        <p class="float-end">
+                                            <span
+                                                th:text="${T(java.time.LocalDate).parse(personneldata.dateEnterMilitaryService).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                        </p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Compulsary Retirement</b>
+                                        <p class="float-end">
+                                            <span
+                                                th:text="${T(java.time.LocalDate).parse(personneldata.compulsoryRetirement).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                        </p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Birthday</b>
+                                        <p class="float-end">
+                                            <span th:text="${T(java.time.LocalDate).parse(personneldata.birthdate).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                        </p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Required Duty</b>
+                                        <p class="float-end">
+                                            <span th:text="${personneldata.requiredduty}"></span>
+                                        </p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Field Duty</b>
+                                        <p class="float-end">
+                                            <span th:text="${personneldata.fieldduty}"></span>
+                                        </p>
+                                    </li>
+
+                                </ul>
+                                <div class="float-end">
+                                    <a th:href="@{/user/protecteddata/edit/{id}(id=${personneldata.id})}"
+                                        class="btn btn-default btn-sm"> <i class="bi bi-pencil-fill"></i></a>
+                                </div>
+
+
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                        <br>
+
+                        <!-- About Me Box -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Other Info</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <strong><i class="fas fa-book mr-1"></i> Source Commision</strong>
+
+                                <p class="text-muted" th:text="${personneldata.sourceComms}">
+
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
+
+                                <p class="text-muted"
+                                    th:text="${personneldata.houseNumber}+' '+${barangayName} + ', ' + ${municipalityName} + ', ' + ${provinceName}">
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="fas fa-pencil-alt mr-1"></i> Class</strong>
+
+                                <p class="text-muted" th:text="${personneldata.classType}">
+
+                                </p>
+
+                                <hr>
+
+                                <strong><i class="far fa-file-alt mr-1"></i> Security Level</strong>
+
+                                <p class="text-muted" th:text="${personneldata.securityLevel.name}">
+
+                                </p>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-9">
+                        <div class="card card-outline card-primary">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills mailbox-controls mb-3">
+                                    <li class="nav-item"><a class="nav-link active" href="#assignment"
+                                            data-toggle="tab">Assignment</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#collateralassignment"
+                                            data-toggle="tab">Collateral Assignment</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#promotion"
+                                            data-toggle="tab">Promotion</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#cadeteetad"
+                                            data-toggle="tab">CadEtad_Ete& Re_enlistment</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#militaryschooling"
+                                            data-toggle="tab">Military Schooling</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#civilianschooling"
+                                            data-toggle="tab">Educational Attainment</a></li>
+                                    <li class="nav-item">
+                                        <div class="dropdown float-end">
+                                            <a class="btn-group dropstart nav-link" href="#" role="button"
+                                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"
+                                                data-toggle="tab">
+
+                                                <i class="fas fa-plus-circle"></i>
+                                                Add Data
+
+                                            </a>
+
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <li>
+                                                    <form
+                                                        th:action="@{/user/assignments/{id}/assignmentform(id=${personneldata.id})}"
+                                                        method="POST">
+                                                        <button type="submit" class="dropdown-item">Assignment</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form
+                                                        th:action="@{/user/collateralassignment/{id}/collateralassignmentform(id=${personneldata.id})}"
+                                                        method="POST">
+                                                        <button type="submit" class="dropdown-item">Collateral
+                                                            Assignment</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form
+                                                        th:action="@{/user/promotions/{id}/promotionform(id=${personneldata.id})}"
+                                                        method="POST">
+                                                        <button type="submit" class="dropdown-item">Promotion</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form
+                                                        th:action="@{/user/etadetereenlistment/{id}/etadetereenlistmentform(id=${personneldata.id})}"
+                                                        method="POST">
+                                                        <button type="submit" class="dropdown-item">Enlistment &
+                                                            Reenlistment</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form
+                                                        th:action="@{/user/militaryschooling/{id}/militaryschoolingform(id=${personneldata.id})}"
+                                                        method="POST">
+                                                        <button type="submit" class="dropdown-item">Military
+                                                            Schooling</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form
+                                                        th:action="@{/user/civilianschooling/{id}/civilianschoolingform(id=${personneldata.id})}"
+                                                        method="POST">
+                                                        <button type="submit" class="dropdown-item">Educational Attainment</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+
+
+                            </div><!-- /.card-header -->
+
+                            <div class="card-body">
+
+                                <div class="tab-content">
+                                    <div class="active tab-pane" id="assignment">
+                                        <!-- Post -->
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <!--start coding here-->
+                                                <p>
+                                                <div class="">
+                                                    <!--begin::Row-->
+
+                                                    <div class="">
+                                                        <div class="">
+                                                            <div class="">
+                                                                <!-- /.card-header -->
+                                                                <div class="table-responsive">
+                                                                    <table id="example" class="table">
+                                                                        <thead>
+                                                                            <tr class="">
+                                                                                <th>RANK</th>
+                                                                                <th>UNIT</th>
+                                                                                <th>SUBUNIT</th>
+                                                                                <th>OFFICE</th>
+                                                                                <th>BRANCH</th>
+                                                                                <th>DESIGNATION</th>
+                                                                                <th>ASSIGN</th>
+                                                                                <th style="width: 150px;">ASSUME BILLET</th>
+                                                                                <th>RELIEVE</th>
+                                                                                <th>STATUS</th>
+                                                                                <th>ACTIONS</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr th:each="assignment : ${assignment}">
+                                                                                <td th:text="${assignment.rank}"></td>
+                                                                                <td th:text="${assignment.unit}"></td>
+                                                                                <td th:text="${assignment.subunit}">
+                                                                                </td>
+                                                                                <td th:text="${assignment.office}"></td>
+                                                                                <td th:text="${assignment.branch}"></td>
+                                                                                <td th:text="${assignment.designation}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${assignment.dateassigned}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${assignment.dateassumebillet}">
+                                                                                </td>
+                                                                                <td th:text="${assignment.daterelieve}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${assignment.assignmentstatus}">
+                                                                                </td>
+                                                                                <td class="text-center items-center">
+
+                                                                                    <div class="btn-group">
+                                                                                        <a
+                                                                                            th:href="@{/user/assignments/{personnelId}/{assignmentId}/edit(personnelId=${personneldata.id}, assignmentId=${assignment.id})}">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-default btn-sm">
+                                                                                                <i
+                                                                                                    class="bi bi-pencil-fill"></i>
+                                                                                            </button>
+                                                                                        </a>
+                                                                                        <button type="button"
+                                                                                            class="btn btn-default btn-sm"
+                                                                                            th:onclick="'confirmDeleteAssignment(' + ${assignment.id} + ',' + ${personneldata.id} + ')'">
+                                                                                            <i
+                                                                                                class="fas fa-trash-alt"></i>
+                                                                                        </button>
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+
+                                                                    </table>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </p>
+
+                                            </div>
+                                            <!-- /.user-block -->
+                                        </div>
+                                        <!-- /.post -->
+
+                                    </div>
+                                    <!-- /.tab-pane -->
+                                    <div class="tab-pane" id="collateralassignment">
+                                        <!-- The timeline -->
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <!--start coding here-->
+                                                <p>
+                                                <div class="container-fluid">
+                                                    <!--begin::Row-->
+                                                    <div class="row">
+                                                        <div class="card rounded-2 border border-1 shadow-sm">
+                                                            <div class="mb-4">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Records</h3>
+                                                                </div>
+                                                                <!-- /.card-header -->
+                                                                <div class="card-body table-responsive">
+                                                                    <table id="example" class="table">
+                                                                        <thead>
+                                                                            <tr class="table-active">
+                                                                                <th>RANK</th>
+                                                                                <th>UNIT</th>
+                                                                                <th>SUBUNIT</th>
+                                                                                <th>OTHERSUBUNIT</th>
+                                                                                <th>OFFICE</th>
+                                                                                <th>BRANCH</th>
+                                                                                <th>DESIGNATION</th>
+                                                                                <th>DATE ASSIGN</th>
+                                                                                <th>DATE RELIEVE</th>
+                                                                                <th>ASSIGNMENT STATUS</th>
+                                                                                <th>ACTIONS</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr
+                                                                                th:each="collateralassignment : ${collateralassignment}">
+                                                                                <td
+                                                                                    th:text="${collateralassignment.rank}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.unit}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.subunit}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.otherSubunit}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.office}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.branch}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.designation}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.dateassigned}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.daterelieve}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${collateralassignment.assignmentstatus}">
+                                                                                </td>
+                                                                                <td class="text-center">
+
+                                                                                    <div class="btn-group">
+                                                                                        <a
+                                                                                            th:href="@{/user/collateralassignment/{personnelId}/{id}/edit(personnelId=${personneldata.id}, id=${collateralassignment.id})}">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-default btn-sm">
+                                                                                                <i
+                                                                                                    class="bi bi-pencil-fill"></i>
+                                                                                            </button>
+                                                                                        </a>
+                                                                                        <button type="button"
+                                                                                            class="btn btn-default btn-sm"
+                                                                                            th:onclick="'confirmDeleteCollateral(' + ${collateralassignment.id} + ',' + ${personneldata.id} + ')'">
+                                                                                            <i
+                                                                                                class="fas fa-trash-alt"></i>
+                                                                                        </button>
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+
+                                                                    </table>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </p>
+
+                                            </div>
+                                            <!-- /.user-block -->
+                                        </div>
+                                    </div>
+                                    <!-- /.tab-pane -->
+
+                                    <div class="tab-pane" id="promotion">
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <!--start coding here-->
+                                                <p>
+                                                <div class="container-fluid">
+                                                    <!--begin::Row-->
+                                                    <div class="row">
+                                                        <div class="card rounded-2 border border-1 shadow-sm">
+                                                            <div class="mb-4">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Records</h3>
+                                                                </div>
+                                                                <!-- /.card-header -->
+                                                                <div class="card-body table-responsive">
+                                                                    <table id="example" class="table">
+                                                                        <thead>
+                                                                            <tr class="table-active">
+                                                                                <th>PROMOTION CATEGORY</th>
+                                                                                <th>DATE PROMOTED</th>
+                                                                                <th>PROMOTION AUTHORITY</th>
+                                                                                <th>RANK</th>
+                                                                                <th>ACTIONS</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr th:each="promotion : ${promotion}">
+
+                                                                                <td
+                                                                                    th:text="${promotion.promotioncategory}">
+                                                                                </td>
+                                                                                <td th:text="${promotion.datepromoted}">
+                                                                                </td>
+                                                                                <td th:text="${promotion.specialorder}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${promotion.permanentrank}">
+                                                                                </td>
+
+                                                                                <td class="text-center">
+
+                                                                                    <div class="btn-group">
+                                                                                        <a
+                                                                                            th:href="@{/user/promotions/{personnelId}/{id}/edit(personnelId=${personneldata.id}, id=${promotion.id})}">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-default btn-sm">
+                                                                                                <i
+                                                                                                    class="bi bi-pencil-fill"></i>
+                                                                                            </button>
+                                                                                        </a>
+                                                                                        <button type="button"
+                                                                                            class="btn btn-default btn-sm"
+                                                                                            th:onclick="'confirmDeletePromotion(' + ${promotion.id} + ',' + ${personneldata.id} + ')'">
+                                                                                            <i
+                                                                                                class="fas fa-trash-alt"></i>
+                                                                                        </button>
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+
+                                                                    </table>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </p>
+
+                                            </div>
+                                            <!-- /.user-block -->
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="cadeteetad">
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <!--start coding here-->
+                                                <p>
+                                                <div class="container-fluid">
+                                                    <!--begin::Row-->
+                                                    <div class="row">
+                                                        <div class="card rounded-2 border border-1 shadow-sm">
+                                                            <div class="mb-4">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Records</h3>
+                                                                </div>
+                                                                <!-- /.card-header -->
+                                                                <div class="card-body table-responsive">
+                                                                    <table id="example" class="table">
+                                                                        <thead>
+                                                                            <tr class="table-active">
+                                                                                <th>PROMOTION CATEGORY</th>
+                                                                                <th>EFFECTIVE DATE</th>
+                                                                                <th>ORDER</th>
+                                                                                <th>RANK</th>
+                                                                                <th>ACTIONS</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr
+                                                                                th:each="reenlistment : ${reenlistment}">
+
+                                                                                <td
+                                                                                    th:text="${reenlistment.militaryservicecategory}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${reenlistment.date_etadsotreenlisment}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${reenlistment.specialorder}">
+                                                                                </td>
+                                                                                <td th:text="${reenlistment.rank}"></td>
+
+                                                                                <td class="text-center">
+
+                                                                                    <div class="btn-group">
+                                                                                        <a
+                                                                                            th:href="@{/user/etadetereenlistment/{personnelId}/{id}/edit(personnelId=${personneldata.id}, id=${reenlistment.id})}">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-default btn-sm">
+                                                                                                <i
+                                                                                                    class="bi bi-pencil-fill"></i>
+                                                                                            </button>
+                                                                                        </a>
+                                                                                        <button type="button"
+                                                                                            class="btn btn-default btn-sm"
+                                                                                            th:onclick="'confirmDeleteEtadetereenlistment(' + ${reenlistment.id} + ',' + ${personneldata.id} + ')'">
+
+                                                                                            <i
+                                                                                                class="fas fa-trash-alt"></i>
+                                                                                        </button>
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </p>
+
+                                            </div>
+                                            <!-- /.user-block -->
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="militaryschooling">
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <!--start coding here-->
+                                                <p>
+                                                <div class="container-fluid">
+                                                    <!--begin::Row-->
+                                                    <div class="row">
+                                                        <div class="card rounded-2 border border-1 shadow-sm">
+                                                            <div class="mb-4">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Records</h3>
+                                                                </div>
+                                                                <!-- /.card-header -->
+                                                                <div class="card-body table-responsive">
+                                                                    <table id="example" class="table">
+                                                                        <thead>
+                                                                            <tr class="table-active">
+                                                                                <th>COURSE TYPE</th>
+                                                                                <th>SPECIALIZATION COURSE</th>
+                                                                                <th>SCHOOL</th>
+                                                                                <th>AUTHORITY</th>
+                                                                                <th>CLASS</th>
+                                                                                <th>RATING</th>
+                                                                                <th>DATE START</th>
+                                                                                <th>END DATE</th>
+                                                                                <th>REMARKS</th>
+                                                                                <th>RANK</th>
+                                                                                <th>ACTIONS</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr
+                                                                                th:each="militaryschooling : ${militaryschooling}">
+                                                                                <td
+                                                                                    th:text="${militaryschooling.coursetype}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.specializationcourse}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.highestcarreercourse}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.authority}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.classyear}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.rating}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.start}">
+                                                                                </td>
+                                                                                <td th:text="${militaryschooling.end}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${militaryschooling.remarks}">
+                                                                                </td>
+                                                                                <td th:text="${militaryschooling.rank}">
+                                                                                </td>
+                                                                                <td class="text-center">
+
+                                                                                    <div class="btn-group">
+                                                                                        <a
+                                                                                            th:href="@{/user/militaryschooling/{personnelId}/{id}/edit(personnelId=${personneldata.id}, id=${militaryschooling.id})}">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-default btn-sm">
+                                                                                                <i
+                                                                                                    class="bi bi-pencil-fill"></i>
+                                                                                            </button>
+                                                                                        </a>
+
+                                                                                        <button type="button"
+                                                                                            class="btn btn-default btn-sm"
+                                                                                            th:onclick="'confirmDeleteMilitaryschooling(' + ${militaryschooling.id} + ',' + ${personneldata.id} + ')'">
+                                                                                            <i
+                                                                                                class="fas fa-trash-alt"></i>
+                                                                                        </button>
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+
+                                                                    </table>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </p>
+
+                                            </div>
+                                            <!-- /.user-block -->
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="civilianschooling">
+                                        <div class="post">
+                                            <div class="user-block">
+                                                <!--start coding here-->
+                                                <p>
+                                                <div class="container-fluid">
+                                                    <!--begin::Row-->
+                                                    <div class="row">
+                                                        <div class="card rounded-2 border border-1 shadow-sm">
+                                                            <div class="mb-4">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Records</h3>
+                                                                </div>
+                                                                <!-- /.card-header -->
+                                                                <div class="card-body table-responsive">
+                                                                    <table id="example" class="table">
+                                                                        <thead>
+                                                                            <tr class="table-active">
+                                                                                <th>COURSE LEVEL</th>
+                                                                                <th>COURSE</th>
+                                                                                <th>SCHOOL</th>
+                                                                                <th>SCHOOL ADDRESS</th>
+                                                                                <th>START YEAR</th>
+                                                                                <th>END YEAR</th>
+                                                                                <th>BATCH</th>
+                                                                                <th>RATING</th>
+                                                                                <th>REMARKS</th>
+                                                                                <th>ACTIONS</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            <tr
+                                                                                th:each="civilianschooling : ${civilianschooling}">
+                                                                                <td
+                                                                                    th:text="${civilianschooling.courselevel}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.course}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.school}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.schooladdress}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.startschoolyear}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.endschoolyear}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.batch}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.rating}">
+                                                                                </td>
+                                                                                <td
+                                                                                    th:text="${civilianschooling.remarks}">
+                                                                                </td>
+                                                                                <td class="text-center">
+
+                                                                                    <div class="btn-group">
+                                                                                        <a
+                                                                                            th:href="@{/user/civilianschooling/{personnelId}/{id}/edit(personnelId=${personneldata.id}, id=${civilianschooling.id})}">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-default btn-sm">
+                                                                                                <i
+                                                                                                    class="bi bi-pencil-fill"></i>
+                                                                                            </button>
+                                                                                        </a>
+
+                                                                                        <button type="button"
+                                                                                            class="btn btn-default btn-sm"
+                                                                                            th:onclick="'confirmDeleteCivilianschooling(' + ${civilianschooling.id} + ',' + ${personneldata.id} + ')'">
+
+                                                                                            <i
+                                                                                                class="fas fa-trash-alt"></i>
+                                                                                        </button>
+                                                                                    </div>
+
+
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+
+                                                                    </table>
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </p>
+
+                                            </div>
+                                            <!-- /.user-block -->
+                                        </div>
+                                    </div>
+                                    <!-- /.tab-pane -->
+                                </div>
+                                <!-- /.tab-content -->
+                            </div><!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+    <!-- start : delete script for collateral -->
+    <script>
+        function confirmDeleteAssignment(id, personnelid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the assignment.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/user/assignments/${personnelid}/delete/${id}`;
+                }
+            });
+        }
+
+
+        function confirmDeleteCollateral(id, personnelid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the Collateral Assignment.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/user/collateralassignment/${personnelid}/delete/${id}`;
+                }
+            });
+        }
+
+        function confirmDeletePromotion(id, personnelid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the Promotion.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/user/promotions/${personnelid}/delete/${id}`;
+                }
+            });
+        }
+
+        function confirmDeleteEtadetereenlistment(id, personnelid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the etadetereenlistment.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/user/etadetereenlistment/${personnelid}/delete/${id}`;
+                }
+            });
+        }
+
+
+        function confirmDeleteMilitaryschooling(id, personnelid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the military schooling.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/user/militaryschooling/${personnelid}/delete/${id}`;
+                }
+            });
+        }
+
+
+        function confirmDeleteCivilianschooling(id, personnelid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the Civilian schooling.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/user/civilianschooling/${personnelid}/delete/${id}`;
+                }
+            });
+        }
+
+    </script>
+    <!-- end : delete script for collateral -->
+
+    <!--boostrap js-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Wait for document to be ready
+        $(document).ready(function () {
+
+            // Tab switching logic
+            $('a[data-toggle="tab"]').on('click', function (e) {
+                e.preventDefault(); // Prevent default anchor behavior
+
+                // Activate the selected tab and its corresponding content
+                $(this).tab('show');
+            });
+
+            // Handle comment input focus
+            $(".form-control.form-control-sm").on('focus', function () {
+                $(this).addClass('focus-input');
+            });
+
+            $(".form-control.form-control-sm").on('blur', function () {
+                $(this).removeClass('focus-input');
+            });
+
+            // Handle form submission in the "Post" section
+            $(".post .form-horizontal").on('submit', function (e) {
+                e.preventDefault(); // Prevent form submission to server
+
+                // Get the comment text (can be extended with further logic)
+                var comment = $(this).find('input[type="text"]').val();
+
+            });
+
+            // Handle form submission in "Settings" tab
+            $("#settings form").on('submit', function (e) {
+                e.preventDefault(); // Prevent form submission to server
+
+
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+        integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+    <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+    <script src="/js/adminlte.js"></script>
+    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <script>
+        const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+        const Default = {
+            scrollbarTheme: 'os-theme-light',
+            scrollbarAutoHide: 'leave',
+            scrollbarClickScroll: true,
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: Default.scrollbarTheme,
+                        autoHide: Default.scrollbarAutoHide,
+                        clickScroll: Default.scrollbarClickScroll,
+                    },
+                });
+            }
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "stateSave": true,
+                "ordering": false,
+                "searching": true,
+                "pageLength": 50,
+                "lengthMenu": [50, 100, 150, 200, 250],
+
+            }); // Initialize DataTables
+        });
+    </script>
+
+    <!--end::OverlayScrollbars Configure-->
+    <!-- OPTIONAL SCRIPTS -->
+    <!-- sortablejs -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+        integrity="sha256-ipiJrswvAR4VAx/th+6zWsdeYmVae0iJuiR+6OqHJHQ=" crossorigin="anonymous"></script>
+    <!-- sortablejs -->
+    <script>
+        const connectedSortables = document.querySelectorAll('.connectedSortable');
+        connectedSortables.forEach((connectedSortable) => {
+            let sortable = new Sortable(connectedSortable, {
+                group: 'shared',
+                handle: '.card-header',
+            });
+        });
+
+        const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
+        cardHeaders.forEach((cardHeader) => {
+            cardHeader.style.cursor = 'move';
+        });
+    </script>
+
+
+
+
+</body>
+
+</html>

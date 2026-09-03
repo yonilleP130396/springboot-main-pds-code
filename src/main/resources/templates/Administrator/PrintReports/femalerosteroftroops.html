@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>NIPMB | SOI</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+      name="viewport"
+    />
+    <!-- Bootstrap 3.3.6 -->
+    <link
+      rel="stylesheet"
+      href="/adminlte-2.3.10/bootstrap/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"
+    />
+    <!-- Ionicons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"
+    />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/adminlte-2.3.10/dist/css/AdminLTE.min.css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link
+      rel="stylesheet"
+      href="/adminlte-2.3.10/dist/css/skins/_all-skins.min.css"
+    />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100% !important;
+        margin: 0 auto;
+      }
+
+      th {
+        font-size: 9px;
+        background-color: rgb(228, 228, 228) !important;
+        border: 1px solid gray;
+        text-align: center;
+        padding: 2px;
+      }
+
+      td {
+        font-size: 9px;
+        padding: 1px;
+        border: 1px solid gray;
+        text-align: center;
+      }
+
+      /* Header */
+      .logo {
+        text-align: center;
+      }
+
+      .logo-img {
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+
+      #officer,
+      #enlisted {
+        font-weight: 700;
+        padding: 8px 0;
+        border: none;
+        text-transform: uppercase;
+        text-align: left;
+      }
+
+      #print-section {
+        display: none;
+      }
+
+      @media print {
+        @page {
+          size: landscape; /* Ito ang nagse-set ng landscape orientation */
+          margin: 0.3in;
+        }
+
+        body * {
+          visibility: hidden;
+          position: absolute;
+        }
+
+        #print-section,
+        #print-section * {
+          visibility: visible;
+          position: static;
+        }
+
+        #print-section {
+          display: block;
+          top: 0;
+          left: 0;
+          width: 100%;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 12px;
+          page-break-inside: avoid;
+        }
+
+        table tr,
+        table td,
+        table th {
+          page-break-inside: avoid;
+          break-inside: avoid;
+        }
+      }
+
+      #officer,
+      #enlisted {
+        font-weight: 700;
+        border: none;
+        text-transform: uppercase;
+        text-align: left;
+      }
+      /* signatory table css */
+      .signature-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        font-size: 10px;
+      }
+
+      .signature-flex {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      #sig-table {
+        border-collapse: collapse;
+        border: none;
+      }
+
+      #sig-table th,
+      #sig-table td,
+      #sig-table tr {
+        background-color: none;
+        border: none;
+        text-align: left;
+      }
+      #sig-table td {
+        display: flex;
+        flex: row;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="">
+      <!-- Content Wrapper. Contains page content -->
+      <div class="">
+        <!-- Content Header (Page header) -->
+        <div class="container-fluid">
+          <!--begin::Row-->
+          <div class="row p-2 mt-2">
+            <div class="col-sm-6 mt-2">
+              <h3 class="mb-0">Print Female Roster of Troops</h3>
+            </div>
+            <div class="col-sm-6 p-2" style="margin-top: 20px">
+              <ol class="breadcrumb pull-right">
+                <li class="breadcrumb-item mt-2">
+                  <a th:href="@{/protecteddata/mainpage}">Home</a>
+                </li>
+                <li class="breadcrumb-item active mt-2" aria-current="page">
+                  Print Female Roster of Troops
+                </li>
+              </ol>
+            </div>
+          </div>
+          <!--end::Row-->
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="error-page">
+            <h2 class="headline text-yellow">
+              <img
+                src="/images/signal-2025-01-20-115314.png"
+                class="user-image rounded-circle shadow"
+                style="width: 170; height: 170px; margin-top: -30px"
+                alt="User Image"
+              />
+            </h2>
+
+            <div class="error-content">
+              <h3>Print Female Roster of Troops</h3>
+
+              <p>
+                Click the button below to generate and print the
+                <strong>Female Roster of Troops</strong> report.<br />
+                Please ensure that all personnel records are accurate and up to
+                date before finalizing the printout.<br />
+                For optimal print results, set the orientation to
+                <strong>Landscape</strong> and adjust the print scale to
+                <strong>60% 0r 70%</strong> prior to printing.
+              </p>
+
+              <div class="input-group">
+                <div class="input-group-btn">
+                  <button
+                    type="button"
+                    onclick="printHidden()"
+                    class="btn btn-warning btn-flat"
+                  >
+                    <i class="fa fa-print"></i>
+                    Print Female Roster of Troops
+                  </button>
+                </div>
+              </div>
+              <!-- /.input-group -->
+            </div>
+            <!-- /.error-content -->
+          </div>
+          <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+    </div>
+
+    <div id="print-section">
+      <div class="container">
+        <table id="maintbl">
+          <tr>
+            <td colspan="23" style="border: 1px solid white">
+              <div class="logo-img">
+                <img
+                  src="/images/signal-2025-01-20-115314.png"
+                  class=""
+                  style="width: 55px"
+                  alt=""
+                />
+              </div>
+              <div
+                class="logo"
+                style="
+                  text-align: center;
+                  font-weight: bold !important;
+                  font-size: 9px !important;
+                  line-height: 1.2;
+                  margin: 0;
+                  padding: 0;
+                "
+              >
+                <img
+                  src=""
+                  alt=""
+                  style="max-height: 80px; margin-bottom: 5px"
+                />
+
+                <p style="margin: 0; text-transform: uppercase">
+                  Philippine Navy<br />
+                  Headquarters Naval Intelligence and Security Force
+                </p>
+
+                <p style="margin: 2">
+                  Naval Station Jose Francisco<br />
+                  Fort Bonifacio, Taguig City
+                </p>
+
+                <p style="margin: 2; text-transform: uppercase">
+                  Female Roster of Troops <span id="year"></span><br />
+                  <span>As of <span id="current-date"></span></span>
+                </p>
+              </div>
+              <tr>
+                <td colspan="23"></td>
+              </tr>
+            </td>
+          </tr>
+          <tr>
+            <th>NR</th>
+            <th>RANK</th>
+            <th>LAST NAME</th>
+            <th>FIRS TNAME</th>
+            <th>MIDDLE NAME</th>
+            <th>AFPSN</th>
+            <th>BOS</th>
+            <th>UNIT ASSIGNMENT</th>
+            <th>DATE ASGD UNIT</th>
+            <th>DESIGNATION</th>
+            <th>HIGHEST CARREER COURSE TAKEN</th>
+            <th>DATE LAST PROMOTION</th>
+            <th>AGE</th>
+            <th>CIVIL STATUS</th>
+          </tr>
+          <tbody>
+            <tr th:each="personneldata,iterStat : ${allfemaletroops}">
+              <td th:text="${iterStat.index + 1}">1</td>
+              <td th:text="${personneldata.rank}"></td>
+              <td th:text="${personneldata.lastname}"></td>
+              <td th:text="${personneldata.firstname}"></td>
+              <td th:text="${personneldata.middlename}"></td>
+              <td th:text="${personneldata.afpsn}"></td>
+              <td th:text="${personneldata.bos_name}"></td>
+              <td th:text="${personneldata.present_unit}"></td>
+              <td th:text="${personneldata.present_date_assigned}"></td>
+              <td th:text="${personneldata.present_assignment}"></td>
+              <td>**</td>
+              <td th:text="${personneldata.last_date_promoted}"></td>
+              <td th:text="${personneldata.age}"></td>
+              <td th:text="${personneldata.civil_status_name}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Signatures Part-->
+      <div class="signature-container">
+        <div class="signature-flex">
+          <!-- PIC Section -->
+          <div>
+            <p th:text="${pic.category}"></p>
+            <table id="sig-table">
+              <tbody>
+                <tr>
+                  <td>
+                    <strong
+                      th:text="${pic != null} ? ${pic.name} : 'Name not found'"
+                      >PIC Name</strong
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span th:text="${pic != null} ? ${pic.rank} : ''"
+                      >Rank</span
+                    >
+                    <span th:text="${pic != null} ? ${pic.bosName} : ''"
+                      >Branch</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p th:text="${pic != null} ? ${pic.position} : 'Position missing'">
+              PIC Position
+            </p>
+          </div>
+
+          <!-- Officer Section -->
+          <div>
+            <p>Certified Correct:</p>
+            <table id="sig-table">
+              <tbody>
+                <tr>
+                  <td>
+                    <strong
+                      th:text="${officer != null} ? ${officer.name} : 'Name not found'"
+                      >Officer Name</strong
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span th:text="${officer != null} ? ${officer.rank} : ''"
+                      >Rank</span
+                    >
+                    <span th:text="${officer != null} ? ${officer.bosName} : ''"
+                      >Branch</span
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p
+              th:text="${officer != null} ? ${officer.position} : 'Position missing'"
+            >
+              Officer Position
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery 2.2.3 -->
+    <script src="/adminlte-2.3.10/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/adminlte-2.3.10/bootstrap/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="/adminlte-2.3.10/plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/adminlte-2.3.10/dist/js/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script>
+      function printHidden() {
+        window.print();
+      }
+    </script>
+
+    <script>
+      const today = new Date();
+      const day = today.getDate(); //
+      const month = today.toLocaleString("en-US", { month: "long" });
+      const year = today.getFullYear();
+
+      document.getElementById(
+        "current-date"
+      ).textContent = `${day} ${month} ${year}`;
+      document.getElementById("year").textContent = `${year}`;
+    </script>
+  </body>
+</html>

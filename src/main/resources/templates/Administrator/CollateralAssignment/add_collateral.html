@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NIPMB | Page 2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NIPMB | Collateral</title>
+    <!--begin::Primary Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="AdminLTE v4 | Dashboard" />
+    <meta name="author" content="ColorlibHQ" />
+    <meta
+      name="description"
+      content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS."
+    />
+    <meta
+      name="keywords"
+      content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard"
+    />
+    <!--end::Primary Meta Tags-->
+    <!--begin::Fonts-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+      integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+      crossorigin="anonymous"
+    />
+    <!--end::Fonts-->
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+      integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg="
+      crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+    <!--begin::Third Party Plugin(Bootstrap Icons)-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
+      crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(Bootstrap Icons)-->
+    <!--begin::Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="/css/adminlte.css" />
+    <!--end::Required Plugin(AdminLTE)-->
+    <!-- apexcharts -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+      integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
+      crossorigin="anonymous"
+    />
+    <!-- jsvectormap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+      integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"
+    ></script>
+
+    <!--fontawesome-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+    <style>
+      .form-label {
+        margin-top: 10px;
+      }
+      hr {
+        margin-top: 50px;
+      }
+      .error {
+        color: red;
+        font-size: 12px;
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app-content-header">
+      <!--begin::Container-->
+      <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+          <div class="col-sm-12">
+            <ol class="breadcrumb float-sm-end">
+              <li class="breadcrumb-item">
+                <a th:href="@{/protecteddata/mainpage}">Home</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Add Collateral Assignment
+              </li>
+            </ol>
+          </div>
+        </div>
+        <!--end::Row-->
+      </div>
+      <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <div class="app-content">
+      <!--begin::Container-->
+
+      <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+          <div class="mw-100">
+            <!-- begin: form-->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h3
+                  class="card-title"
+                  th:text="${collateralassignment.id == null ? 'Add Collateral Assignment' : 'Edit Collateral Assignment'}"
+                ></h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <!--end::Header-->
+                <!--begin::Form-->
+                <div class="card card-info card-outline mb-4">
+                  <!--begin::Header-->
+                  <div class="card-header">
+                    <div class="card-title">Form</div>
+                  </div>
+                  <form
+                    th:action="@{/collateralassignment/{id}/save(id=${personneldata.id})}"
+                    th:object="${collateralassignment}"
+                    method="post"
+                  >
+                    <!--begin::Body-->
+                    <div class="card-body">
+                      <input type="hidden" th:field="*{id}" />
+                      <input
+                        type="hidden"
+                        name="serialNumber"
+                        th:value="${collateralassignment.serialNumber != null and collateralassignment.serialNumber.id != null} ? ${collateralassignment.serialNumber.id} : ${personneldata.id}"
+                      />
+
+                      <div class="row g-3">
+                        <div class="col-md-4">
+                          <label for="rank" class="form-label fw-bold"
+                            >Rank :</label
+                          >
+                          <select
+                            class="form-select"
+                            name="rank"
+                            id="rank"
+                            required
+                          >
+                            <option selected value="">Choose...</option>
+                            <th:block th:each="rank : ${ranks}">
+                              <option
+                                th:value="${rank.name}"
+                                th:text="${rank.name}"
+                                th:selected="${collateralassignment != null and collateralassignment.rank != null and collateralassignment.rank == rank.name}"
+                              ></option>
+                            </th:block>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label for="unit" class="form-label fw-bold"
+                            >Unit :</label
+                          >
+                          <select
+                            class="form-select"
+                            name="unit"
+                            id="unit"
+                            required
+                          >
+                            <option selected value="">Choose...</option>
+                            <th:block th:each="unit : ${units}">
+                              <option
+                                th:value="${unit.name}"
+                                th:text="${unit.name}"
+                                th:selected="${collateralassignment != null and collateralassignment.unit != null and collateralassignment.unit == unit.name}"
+                              ></option>
+                            </th:block>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label for="subunit" class="form-label fw-bold"
+                            >Sub-Unit :</label
+                          >
+                          <select
+                            class="form-select"
+                            id="subunit"
+                            name="subunit"
+                            required
+                          >
+                            <option selected value="">Choose...</option>
+                            <th:block th:each="subunit : ${subunit}">
+                              <option
+                                th:value="${subunit.name}"
+                                th:text="${subunit.name}"
+                                th:selected="${collateralassignment != null and collateralassignment.subunit != null and collateralassignment.subunit == subunit.name}"
+                              ></option>
+                            </th:block>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-md-4">
+                          <label class="form-label fw-bold"
+                            >Other SubUnit :</label
+                          >
+                          <div class="input-group has-validation">
+                            <input
+                              type="text"
+                              id="otherSubunit"
+                              th:field="*{otherSubunit}"
+                              class="form-control"
+                              aria-describedby="inputGroupPrepend"
+                              title="Only letters are allowed"
+                              pattern="^[a-zA-ZñÑ ]+$"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label fw-bold">Office :</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="office"
+                            th:field="*{office}"
+                            pattern="^[a-zA-ZñÑ0-9- ]+$"
+                            title="Only letters are allowed"
+                            required
+                          />
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label fw-bold">Branch :</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="branch"
+                            th:field="*{branch}"
+                            aria-describedby="inputGroupPrepend"
+                            title="Only letters are allowed"
+                            pattern="^[a-zA-ZñÑ ]+$"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row g-3">
+                        <div class="col-md-4">
+                          <label for="designation" class="form-label fw-bold"
+                            >Designation :</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="designation"
+                            th:field="*{designation}"
+                            title="Only letters are allowed"
+                            pattern="^[a-zA-ZñÑ0-9- ]+$"
+                            required
+                          />
+                        </div>
+
+                        <div class="col-md-4">
+                          <label for="dateassigned" class="form-label fw-bold"
+                            >Date Assigned :</label
+                          >
+                          <div class="input-group has-validation">
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="dateassignedcollateralFormatted"
+                              placeholder="DD-MMM-YYYY"
+                              maxlength="11"
+                              autocomplete="off"
+                              aria-describedby="inputGroupPrepend"
+                              required
+                            />
+                            <input
+                              type="hidden"
+                              class="form-control"
+                              id="dateassignedcollateral"
+                              th:field="*{dateassigned}"
+                              aria-describedby="inputGroupPrepend"
+                              required
+                            />
+                          </div>
+                          <div
+                            id="dateErrordateassignedcollateral"
+                            class="error"
+                          >
+                            Invalid date format. Use DD-MMM-YYYY (e.g.
+                            03-Mar-1996)
+                          </div>
+                        </div>
+
+                        <div class="col-md-4">
+                          <label class="form-label fw-bold"
+                            >Date Relieved :</label
+                          >
+                          <div class="input-group has-validation">
+                             <input
+                            type="text"
+                            class="form-control"
+                            id="daterelievecolateralFormatted"
+                            placeholder="DD-MMM-YYYY"
+                            maxlength="11"
+                            autocomplete="off"
+                          />
+                          <input
+                            type="hidden"
+                            class="form-control"
+                            id="daterelieve"
+                            th:field="*{daterelieve}"
+                          />
+                          </div>
+                          <div
+                            id="dateErrordaterelievecolateral"
+                            class="error"
+                          >
+                            Invalid date format. Use DD-MMM-YYYY (e.g.
+                            03-Mar-1996)
+                          </div>
+                        </div>
+                        
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-md-4">
+                          <label class="form-label fw-bold"
+                            >Assignment Status :</label
+                          >
+                          <div class="input-group has-validation">
+                            <select
+                              class="form-select"
+                              id="assignmentstatus"
+                              name="assignmentstatus"
+                              required
+                            >
+                              <option selected value="">Choose...</option>
+                              <th:block
+                                th:each="assignmentstatus : ${assignmentstatus}"
+                              >
+                                <option
+                                  th:value="${assignmentstatus.name}"
+                                  th:text="${assignmentstatus.name}"
+                                  th:selected="${collateralassignment != null and collateralassignment.assignmentstatus != null and collateralassignment.assignmentstatus == assignmentstatus.name}"
+                                ></option>
+                              </th:block>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END: row-->
+                    </div>
+                    <!--end::card Body-->
+                    <!--begin::Footer-->
+                    <div class="card-footer">
+                      <button class="btn btn-info float-end" type="submit">
+                        Submit Form
+                      </button>
+                    </div>
+                    <!--end::Footer-->
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!--end: form-->
+          </div>
+        </div>
+        <!--end: Row-->
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+      integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+    <script src="/js/adminlte.js"></script>
+    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <script>
+      const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
+      const Default = {
+        scrollbarTheme: "os-theme-light",
+        scrollbarAutoHide: "leave",
+        scrollbarClickScroll: true,
+      };
+      document.addEventListener("DOMContentLoaded", function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        if (
+          sidebarWrapper &&
+          typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
+        ) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: Default.scrollbarTheme,
+              autoHide: Default.scrollbarAutoHide,
+              clickScroll: Default.scrollbarClickScroll,
+            },
+          });
+        }
+      });
+    </script>
+
+    <script>
+      $(document).ready(function () {
+        $("#example").DataTable({
+          stateSave: true,
+          ordering: false,
+          searching: true,
+          pageLength: 50,
+          lengthMenu: [50, 100, 150, 200, 250],
+        }); // Initialize DataTables
+      });
+    </script>
+
+    <!--end::OverlayScrollbars Configure-->
+    <!-- OPTIONAL SCRIPTS -->
+    <!-- sortablejs -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+      integrity="sha256-ipiJrswvAR4VAx/th+6zWsdeYmVae0iJuiR+6OqHJHQ="
+      crossorigin="anonymous"
+    ></script>
+    <!-- sortablejs -->
+    <script>
+      const connectedSortables =
+        document.querySelectorAll(".connectedSortable");
+      connectedSortables.forEach((connectedSortable) => {
+        let sortable = new Sortable(connectedSortable, {
+          group: "shared",
+          handle: ".card-header",
+        });
+      });
+
+      const cardHeaders = document.querySelectorAll(
+        ".connectedSortable .card-header"
+      );
+      cardHeaders.forEach((cardHeader) => {
+        cardHeader.style.cursor = "move";
+      });
+    </script>
+    <script src="/js/security.js"></script>
+    <script src="/js/dateformat/date_collateral.js"></script>
+  </body>
+</html>

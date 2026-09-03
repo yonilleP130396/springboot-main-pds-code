@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>NIPMB | Page 6</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>NIPMB | Page 6</title>
+    <!--begin::Primary Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="AdminLTE v4 | Dashboard" />
+    <meta name="author" content="ColorlibHQ" />
+    <meta
+            name="description"
+            content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS."
+    />
+    <meta
+            name="keywords"
+            content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard"
+    />
+    <!--end::Primary Meta Tags-->
+    <!--begin::Fonts-->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+            integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+            crossorigin="anonymous"
+    />
+    <!--end::Fonts-->
+    <!--cbegin::Third Party Plugin(OverlayScrollbars)-->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+            integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg="
+            crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+    <!--begin::Third Party Plugin(Bootstrap Icons)-->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+            integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
+            crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(Bootstrap Icons)-->
+    <!--begin::Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="/css/adminlte.css" />
+    <!--end::Required Plugin(AdminLTE)-->
+    <!-- apexcharts -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+            integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
+            crossorigin="anonymous"
+    />
+    <!-- jsvectormap -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+            integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
+            crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+    <style>
+        .form-label{
+          margin-top:10px;
+        }
+      hr{
+        margin-top:50px;
+      }
+    </style>
+
+    <!--rankwithoutrating:script for dropdown-->
+    <script>
+        // Fetch the ranks from the Spring Boot REST API
+        fetch('/api/rank')
+            .then(response => response.json())
+            .then(data => {
+                let ranks = data;
+                let rankSelect = document.getElementById("rank");
+
+                // Populate the dropdown with rank names
+                ranks.forEach(rank => {
+                    let option = document.createElement("option");
+                    option.value = rank.name;
+                    option.textContent = rank.name;
+                    rankSelect.appendChild(option);
+                });
+            });
+
+        function updateRankWithoutRating() {
+            var selectedRank = document.getElementById("rank").value;
+
+            fetch('/api/rank')
+                .then(response => response.json())
+                .then(ranks => {
+                    for (var i = 0; i < ranks.length; i++) {
+                        if (ranks[i].name === selectedRank) {
+                            document.getElementById("rankwithoutrating").value = ranks[i].rankwithoutrating;
+                            break;
+                        }
+                    }
+                });
+        }
+    </script>
+    <!--end:rankwithoutrating:script for dropdown-->
+   
+</head>
+
+<body>
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row  mt-2 p-2">
+            <div class="col-sm-12">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item  mt-2"><a th:href="@{/user/protecteddata/mainpage}">Home</a></li>
+                    <li class="breadcrumb-item active  mt-2" aria-current="page">Add Military Schooling</li>
+                </ol>
+            </div>
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="mw-100">
+                <!-- begin: form-->
+                <div class="card mb-4">
+                    <div class="card-header"><h3 class="card-title" th:text="${militaryschooling.id == null ? 'Add Military Schooling' : 'Edit Military Schooling'}"></h3></div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!--end::Header-->
+                        <!--begin::Form-->
+                        <div class="card card-info card-outline mb-4">
+                            <!--begin::Header-->
+                            <div class="card-header"><div class="card-title">Form</div></div>
+                            <form th:action="@{/user/militaryschooling/{id}/save(id=${personneldata.id})}" th:object="${militaryschooling}" method="post">
+                                <!--begin::Body-->
+                                <div class="card-body">
+                                    <input type="hidden" th:field="*{id}" />
+                                    <input type="hidden" name="serialNumber"
+                                           th:value="${militaryschooling.serialNumber != null and militaryschooling.serialNumber.id != null} ? ${militaryschooling.serialNumber.id} : ${personneldata.id}" />
+                                    <div class="row g-3">
+                                        
+                                        <div class="col-md-4">
+                                            <label for="unit" class="form-label fw-bold">Course Type :</label>
+                                            <select class="form-select" id="coursetype" name="coursetype"  required>
+                                                <option selected value="">Choose...</option>
+                                                <th:block th:each="coursetype : ${coursetype}">
+                                                    <option th:value="${coursetype.name}"
+                                                            th:text="${coursetype.name}"
+                                                            th:selected="${militaryschooling != null and militaryschooling.coursetype != null and militaryschooling.coursetype == coursetype.name}">
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Specialization Course :</label>
+
+                                            <!-- Dropdown -->
+                                            <select class="form-select" id="specializationDropdown" onchange="toggleSpecializationInput()" required>
+                                                <option value="">Choose...</option>
+
+                                                <!-- FIX: String na ang courseNames -->
+                                                <th:block th:each="name : ${courseNames}">
+                                                    <option th:value="${name.name}"
+                                                            th:text="${name.name}"
+                                                            th:selected="${militaryschooling.specializationcourse == name.name}">
+                                                    </option>
+                                                </th:block>
+
+                                                <!-- OTHERS -->
+                                                <option value="OTHERS"
+                                                    th:selected="${militaryschooling.specializationcourse != null 
+                                                    and !#lists.contains(courseNames, militaryschooling.specializationcourse)}">
+                                                    OTHERS
+                                                </option>
+                                            </select>
+
+                                            <!-- Input -->
+                                            <input
+                                                type="text"
+                                                class="form-control mt-2"
+                                                id="specializationInput"
+                                                name="specializationcourse"
+                                                th:value="${militaryschooling.specializationcourse}"
+                                                placeholder="Enter specialization"
+                                                pattern='^[a-zA-Z0-9ñÑ/# ]+$'
+                                                style="display:none;"
+                                            />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Course Taken :</label>
+                                            <select class="form-select" id="highestcarreercourse" name="highestcarreercourse"  required>
+                                                <option selected value="">Choose...</option>
+                                                <th:block th:each="highcarreercourse : ${highcarreercourse}">
+                                                    <option th:value="${highcarreercourse.name}"
+                                                            th:text="${highcarreercourse.name}"
+                                                            th:selected="${militaryschooling != null and militaryschooling.highestcarreercourse != null and militaryschooling.highestcarreercourse == highcarreercourse.name}">
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row g-3">
+                                        
+                                        <div class="col-md-4">
+                                            <label for="unit" class="form-label fw-bold">School :</label>
+                                            <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="school"
+                                                    th:field="*{school}"
+                                                    pattern='^[a-zA-Z0-9ñÑ/# ]+$' title="Only letters, numbers, spaces, #, /, and ñÑ are allowed"
+                                                    required
+                                            />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Authority :</label>
+                                            <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="authority"
+                                                    th:field="*{authority}"
+                                                    pattern="^[a-zA-Z0-9#ñÑ/ ]+$"
+                                                    title="Only Numbers, letters ,# , /."
+                                                    required
+                                            />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Class :</label>
+                                            <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="classyear"
+                                                    th:field="*{classyear}"
+                                                    pattern="^[a-zA-Z0-9- ]+$"
+                                                    title="Only Numbers and letters."
+                                                    required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        
+                                        <div class="col-md-4">
+                                            <label for="unit" class="form-label fw-bold">Rating :</label>
+                                            <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="rating"
+                                                    th:field="*{rating}"
+                                                    pattern='^[0-9.%]+$'
+                                                    title="Only Numbers, dots and percent."
+                                            />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Date Started :</label>
+                                            <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    id="start"
+                                                    th:field="*{start}"
+                                                    required
+                                            />
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Date End :</label>
+                                            <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    id="end"
+                                                    th:field="*{end}"
+                                                     
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3">
+
+                                        <div class="col-md-4">
+                                            <label for="rank" class="form-label fw-bold">Remarks :</label>
+                                            <select class="form-select" name="remarks" id="remarks" required>
+                                                <option selected value="">Choose...</option>
+                                                <th:block th:each="remarks : ${remarks}">
+                                                    <option th:value="${remarks.name}"
+                                                            th:text="${remarks.name}"
+                                                           th:selected="${militaryschooling != null and militaryschooling.remarks != null and militaryschooling.remarks == remarks.name}">
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="rank" class="form-label fw-bold">Rank :</label>
+                                            <select class="form-select" name="rank" id="rank" required>
+                                                <option selected value="">Choose...</option>
+                                                <th:block th:each="rank : ${ranks}">
+                                                    <option th:value="${rank.name}"
+                                                            th:text="${rank.name}"
+                                                           th:selected="${militaryschooling != null and militaryschooling.rank != null and militaryschooling.rank == rank.name}">
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!--end::card Body-->
+                                <!--begin::Footer-->
+                                <div class="card-footer">
+                                    <button class="btn btn-info float-end" type="submit">Submit Form</button>
+                                </div>
+                                <!--end::Footer-->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!--end: form-->
+            </div>
+        </div>
+        <!--end: Row-->
+    </div>
+</div>
+
+
+
+<script
+        src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+        integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
+        crossorigin="anonymous"
+></script>
+<!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"
+></script>
+<!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"
+></script>
+<!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+<script src="/js/adminlte.js"></script>
+<!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+<script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "stateSave":true,
+            "ordering": false,
+           "searching": true,
+           "pageLength": 50,
+                  "lengthMenu": [50, 100, 150, 200, 250],
+
+        }); // Initialize DataTables
+    });
+</script>
+
+<!--end::OverlayScrollbars Configure-->
+<!-- OPTIONAL SCRIPTS -->
+<!-- sortablejs -->
+<script
+        src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+        integrity="sha256-ipiJrswvAR4VAx/th+6zWsdeYmVae0iJuiR+6OqHJHQ="
+        crossorigin="anonymous"
+></script>
+<!-- sortablejs -->
+<script>
+    const connectedSortables = document.querySelectorAll('.connectedSortable');
+    connectedSortables.forEach((connectedSortable) => {
+      let sortable = new Sortable(connectedSortable, {
+        group: 'shared',
+        handle: '.card-header',
+      });
+    });
+
+    const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
+    cardHeaders.forEach((cardHeader) => {
+      cardHeader.style.cursor = 'move';
+    });
+</script>
+
+<script>
+function toggleSpecializationInput() {
+    const dropdown = document.getElementById("specializationDropdown");
+    const input = document.getElementById("specializationInput");
+
+    if (dropdown.value === "OTHERS") {
+        input.style.display = "block";
+        input.required = true;
+    } else {
+        input.style.display = "none";
+        input.required = true;
+        input.value = dropdown.value;
+    }
+}
+
+window.addEventListener("load", function () {
+    const dropdown = document.getElementById("specializationDropdown");
+    const input = document.getElementById("specializationInput");
+
+    let existsInDropdown = false;
+
+    // check kung existing sa dropdown ang value
+    for (let i = 0; i < dropdown.options.length; i++) {
+        if (dropdown.options[i].value === input.value) {
+            existsInDropdown = true;
+            dropdown.value = input.value;
+            break;
+        }
+    }
+
+    // kung wala sa dropdown → set to OTHERS
+    if (!existsInDropdown && input.value) {
+        dropdown.value = "OTHERS";
+    }
+
+    toggleSpecializationInput();
+});
+</script>
+
+
+
+
+</body>
+</html>

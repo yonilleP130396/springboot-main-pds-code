@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NIPMB | Career Progression</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        arial: ['Arial', 'Helvetica', 'sans-serif']
+                    },
+                    colors: {
+                        navy: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Bootstrap Icons only -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea,
+        a,
+        table {
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
+
+        body {
+            background: #f1f5f9;
+        }
+
+        /* Tile animation */
+        .career-card {
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .career-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.10);
+        }
+
+        /* Mobile table scrolling if needed */
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Custom scrollbar */
+        .table-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+
+<body class="font-arial bg-slate-100 text-slate-800">
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+    <main class="min-h-screen">
+
+
+        <!-- =========================================
+             HEADER
+        ========================================== -->
+        <header class="bg-white border-b border-slate-200 shadow-sm">
+
+            <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
+
+                <div class="flex flex-col sm:flex-row
+                            sm:items-center sm:justify-between
+                            gap-4">
+
+                    <!-- Title -->
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="w-11 h-11 sm:w-12 sm:h-12
+                                   rounded-xl
+                                   bg-blue-600
+                                   text-white
+                                   flex items-center justify-center
+                                   shadow-sm">
+
+                            <i class="bi bi-graph-up-arrow text-xl"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h1 class="text-xl sm:text-2xl
+                                       font-bold text-slate-800">
+
+                                Career Progression
+
+                            </h1>
+
+                            <p class="text-xs sm:text-sm
+                                      text-slate-500 mt-1">
+
+                                Personnel career progression management
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Breadcrumb -->
+                    <div class="flex items-center gap-2 text-sm">
+
+                        <a th:href="@{/protecteddata/mainpage}"
+                           class="text-blue-600 hover:text-blue-800
+                                  font-semibold transition">
+
+                            <i class="bi bi-house-fill mr-1"></i>
+                            Home
+
+                        </a>
+
+                        <i class="bi bi-chevron-right
+                                  text-xs text-slate-400"></i>
+
+                        <span class="text-slate-500">
+                            Career Progression
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================================
+             CONTENT
+        ========================================== -->
+        <section class="max-w-[1600px] mx-auto
+                        px-4 sm:px-6 lg:px-8
+                        py-6">
+
+
+            <!-- =====================================
+                 INTRO
+            ====================================== -->
+            <div class="mb-6">
+
+                <h2 class="text-lg sm:text-xl
+                           font-bold text-slate-800">
+
+                    Career Progression Records
+
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+
+                    Select a personnel category below to view
+                    career progression records.
+
+                </p>
+
+            </div>
+
+
+            <!-- =====================================
+                 PERSONNEL CATEGORY
+            ====================================== -->
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+
+                <!-- =================================
+                     OFFICER
+                ================================== -->
+                <section
+                    class="bg-white rounded-2xl
+                           border border-slate-200
+                           shadow-sm overflow-hidden">
+
+
+                    <!-- Card Header -->
+                    <div
+                        class="px-5 py-4
+                               border-b border-slate-200
+                               bg-gradient-to-r
+                               from-blue-50 to-white">
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="w-11 h-11 rounded-xl
+                                       bg-blue-100
+                                       text-blue-700
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-person-badge-fill
+                                          text-xl"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold
+                                           text-slate-800">
+
+                                    Officer
+
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+
+                                    Officer career progression
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Officer Tiles -->
+                    <div class="p-5">
+
+                        <div class="grid grid-cols-1
+                                    sm:grid-cols-2 gap-4">
+
+
+                            <!-- Midterm Reenlistment -->
+                            <div
+                                class="career-card
+                                       rounded-xl
+                                       border border-slate-200
+                                       bg-white p-4">
+
+                                <div class="flex
+                                            items-start
+                                            justify-between">
+
+                                    <div
+                                        class="w-10 h-10
+                                               rounded-lg
+                                               bg-indigo-100
+                                               text-indigo-600
+                                               flex items-center
+                                               justify-center">
+
+                                        <i class="bi bi-arrow-repeat"></i>
+
+                                    </div>
+
+                                    <span
+                                        class="text-xs font-semibold
+                                               px-2 py-1
+                                               rounded-full
+                                               bg-indigo-50
+                                               text-indigo-600">
+
+                                        Reenlistment
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4
+                                    class="font-bold
+                                           text-slate-700
+                                           mt-4">
+
+                                    Midterm Reenlistment
+
+                                </h4>
+
+                                <p
+                                    class="text-xs
+                                           text-slate-500 mt-1">
+
+                                    Officer midterm reenlistment
+                                    records.
+
+                                </p>
+
+
+                                <a href="#"
+                                   class="mt-4 w-full
+                                          h-9
+                                          rounded-lg
+                                          bg-indigo-600
+                                          hover:bg-indigo-700
+                                          text-white
+                                          text-xs font-semibold
+                                          flex items-center
+                                          justify-center gap-2
+                                          transition">
+
+                                    <i class="bi bi-eye-fill"></i>
+                                    View Records
+
+                                </a>
+
+                            </div>
+
+
+                            <!-- Promotion -->
+                            <div
+                                class="career-card
+                                       rounded-xl
+                                       border border-slate-200
+                                       bg-white p-4">
+
+                                <div class="flex
+                                            items-start
+                                            justify-between">
+
+                                    <div
+                                        class="w-10 h-10
+                                               rounded-lg
+                                               bg-emerald-100
+                                               text-emerald-600
+                                               flex items-center
+                                               justify-center">
+
+                                        <i class="bi bi-arrow-up-circle-fill"></i>
+
+                                    </div>
+
+                                    <span
+                                        class="text-xs font-semibold
+                                               px-2 py-1
+                                               rounded-full
+                                               bg-emerald-50
+                                               text-emerald-600">
+
+                                        Promotion
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4
+                                    class="font-bold
+                                           text-slate-700
+                                           mt-4">
+
+                                    Promotion
+
+                                </h4>
+
+                                <p
+                                    class="text-xs
+                                           text-slate-500 mt-1">
+
+                                    Officer promotion records.
+
+                                </p>
+
+
+                                <a href="#"
+                                   class="mt-4 w-full
+                                          h-9
+                                          rounded-lg
+                                          bg-emerald-600
+                                          hover:bg-emerald-700
+                                          text-white
+                                          text-xs font-semibold
+                                          flex items-center
+                                          justify-center gap-2
+                                          transition">
+
+                                    <i class="bi bi-eye-fill"></i>
+                                    View Records
+
+                                </a>
+
+                            </div>
+
+
+                            <!-- Schooling -->
+                            <div
+                                class="career-card
+                                       rounded-xl
+                                       border border-slate-200
+                                       bg-white p-4
+                                       sm:col-span-2">
+
+                                <div
+                                    class="flex flex-col sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between gap-4">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div
+                                            class="w-10 h-10
+                                                   rounded-lg
+                                                   bg-amber-100
+                                                   text-amber-600
+                                                   flex items-center
+                                                   justify-center">
+
+                                            <i class="bi bi-mortarboard-fill"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <h4
+                                                class="font-bold
+                                                       text-slate-700">
+
+                                                Schooling
+
+                                            </h4>
+
+                                            <p
+                                                class="text-xs
+                                                       text-slate-500">
+
+                                                Officer schooling
+                                                and training records.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <a
+                                        href="#"
+                                        class="w-full sm:w-auto
+                                               px-5 h-9
+                                               rounded-lg
+                                               bg-amber-500
+                                               hover:bg-amber-600
+                                               text-white
+                                               text-xs font-semibold
+                                               flex items-center
+                                               justify-center
+                                               gap-2 transition">
+
+                                        <i class="bi bi-eye-fill"></i>
+                                        View Records
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     ENLISTED PERSONNEL
+                ================================== -->
+                <section
+                    class="bg-white rounded-2xl
+                           border border-slate-200
+                           shadow-sm overflow-hidden">
+
+
+                    <!-- Card Header -->
+                    <div
+                        class="px-5 py-4
+                               border-b border-slate-200
+                               bg-gradient-to-r
+                               from-emerald-50 to-white">
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="w-11 h-11 rounded-xl
+                                       bg-emerald-100
+                                       text-emerald-700
+                                       flex items-center
+                                       justify-center">
+
+                                <i class="bi bi-people-fill
+                                          text-xl"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold
+                                           text-slate-800">
+
+                                    Enlisted Personnel
+
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+
+                                    Enlisted personnel career
+                                    progression
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Enlisted Tiles -->
+                    <div class="p-5">
+
+                        <div class="grid grid-cols-1
+                                    sm:grid-cols-2 gap-4">
+
+
+                            <!-- Midterm Reenlistment -->
+                            <div
+                                class="career-card
+                                       rounded-xl
+                                       border border-slate-200
+                                       bg-white p-4">
+
+                                <div class="flex
+                                            items-start
+                                            justify-between">
+
+                                    <div
+                                        class="w-10 h-10
+                                               rounded-lg
+                                               bg-indigo-100
+                                               text-indigo-600
+                                               flex items-center
+                                               justify-center">
+
+                                        <i class="bi bi-arrow-repeat"></i>
+
+                                    </div>
+
+                                    <span
+                                        class="text-xs font-semibold
+                                               px-2 py-1
+                                               rounded-full
+                                               bg-indigo-50
+                                               text-indigo-600">
+
+                                        Reenlistment
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4
+                                    class="font-bold
+                                           text-slate-700
+                                           mt-4">
+
+                                    Midterm Reenlistment
+
+                                </h4>
+
+                                <p
+                                    class="text-xs
+                                           text-slate-500 mt-1">
+
+                                    Enlisted midterm reenlistment
+                                    records.
+
+                                </p>
+
+
+                                <a
+                                    th:href="@{/protecteddata/midtermreenlistment}"
+                                    class="mt-4 w-full
+                                           h-9 rounded-lg
+                                           bg-indigo-600
+                                           hover:bg-indigo-700
+                                           text-white
+                                           text-xs font-semibold
+                                           flex items-center
+                                           justify-center gap-2
+                                           transition">
+
+                                    <i class="bi bi-eye-fill"></i>
+                                    View Records
+
+                                </a>
+
+                            </div>
+
+
+                            <!-- Promotion -->
+                            <div
+                                class="career-card
+                                       rounded-xl
+                                       border border-slate-200
+                                       bg-white p-4">
+
+                                <div class="flex
+                                            items-start
+                                            justify-between">
+
+                                    <div
+                                        class="w-10 h-10
+                                               rounded-lg
+                                               bg-emerald-100
+                                               text-emerald-600
+                                               flex items-center
+                                               justify-center">
+
+                                        <i class="bi bi-arrow-up-circle-fill"></i>
+
+                                    </div>
+
+                                    <span
+                                        class="text-xs font-semibold
+                                               px-2 py-1
+                                               rounded-full
+                                               bg-emerald-50
+                                               text-emerald-600">
+
+                                        Promotion
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4
+                                    class="font-bold
+                                           text-slate-700
+                                           mt-4">
+
+                                    Promotion
+
+                                </h4>
+
+                                <p
+                                    class="text-xs
+                                           text-slate-500 mt-1">
+
+                                    Enlisted personnel promotion
+                                    records.
+
+                                </p>
+
+
+                                <a
+                                    th:href="@{/protecteddata/promotion}"
+                                    class="mt-4 w-full
+                                           h-9 rounded-lg
+                                           bg-emerald-600
+                                           hover:bg-emerald-700
+                                           text-white
+                                           text-xs font-semibold
+                                           flex items-center
+                                           justify-center gap-2
+                                           transition">
+
+                                    <i class="bi bi-eye-fill"></i>
+                                    View Records
+
+                                </a>
+
+                            </div>
+
+
+                            <!-- Schooling -->
+                            <div
+                                class="career-card
+                                       rounded-xl
+                                       border border-slate-200
+                                       bg-white p-4
+                                       sm:col-span-2">
+
+                                <div
+                                    class="flex flex-col sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between gap-4">
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div
+                                            class="w-10 h-10
+                                                   rounded-lg
+                                                   bg-amber-100
+                                                   text-amber-600
+                                                   flex items-center
+                                                   justify-center">
+
+                                            <i class="bi bi-mortarboard-fill"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <h4
+                                                class="font-bold
+                                                       text-slate-700">
+
+                                                Schooling
+
+                                            </h4>
+
+                                            <p
+                                                class="text-xs
+                                                       text-slate-500">
+
+                                                Enlisted personnel
+                                                schooling records.
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <a
+                                        th:href="@{/protecteddata/schooling}"
+                                        class="w-full sm:w-auto
+                                               px-5 h-9
+                                               rounded-lg
+                                               bg-amber-500
+                                               hover:bg-amber-600
+                                               text-white
+                                               text-xs font-semibold
+                                               flex items-center
+                                               justify-center
+                                               gap-2 transition">
+
+                                        <i class="bi bi-eye-fill"></i>
+                                        View Records
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =====================================
+                 INFORMATION PANEL
+            ====================================== -->
+            <div
+                class="mt-6
+                       rounded-2xl
+                       bg-gradient-to-r
+                       from-blue-700
+                       to-blue-600
+                       text-white
+                       shadow-sm
+                       overflow-hidden">
+
+                <div
+                    class="p-5 sm:p-6
+                           flex flex-col sm:flex-row
+                           sm:items-center
+                           gap-4">
+
+                    <div
+                        class="w-12 h-12
+                               shrink-0
+                               rounded-xl
+                               bg-white/15
+                               flex items-center
+                               justify-center">
+
+                        <i class="bi bi-info-circle-fill text-xl"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="font-bold text-base">
+
+                            Career Progression Management
+
+                        </h3>
+
+                        <p
+                            class="text-sm text-blue-100 mt-1
+                                   leading-relaxed">
+
+                            Use the available options above to
+                            access midterm reenlistment, promotion,
+                            and schooling records for officers
+                            and enlisted personnel.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NIPMB | Edit Personnel</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Select2 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet">
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js">
+    </script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f1f5f9;
+        }
+
+        /* ================================
+           SELECT2
+        ================================= */
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 42px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            background-color: white !important;
+        }
+
+        .select2-container
+        .select2-selection--single
+        .select2-selection__rendered {
+            line-height: 40px !important;
+            padding-left: 14px !important;
+            color: #334155 !important;
+            font-size: 14px;
+        }
+
+        .select2-container
+        .select2-selection--single
+        .select2-selection__arrow {
+            height: 40px !important;
+            right: 8px !important;
+        }
+
+        .select2-container--default.select2-container--focus
+        .select2-selection--single {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .select2-dropdown {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            overflow: hidden;
+        }
+
+        .select2-search__field {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.375rem !important;
+            padding: 8px !important;
+        }
+
+        .select2-results__option {
+            padding: 9px 12px !important;
+            font-size: 14px;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #2563eb !important;
+        }
+
+        /* ================================
+           INPUT
+        ================================= */
+
+        .form-input {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #334155;
+            background: white;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            flex-shrink: 0;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .date-invalid {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1) !important;
+        }
+
+        @media (max-width: 640px) {
+
+            .form-card {
+                border-radius: 0 !important;
+            }
+
+            main {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="min-h-screen">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="bg-slate-900 text-white shadow-lg">
+
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+
+            <div class="h-16 flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="w-10 h-10 rounded-lg bg-blue-600
+                               flex items-center justify-center">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h1 class="font-bold text-lg">
+                            NIPMB
+                        </h1>
+
+                        <p class="text-xs text-slate-400">
+                            Personnel Management System
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="text-sm text-slate-300">
+
+                    <i class="fa-solid fa-database mr-1"></i>
+
+                    Personnel Record
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         BREADCRUMB
+    ========================================== -->
+
+    <div class="bg-white border-b">
+
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+
+            <div class="h-14 flex items-center justify-end">
+
+                <a
+                    href="/protecteddata/mainpage"
+                    class="text-sm text-blue-600 hover:text-blue-800">
+
+                    <i class="fa-solid fa-house mr-1"></i>
+
+                    Home
+
+                </a>
+
+                <i
+                    class="fa-solid fa-chevron-right
+                           text-xs text-slate-400 mx-3">
+                </i>
+
+                <span class="text-sm text-slate-500">
+
+                    Edit Personnel
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="w-full px-4 sm:px-6 lg:px-8 py-6">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="mb-6">
+
+            <div
+                class="flex flex-col md:flex-row
+                       md:items-center md:justify-between gap-4">
+
+                <div>
+
+                    <h2 class="text-2xl font-bold text-slate-800">
+
+                        <i
+                            class="fa-solid fa-user-pen
+                                   text-blue-600 mr-2">
+                        </i>
+
+                        Edit Personnel
+
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mt-1">
+
+                        Update and maintain personnel information.
+
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        class="inline-flex items-center
+                               px-3 py-2 rounded-lg
+                               bg-amber-50 text-amber-700
+                               text-xs font-semibold">
+
+                        <i
+                            class="fa-solid fa-pen-to-square mr-2">
+                        </i>
+
+                        Editing Existing Record
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================
+             FORM CARD
+        ========================================== -->
+
+        <div
+            class="form-card bg-white rounded-xl shadow-sm
+                   border border-slate-200 overflow-hidden">
+
+
+            <!-- FORM HEADER -->
+
+            <div
+                class="px-6 py-5 border-b border-slate-200
+                       bg-slate-50">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="section-icon">
+
+                        <i class="fa-solid fa-id-card"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="font-bold text-slate-800">
+
+                            Personnel Information
+
+                        </h3>
+
+                        <p class="text-xs text-slate-500">
+
+                            Update the personnel details below.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 FORM
+            ========================================== -->
+
+            <form
+                th:action="@{/protecteddata/update}"
+                method="post"
+                id="personnelForm">
+
+
+                <!-- ID -->
+
+                <input
+                    type="hidden"
+                    name="id"
+                    id="id"
+                    th:value="${personnel.id}">
+
+
+                <div class="p-6 space-y-8">
+
+
+                    <!-- =================================
+                         OFFICE ENCODER
+                    ================================== -->
+
+                    <section>
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-building"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Office Encoder
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Office responsible for this record.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="grid grid-cols-1
+                                   md:grid-cols-2
+                                   xl:grid-cols-3 gap-5">
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Office Encoder
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="userId"
+                                    id="userId"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="office : ${offices}"
+                                        th:value="${office.id}"
+                                        th:text="${office.name}"
+                                        th:selected="${office.id == personnel.userId}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================
+                         PERSONAL INFORMATION
+                    ================================== -->
+
+                    <section class="border-t pt-8">
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-user"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Personal Information
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Basic personal information
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="grid grid-cols-1
+                                   md:grid-cols-2
+                                   xl:grid-cols-3 gap-5">
+
+
+                            <!-- FIRST NAME -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    First Name
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="firstname"
+                                    name="firstname"
+                                    pattern="^[a-zA-ZñÑ\- ]*$"
+                                    th:value="${personnel.firstname}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- MIDDLE NAME -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Middle Name
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="middlename"
+                                    name="middlename"
+                                    pattern="^[a-zA-ZñÑ\- ]*$"
+                                    th:value="${personnel.middlename}">
+
+                            </div>
+
+
+                            <!-- LAST NAME -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Last Name
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="lastname"
+                                    name="lastname"
+                                    pattern="^[a-zA-ZñÑ\- ]*$"
+                                    th:value="${personnel.lastname}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- EXTENSION -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Extension
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="extension"
+                                    name="extension"
+                                    pattern="^[a-zA-Z .]+$"
+                                    th:value="${personnel.extension}">
+
+                            </div>
+
+
+                            <!-- AFPSN -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Serial Number
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="afpsn"
+                                    name="afpsn"
+                                    pattern="[oO0-9-]+"
+                                    title="Allow only O, -, and numbers 0-9"
+                                    th:value="${personnel.afpsn}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    id="emailAddress"
+                                    name="emailAddress"
+                                    th:value="${personnel.emailAddress}">
+
+                            </div>
+
+
+                            <!-- MOBILE -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Phone Number
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="mobileNumber"
+                                    name="mobileNumber"
+                                    th:value="${personnel.mobileNumber}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- BIRTHDATE -->
+
+                            <div>
+
+                                <label
+                                    for="formatteddate"
+                                    class="form-label">
+
+                                    Birthday
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="formatteddate"
+                                    name="formatteddate"
+                                    class="form-input"
+                                    placeholder="DD-MMM-YYYY"
+                                    maxlength="11"
+                                    autocomplete="off"
+                                    required>
+
+                                <input
+                                    type="hidden"
+                                    id="birthdate"
+                                    name="birthdate"
+                                    th:value="${personnel.birthdate}">
+
+                                <div
+                                    id="dateError"
+                                    class="error">
+
+                                    Invalid date format.
+                                    Use DD-MMM-YYYY.
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- GENDER -->
+
+                            <div>
+
+                                <label
+                                    for="sex"
+                                    class="form-label">
+
+                                    Gender
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="sex"
+                                    id="sex"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="genderItem : ${gender}"
+                                        th:value="${genderItem.id}"
+                                        th:text="${genderItem.name}"
+                                        th:selected="${genderItem.id == personnel.sex}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- CIVIL STATUS -->
+
+                            <div>
+
+                                <label
+                                    for="civilStatus"
+                                    class="form-label">
+
+                                    Civil Status
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="civilStatus"
+                                    id="civilStatus"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="status : ${civilstatus}"
+                                        th:value="${status.id}"
+                                        th:text="${status.name}"
+                                        th:selected="${status.id == personnel.civilStatus}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- BLOOD TYPE -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Blood Type
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="bloodType"
+                                    id="bloodType"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="blood : ${bloodtype}"
+                                        th:value="${blood.id}"
+                                        th:text="${blood.name}"
+                                        th:selected="${blood.id == personnel.bloodType}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- RELIGION -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Religion
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="religion"
+                                    name="religion"
+                                    pattern="^[a-zA-ZñÑ ]+$"
+                                    th:value="${personnel.religion}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- ETHNICITY -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Ethnicity
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="ethnicity"
+                                    name="ethnicity"
+                                    pattern="^[a-zA-ZñÑ ]+$"
+                                    th:value="${personnel.ethnicity}"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================
+                         MILITARY INFORMATION
+                    ================================== -->
+
+                    <section class="border-t pt-8">
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-shield-halved"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Military Information
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Service and military classification
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="grid grid-cols-1
+                                   md:grid-cols-2
+                                   xl:grid-cols-3 gap-5">
+
+
+                            <!-- BOS -->
+
+                            <div>
+
+                                <label
+                                    for="bos"
+                                    class="form-label">
+
+                                    Branch Of Service
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="bos"
+                                    id="bos"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="bosItem : ${bos}"
+                                        th:value="${bosItem.id}"
+                                        th:text="${bosItem.name}"
+                                        th:selected="${bosItem.id == personnel.bos}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- SOURCE COMMISSIONS -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Source Commissions
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="sourceComms"
+                                    name="sourceComms"
+                                    pattern="^[a-zA-ZñÑ ]+$"
+                                    th:value="${personnel.sourceComms}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- CLASS -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Class
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="classType"
+                                    name="classType"
+                                    pattern="^[a-zA-ZñÑ0-9- ]+$"
+                                    th:value="${personnel.classType}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- FOS RATING -->
+
+                            <div>
+
+                                <label
+                                    for="fosRating"
+                                    class="form-label">
+
+                                    FOS & Rating
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="fosRating"
+                                    id="fosRating"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="fosItem : ${fosrating}"
+                                        th:value="${fosItem.id}"
+                                        th:text="${fosItem.name}"
+                                        th:selected="${fosItem.id == personnel.fosRating}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- AUTHORITY -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Authority
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="authority"
+                                    name="authority"
+                                    pattern="^[a-zA-Z0-9#ñÑ/ ]+$"
+                                    th:value="${personnel.authority}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- PHYSICAL PROFILE -->
+
+                            <div>
+
+                                <label
+                                    for="physicalProfile"
+                                    class="form-label">
+
+                                    Physical Profile
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="physicalProfile"
+                                    id="physicalProfile"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="item : ${physicalprofile}"
+                                        th:value="${item.id}"
+                                        th:text="${item.name}"
+                                        th:selected="${item.id == personnel.physicalProfile}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- ENTERED MILITARY SERVICE -->
+
+                            <div>
+
+                                <label
+                                    for="dateEnterMilitaryServiceFormatted"
+                                    class="form-label">
+
+                                    Entered Military Service
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="dateEnterMilitaryServiceFormatted"
+                                    name="dateEnterMilitaryServiceFormatted"
+                                    placeholder="DD-MMM-YYYY"
+                                    maxlength="11"
+                                    autocomplete="off"
+                                    required>
+
+                                <input
+                                    type="hidden"
+                                    id="dateEnterMilitaryService"
+                                    name="dateEnterMilitaryService"
+                                    th:value="${personnel.dateEnterMilitaryService}">
+
+                                <div
+                                    id="dateErrorEnterMilitaryService"
+                                    class="error">
+
+                                    Invalid date format.
+                                    Use DD-MMM-YYYY.
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- SECURITY LEVEL -->
+
+                            <div>
+
+                                <label
+                                    for="securityLevel"
+                                    class="form-label">
+
+                                    Security Clearance Level
+
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="securityLevel"
+                                    id="securityLevel"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <option
+                                        th:each="item : ${securitylevel}"
+                                        th:value="${item.id}"
+                                        th:text="${item.name}"
+                                        th:selected="${item.id == personnel.securityLevel}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- =================================
+                     FOOTER
+                ================================== -->
+
+                <div
+                    class="px-6 py-5
+                           border-t border-slate-200
+                           bg-slate-50">
+
+                    <div
+                        class="flex flex-col sm:flex-row
+                               justify-end gap-3">
+
+
+                        <a
+                            href="/protecteddata/mainpage"
+                            class="inline-flex items-center
+                                   justify-center gap-2
+                                   px-5 py-2.5
+                                   rounded-lg
+                                   border border-slate-300
+                                   bg-white
+                                   text-slate-700
+                                   text-sm font-semibold
+                                   hover:bg-slate-100">
+
+                            <i class="fa-solid fa-arrow-left"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center
+                                   justify-center gap-2
+                                   px-6 py-2.5
+                                   rounded-lg
+                                   bg-blue-600
+                                   text-white
+                                   text-sm font-bold
+                                   hover:bg-blue-700
+                                   focus:ring-4
+                                   focus:ring-blue-200
+                                   transition">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            <span>
+                                Update Personnel
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     ERROR MODAL
+========================================== -->
+
+<div
+    id="errorModal"
+    class="fixed inset-0 z-50 hidden
+           bg-black/50
+           items-center justify-center
+           p-4">
+
+    <div
+        class="bg-white rounded-xl shadow-2xl
+               w-full max-w-md overflow-hidden">
+
+        <div
+            class="bg-red-600 px-5 py-4
+                   flex items-center justify-between">
+
+            <div
+                class="flex items-center gap-3 text-white">
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <h3 class="font-bold">
+                    Update Error
+                </h3>
+
+            </div>
+
+            <button
+                type="button"
+                onclick="closeErrorModal()"
+                class="text-white hover:text-red-200">
+
+                <i class="fa-solid fa-xmark text-xl"></i>
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="errorModalBody"
+            class="px-5 py-6
+                   text-red-700
+                   text-sm
+                   font-semibold">
+
+            Unable to update personnel.
+
+        </div>
+
+
+        <div
+            class="px-5 py-4
+                   bg-slate-50
+                   flex justify-end">
+
+            <button
+                type="button"
+                onclick="closeErrorModal()"
+                class="px-5 py-2
+                       rounded-lg
+                       bg-red-600
+                       text-white
+                       text-sm font-semibold
+                       hover:bg-red-700">
+
+                OK
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script>
+
+$(document).ready(function () {
+
+    $(".searchable").each(function () {
+
+        $(this).select2({
+
+            width: "100%",
+
+            placeholder: "Search or choose...",
+
+            allowClear: true
+
+        });
+
+    });
+
+});
+
+
+function showErrorModal(message) {
+
+    const modal =
+        document.getElementById("errorModal");
+
+    const body =
+        document.getElementById("errorModalBody");
+
+    body.textContent =
+        message || "Unable to update personnel.";
+
+    modal.classList.remove("hidden");
+
+    modal.classList.add("flex");
+
+}
+
+
+function closeErrorModal() {
+
+    const modal =
+        document.getElementById("errorModal");
+
+    modal.classList.add("hidden");
+
+    modal.classList.remove("flex");
+
+}
+
+</script>
+
+
+<!-- Existing JavaScript -->
+
+<script src="/js/security.js"></script>
+
+<script src="/js/dateformat/date_add_personnel.js"></script>
+
+<script src="/js/afpsn/afpsn.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NIPMB | Attrition</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        arial: ['Arial', 'Helvetica', 'sans-serif']
+                    },
+                    colors: {
+                        navy: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif !important;
+            background: #f1f5f9;
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea,
+        table,
+        a {
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
+
+        /* Hide scrollbar but keep scrolling */
+        .scroll-area {
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 transparent;
+        }
+
+        .scroll-area::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+
+        .scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        /* Tile hover */
+        .attrition-tile {
+            transition: all 0.2s ease;
+        }
+
+        .attrition-tile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
+        }
+
+        /* Responsive table */
+        .responsive-table {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .responsive-table table {
+            min-width: 700px;
+        }
+    </style>
+</head>
+
+<body class="font-arial text-slate-800">
+
+    <!-- Main Container -->
+    <main class="min-h-screen bg-slate-100">
+
+        <!-- =========================================
+             PAGE HEADER
+        ========================================== -->
+        <div class="bg-white border-b border-slate-200 shadow-sm">
+
+            <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
+
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+                    <!-- Title -->
+                    <div>
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                                <i class="bi bi-bar-chart-fill text-xl"></i>
+                            </div>
+
+                            <div>
+                                <h1 class="text-xl sm:text-2xl font-bold text-slate-800">
+                                    Attrition
+                                </h1>
+
+                                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                                    Personnel attrition and status records
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Breadcrumb -->
+                    <div class="flex items-center gap-2 text-sm">
+
+                        <a th:href="@{/protecteddata/mainpage}"
+                            class="text-blue-600 hover:text-blue-800 font-medium">
+                            <i class="bi bi-house-fill mr-1"></i>
+                            Home
+                        </a>
+
+                        <i class="bi bi-chevron-right text-xs text-slate-400"></i>
+
+                        <span class="text-slate-500">
+                            Attrition
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================
+             PAGE CONTENT
+        ========================================== -->
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+            <!-- =====================================
+                 SEARCH CARD
+            ====================================== -->
+            <section class="bg-white rounded-2xl border border-slate-200 shadow-sm mb-6">
+
+                <div class="px-5 py-4 border-b border-slate-200">
+
+                    <div class="flex items-center gap-3">
+
+                        <div
+                            class="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="font-bold text-slate-800">
+                                Search Personnel
+                            </h2>
+
+                            <p class="text-xs text-slate-500">
+                                Search personnel using AFPSN
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-5">
+
+                    <form th:action="@{/protecteddata/attrition}"
+                        method="get"
+                        class="w-full">
+
+                        <div class="flex flex-col sm:flex-row gap-2">
+
+                            <!-- Search Input -->
+                            <div class="relative flex-1">
+
+                                <i
+                                    class="bi bi-person-badge absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                </i>
+
+                                <input type="text"
+                                    name="afpsn"
+                                    th:value="${afpsn}"
+                                    placeholder="Enter AFPSN"
+                                    autocomplete="off"
+                                    onkeydown="return event.key !== ' '"
+                                    oninput="this.value = this.value.replace(/\s/g, '')"
+                                    class="w-full h-11 pl-10 pr-4 rounded-lg border border-slate-300
+                                           focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                                           outline-none text-sm text-slate-700
+                                           placeholder:text-slate-400">
+
+                            </div>
+
+                            <!-- Search -->
+                            <button type="submit"
+                                class="h-11 px-5 rounded-lg bg-blue-600 hover:bg-blue-700
+                                       text-white font-semibold text-sm transition
+                                       flex items-center justify-center gap-2">
+
+                                <i class="bi bi-search"></i>
+                                Search
+
+                            </button>
+
+                            <!-- Reset -->
+                            <a th:href="@{/protecteddata/attrition}"
+                                class="h-11 px-5 rounded-lg bg-slate-100 hover:bg-slate-200
+                                       text-slate-700 font-semibold text-sm transition
+                                       flex items-center justify-center gap-2">
+
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Reset
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 SEARCH RESULTS
+            ====================================== -->
+            <section
+                th:if="${afpsn != null and !#strings.isEmpty(afpsn)}"
+                class="bg-white rounded-2xl border border-slate-200 shadow-sm mb-6 overflow-hidden">
+
+                <!-- Header -->
+                <div class="px-5 py-4 border-b border-slate-200">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+
+                        <div class="flex items-center gap-3">
+
+                            <div
+                                class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+
+                            <div>
+                                <h2 class="font-bold text-slate-800">
+                                    Personnel Records
+                                </h2>
+
+                                <p class="text-xs text-slate-500">
+                                    Search result for AFPSN:
+                                    <span class="font-semibold text-slate-700"
+                                        th:text="${afpsn}">
+                                    </span>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Table -->
+                <div class="responsive-table scroll-area">
+
+                    <table
+                        th:if="${!#lists.isEmpty(personnels)}"
+                        class="w-full text-sm">
+
+                        <thead class="bg-slate-50 border-b border-slate-200">
+
+                            <tr>
+
+                                <th class="px-5 py-3 text-left font-bold text-slate-600">
+                                    AFPSN
+                                </th>
+
+                                <th class="px-5 py-3 text-left font-bold text-slate-600">
+                                    Rank
+                                </th>
+
+                                <th class="px-5 py-3 text-left font-bold text-slate-600">
+                                    Last Name
+                                </th>
+
+                                <th class="px-5 py-3 text-left font-bold text-slate-600">
+                                    First Name
+                                </th>
+
+                                <th class="px-5 py-3 text-left font-bold text-slate-600">
+                                    Status
+                                </th>
+
+                                <th class="px-5 py-3 text-center font-bold text-slate-600">
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody class="divide-y divide-slate-100">
+
+                            <tr th:each="p : ${personnels}"
+                                class="hover:bg-blue-50/50 transition">
+
+                                <td class="px-5 py-3 font-semibold text-slate-700"
+                                    th:text="${p.afpsn}">
+                                </td>
+
+                                <td class="px-5 py-3 text-slate-600"
+                                    th:text="${p.rank}">
+                                </td>
+
+                                <td class="px-5 py-3 text-slate-600"
+                                    th:text="${p.lastname}">
+                                </td>
+
+                                <td class="px-5 py-3 text-slate-600"
+                                    th:text="${p.firstname}">
+                                </td>
+
+                                <td class="px-5 py-3">
+
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-1
+                                               rounded-full text-xs font-semibold
+                                               bg-blue-100 text-blue-700"
+                                        th:text="${p.status_definition_category}">
+                                    </span>
+
+                                </td>
+
+                                <td class="px-5 py-3 text-center">
+
+                                    <a
+                                        th:href="@{/personnelprofile/{id}/profile(id=${p.id})}"
+                                        class="inline-flex items-center gap-1.5
+                                               px-3 py-1.5 rounded-lg
+                                               bg-emerald-600 hover:bg-emerald-700
+                                               text-white text-xs font-semibold transition">
+
+                                        <i class="bi bi-eye-fill"></i>
+                                        View
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- No Result -->
+                    <div
+                        th:if="${#lists.isEmpty(personnels)}"
+                        class="p-8 text-center">
+
+                        <div
+                            class="w-14 h-14 mx-auto mb-3 rounded-full
+                                   bg-amber-100 text-amber-600
+                                   flex items-center justify-center">
+
+                            <i class="bi bi-search text-xl"></i>
+
+                        </div>
+
+                        <h3 class="font-bold text-slate-700">
+                            No Personnel Found
+                        </h3>
+
+                        <p class="text-sm text-slate-500 mt-1">
+                            No personnel found with AFPSN:
+                            <strong th:text="${afpsn}"></strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 ATTRITION SUMMARY
+            ====================================== -->
+
+            <div class="mb-4">
+
+                <h2 class="text-lg font-bold text-slate-800">
+                    Attrition Summary
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                    Personnel records grouped according to attrition status.
+                </p>
+
+            </div>
+
+
+            <!-- TILES -->
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+
+                <!-- Resigned -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-door-open-fill text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-orange-100 text-orange-700">
+                                Resigned
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${totalresigned}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel have resigned
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/resigned}"
+                            class="mt-5 w-full h-10 rounded-lg bg-orange-50
+                                   hover:bg-orange-100 text-orange-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- AWOL -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-red-100 text-red-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-person-x-fill text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-red-100 text-red-700">
+                                AWOL
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${totalawol}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel have AWOL
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/awol}"
+                            class="mt-5 w-full h-10 rounded-lg bg-red-50
+                                   hover:bg-red-100 text-red-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Retired -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-person-check-fill text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-blue-100 text-blue-700">
+                                Retired
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${totalretired}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel have retired
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/retired}"
+                            class="mt-5 w-full h-10 rounded-lg bg-blue-50
+                                   hover:bg-blue-100 text-blue-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Change FOS -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-arrow-repeat text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-purple-100 text-purple-700">
+                                FOS / Rating
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${totalchangerate}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel changed FOS/rating
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/changefos}"
+                            class="mt-5 w-full h-10 rounded-lg bg-purple-50
+                                   hover:bg-purple-100 text-purple-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Due For Retirement -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-yellow-100 text-yellow-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-calendar-event-fill text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-yellow-100 text-yellow-700">
+                                Retirement
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${dueforretiremnt}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel due for retirement
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/dueforretirement}"
+                            class="mt-5 w-full h-10 rounded-lg bg-yellow-50
+                                   hover:bg-yellow-100 text-yellow-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Deceased -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-slate-200 text-slate-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-person-x text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-slate-200 text-slate-700">
+                                Deceased
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${totaldisease}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel are deceased
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/disease}"
+                            class="mt-5 w-full h-10 rounded-lg bg-slate-100
+                                   hover:bg-slate-200 text-slate-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Discharge -->
+                <div class="attrition-tile bg-white rounded-2xl border border-slate-200
+                            shadow-sm overflow-hidden">
+
+                    <div class="p-5">
+
+                        <div class="flex items-start justify-between">
+
+                            <div
+                                class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600
+                                       flex items-center justify-center">
+
+                                <i class="bi bi-box-arrow-right text-xl"></i>
+
+                            </div>
+
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full
+                                       bg-rose-100 text-rose-700">
+                                Discharge
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-5">
+
+                            <p class="text-3xl font-bold text-slate-800"
+                                th:text="${totaldischarge}">
+                                0
+                            </p>
+
+                            <p class="text-sm text-slate-500 mt-1">
+                                personnel are discharged
+                            </p>
+
+                        </div>
+
+
+                        <a th:href="@{/protecteddata/discharge}"
+                            class="mt-5 w-full h-10 rounded-lg bg-rose-50
+                                   hover:bg-rose-100 text-rose-700
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2 transition">
+
+                            View Records
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

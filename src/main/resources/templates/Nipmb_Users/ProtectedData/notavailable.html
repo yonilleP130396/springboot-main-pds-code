@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Page Not Available</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for centering content */
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+}
+
+/* Main error title */
+.error-title {
+    font-size: 64px;
+    font-weight: bold;
+    color: #ff4b5c;
+    margin-bottom: 20px;
+}
+
+/* Error message styling */
+.error-message {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Error details */
+.error-detail {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+/* Button styling */
+.home-button {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 30px;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for button */
+.home-button:hover {
+    background-color: #45a049;
+}
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="message-box">
+    <h1 class="error-title">Oops!</h1>
+    <p class="error-message">The page you are looking for is not available.</p>
+    <p class="error-detail">It might have been moved, deleted, or the URL could be incorrect.</p>
+    <a href="/" class="home-button">Back to Home</a>
+  </div>
+</div>
+</body>
+</html>

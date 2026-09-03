@@ -1,0 +1,2487 @@
+<!-- title: Tailwind Personnel List - Conflict Free Version -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>List Personnels</title>
+
+    <!-- =========================================================
+         TAILWIND CSS
+         ========================================================= -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome - Icons only -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- SweetAlert2 - Delete confirmation only -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
+
+        /* =========================================================
+           CUSTOM SCROLLBAR
+           ========================================================= */
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+
+        /* =========================================================
+           TABLE
+           ========================================================= */
+
+        #personnelTable {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        #personnelTable thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        #personnelTable tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        #personnelTable tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Prevent action buttons from wrapping */
+        .action-buttons {
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           SEARCH INPUT
+           ========================================================= */
+
+        .column-search {
+            width: 100%;
+            padding: 7px 9px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            color: #334155;
+            font-size: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .column-search:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+
+        /* =========================================================
+           CARD HOVER
+           ========================================================= */
+
+        .stat-card {
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+
+        /* =========================================================
+           HIDDEN COLUMNS
+           ========================================================= */
+
+        .column-hidden {
+            display: none !important;
+        }
+
+
+        /* =========================================================
+           PRINT
+           ========================================================= */
+
+        @media print {
+
+            body {
+                background: white !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-area {
+                display: block !important;
+                width: 100%;
+            }
+
+            #personnelTable {
+                width: 100%;
+                font-size: 9px;
+            }
+
+            #personnelTable th,
+            #personnelTable td {
+                padding: 4px;
+            }
+
+            .column-search-row {
+                display: none !important;
+            }
+
+            #personnelTable thead th {
+                position: static;
+            }
+
+        }
+
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+
+        @media (max-width: 768px) {
+
+            .mobile-scroll {
+                overflow-x: auto;
+            }
+
+            #personnelTable {
+                min-width: 1500px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body class="bg-slate-100 text-slate-800">
+
+<!-- =============================================================
+     MAIN CONTAINER
+     ============================================================= -->
+
+<main class="min-h-screen p-4 md:p-6 lg:p-8">
+
+
+    <!-- =========================================================
+         HEADER
+         ========================================================= -->
+
+    <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800">
+                Personnel Management
+            </h1>
+
+            <p class="text-sm text-slate-500">
+                List of Unit Personnel
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         STAT CARDS
+         ========================================================= -->
+
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+
+
+        <!-- TOTAL PERSONNEL -->
+        <a
+            th:href="@{/printallpersonnel}"
+            class="stat-card rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        Total Personnel
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-800" th:text="${totalPersonnel.active  + totalPersonnel.dueForRetirement}">
+                        
+                    </p>
+
+                </div>
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600">
+
+                    <img
+                        src="/images/signal-2025-07-15-163916_002.png"
+                        alt="Personnel"
+                        class="h-8 w-8 object-contain">
+
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- OFFICERS -->
+        <a
+            th:href="@{/allofficer}"
+            class="stat-card rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        Officer
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-800" th:text="${totalPersonnel.activeOfficer}">
+                        
+                    </p>
+
+                </div>
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-600">
+
+                    <img
+                        src="/images/signal-2025-07-15-160552_002.png"
+                        alt="Officer"
+                        class="h-8 w-8 object-contain">
+
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- ENLISTED -->
+        <a
+            th:href="@{/allenlisted}"
+            class="stat-card rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        Enlisted Personnel
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-800" th:text="${totalPersonnel.activeEnlisted}">
+                        
+                    </p>
+
+                </div>
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-amber-500">
+
+                    <img
+                        src="/images/signal-2025-07-15-160552_004.png"
+                        alt="Enlisted"
+                        class="h-8 w-8 object-contain">
+
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- SIO -->
+        <a
+            th:href="@{/protecteddata/relieved}"
+            class="stat-card rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        SIO
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-800" th:text="${totalPersonnel.relieved}">
+                        
+                    </p>
+
+                </div>
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-600">
+
+                    <img
+                        src="/images/signal-2025-07-15-160552_005.png"
+                        alt="SIO"
+                        class="h-8 w-8 object-contain">
+
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- ATTRITION -->
+        <a
+            th:href="@{/protecteddata/attrition}"
+            class="stat-card rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        Attrition
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-800" th:text="${totalPersonnel.retired + totalPersonnel.resigned + totalPersonnel.disease + totalPersonnel.discharge + totalPersonnel.changeFosrating + totalPersonnel.awol}">
+                        
+                    </p>
+
+                </div>
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-600">
+
+                    <img
+                        src="/images/signal-2025-07-15-160552_003.png"
+                        alt="Attrition"
+                        class="h-8 w-8 object-contain">
+
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- CAREER PROGRESSION -->
+        <a
+            th:href="@{/protecteddata/carreerprogression}"
+            class="stat-card rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                        Career Progression
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-slate-800">
+                        —
+                    </p>
+
+                </div>
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600">
+
+                    <img
+                        src="/images/signal-2025-07-15-160552_003.png"
+                        alt="Career Progression"
+                        class="h-8 w-8 object-contain">
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================================================
+         PERSONNEL CARD
+         ========================================================= -->
+
+    <section class="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+
+        <!-- =====================================================
+             CARD HEADER
+             ====================================================== -->
+
+        <div class="no-print border-b border-slate-200 p-4">
+
+            <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+
+
+                <!-- TITLE -->
+                <div>
+
+                    <h2 class="text-lg font-semibold text-slate-800">
+                        Unit Personnels
+                    </h2>
+
+                    <p class="text-sm text-slate-500">
+                        Manage and view personnel records
+                    </p>
+
+                </div>
+
+
+                <!-- GLOBAL SEARCH -->
+                <div class="relative w-full xl:w-80">
+
+                    <!-- Search Icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="absolute left-3 top-1/2 h-4 w-4
+                            -translate-y-1/2 text-slate-400">
+
+                        <circle cx="11" cy="11" r="7"></circle>
+
+                        <path
+                            stroke-linecap="round"
+                            d="m20 20-4-4">
+                        </path>
+
+                    </svg>
+
+                    <input
+                        id="globalSearch"
+                        type="text"
+                        placeholder="Search personnel..."
+                        class="w-full rounded-lg border border-slate-300
+                            bg-white py-2.5 pl-10 pr-4 text-sm
+                            outline-none transition
+                            focus:border-blue-500
+                            focus:ring-2 focus:ring-blue-100">
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TOOLBAR
+                 ================================================== -->
+
+                 <div class="mt-4 flex flex-wrap gap-2">
+
+                    <!-- COLUMNS -->
+                    <div class="relative">
+                
+                        <button
+                            id="columnButton"
+                            type="button"
+                            class="inline-flex items-center rounded-lg bg-slate-700 px-4 py-2
+                                   text-sm font-medium text-white transition hover:bg-slate-800">
+                
+                            <!-- Columns Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 class="mr-2 h-4 w-4">
+                                <rect x="3" y="4" width="7" height="16" rx="1"/>
+                                <rect x="14" y="4" width="7" height="16" rx="1"/>
+                            </svg>
+                
+                            Columns
+                
+                        </button>
+                
+                
+                        <!-- COLUMN MENU -->
+                        <div
+                            id="columnMenu"
+                            class="absolute left-0 top-11 z-50 hidden
+                                   w-64 rounded-lg border border-slate-200
+                                   bg-white p-3 shadow-xl">
+                
+                            <p class="mb-2 text-xs font-semibold uppercase text-slate-500">
+                                Show / Hide Columns
+                            </p>
+                
+                            <div id="columnList" class="space-y-1">
+                            </div>
+                
+                        </div>
+                
+                    </div>
+                
+                
+                    <!-- CSV EXPORT -->
+                    <button
+                        id="exportCsv"
+                        type="button"
+                        class="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2
+                               text-sm font-medium text-white transition hover:bg-emerald-700">
+                
+                        <!-- Excel / CSV Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             class="mr-2 h-4 w-4">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M4 4h11l5 5v11H4V4z"/>
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M15 4v6h5"/>
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M8 13l4 5m0-5-4 5"/>
+                        </svg>
+                
+                        Excel / CSV
+                
+                    </button>
+                
+                
+                    <!-- PRINT -->
+                    <button
+                        id="printTable"
+                        type="button"
+                        class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2
+                               text-sm font-medium text-white transition hover:bg-blue-700">
+                
+                        <!-- Print Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             class="mr-2 h-4 w-4">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M6 9V3h12v6"/>
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                            <rect x="6" y="14" width="12" height="7" rx="1"/>
+                        </svg>
+                
+                        Print
+                
+                    </button>
+                
+                
+                    <!-- RESET -->
+                    <button
+                        id="resetFilters"
+                        type="button"
+                        class="inline-flex items-center rounded-lg bg-slate-200 px-4 py-2
+                               text-sm font-medium text-slate-700 transition hover:bg-slate-300">
+                
+                        <!-- Reset Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             class="mr-2 h-4 w-4">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M3 12a9 9 0 109-9c-2.2 0-4.2.8-5.8 2.2L3 7"/>
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M3 3v4h4"/>
+                        </svg>
+                
+                        Reset
+                
+                    </button>
+
+
+                <a
+                    id="viewAllButton"
+                    th:href="@{/protecteddata/viewall}"
+                    class="inline-flex items-center rounded-lg bg-purple-600 px-4 py-2
+                        text-sm font-medium text-white transition hover:bg-purple-700">
+
+                    <!-- View All Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="mr-2 h-4 w-4">
+
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 6h18M3 12h18M3 18h18"/>
+
+                    </svg>
+
+                    View All
+
+                </a>
+                </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             TABLE
+             ====================================================== -->
+
+        <!-- TABLE CONTAINER -->
+<div class="w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+
+    <!-- Horizontal + Vertical Scroll -->
+    <div
+        id="tableContainer"
+        class="relative max-h-[75vh] overflow-auto"
+        style="scrollbar-width: thin;">
+
+        <table
+            id="personnelTable"
+            class="w-max min-w-[1500px] text-left text-sm text-slate-700">
+
+            <!-- HEADER -->
+            <thead class="sticky top-0 z-30">
+
+                <tr class="bg-slate-800 text-xs uppercase tracking-wide text-white">
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        RANKCODE
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        RANK
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        FULL NAME
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        AFPSN
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        BOS
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        CURRENT ASSIGNMENT
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        START DATE OF CURRENT ASSIGNMENT
+                    </th>
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        PRESENT UNIT
+                    </th>
+
+                    
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 font-semibold">
+                        OFFICE
+                    </th>
+                    
+
+                    <th class="sticky top-0 z-30 whitespace-nowrap bg-slate-800 px-3 py-3 text-center font-semibold">
+                        ACTIONS
+                    </th>
+
+                </tr>
+
+
+                <!-- SEARCH ROW -->
+                <tr class="sticky top-[42px] z-20 bg-slate-100">
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-32 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="0">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-32 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="1">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-48 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="2">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-36 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="3">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-32 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="4">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-48 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="5">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-48 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="6">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-40 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="7">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-36 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="8">
+                    </th>
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                        <input type="text"
+                               class="column-search w-40 rounded border border-slate-300 px-2 py-1 text-xs outline-none focus:border-blue-500"
+                               data-column="9">
+                    </th>
+
+
+                    <th class="border-b border-slate-300 bg-slate-100 p-2">
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <!-- BODY -->
+            <tbody id="personnelBody">
+
+                <tr
+                    th:each="personneldata : ${protecteddata}"
+                    class="personnel-row border-b border-slate-200 bg-white hover:bg-slate-50">
+
+                    <td class="whitespace-nowrap px-3 py-3"
+                        th:text="${personneldata.rankCode}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3 font-medium"
+                        th:text="${personneldata.rank}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3 font-medium text-slate-800"
+                        th:text="${personneldata.firstname + ' ' +
+                                  personneldata.middlename + ' ' +
+                                  personneldata.lastname + ' ' +
+                                  personneldata.extension}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3"
+                        th:text="${personneldata.afpsn}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3"
+                        th:text="${personneldata.bos}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3"
+                        th:text="${personneldata.presentAssignment}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3 date-dd-mmm-yyyy"
+                        th:text="${personneldata.startDateAssignment}">
+                    </td>
+
+                    <td class="whitespace-nowrap px-3 py-3">
+                    </td>
+
+                    
+
+                    <td class="whitespace-nowrap px-3 py-3"
+                        th:text="${personneldata.office}">
+                    </td>
+
+                    
+
+                    <td class="whitespace-nowrap px-3 py-3 text-center">
+
+                        <div class="flex justify-center gap-2">
+
+                            <!-- TRANSFER -->
+                            <a
+                                th:href="@{/protecteddata/transferdata/{id}(id=${personneldata.id})}"
+                                title="Transfer Personnel"
+                                class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-blue-50 text-blue-600 transition hover:bg-blue-600 hover:text-white">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    class="h-4 w-4">
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M7 7h10m0 0-3-3m3 3-3 3M17 17H7m0 0 3-3m-3 3 3 3"/>
+
+                                </svg>
+
+                            </a>
+
+
+                            <!-- VIEW -->
+                            <a
+                                th:href="@{/personnelprofile/{id}/profile(id=${personneldata.id})}"
+                                title="View Profile"
+                                class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-emerald-50 text-emerald-600 transition hover:bg-emerald-600 hover:text-white">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    class="h-4 w-4">
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M2.25 12s3.75-6 9.75-6 9.75 6 9.75 6-3.75 6-9.75 6-9.75-6-9.75-6z"/>
+
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="2.5"/>
+
+                                </svg>
+
+                            </a>
+
+
+                            <!-- EDIT -->
+                            <a
+                                th:href="@{/protecteddata/edit/{id}(id=${personneldata.id})}"
+                                title="Edit Personnel"
+                                class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-amber-50 text-amber-600 transition hover:bg-amber-600 hover:text-white">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    class="h-4 w-4">
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M16.862 3.487a2.25 2.25 0 013.182 3.182L8.25 18.463 4 19.5l1.037-4.25L16.862 3.487z"/>
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M14.5 5.85l3.65 3.65"/>
+
+                                </svg>
+
+                            </a>
+
+
+                            <!-- DELETE -->
+                            <button
+                                type="button"
+                                title="Delete Personnel"
+                                th:onclick="'confirmDeletePersonnel(' + ${personneldata.id} + ')'"
+                                class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-red-50 text-red-600 transition hover:bg-red-600 hover:text-white">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    class="h-4 w-4">
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a1 1 0 01-1 1H8a1 1 0 01-1-1V7h10zM10 11v5M14 11v5"/>
+
+                                </svg>
+
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+        <!-- =====================================================
+             TABLE FOOTER
+             ====================================================== -->
+
+        <div class="no-print flex flex-col gap-3 border-t
+                    border-slate-200 bg-slate-50 p-4
+                    md:flex-row md:items-center
+                    md:justify-between">
+
+            <!-- INFORMATION -->
+            <div
+                id="tableInfo"
+                class="text-sm text-slate-500">
+            </div>
+
+
+            <!-- PAGINATION -->
+            <div
+                id="pagination"
+                class="flex flex-wrap gap-1">
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+    <!-- Loading HTML -->
+<div th:replace="~{Fragments/Loader/loading :: globalLoading}"></div>
+
+<!-- Loading JavaScript -->
+<th:block th:replace="~{Fragments/Loader/loading-script :: loadingScript}"></th:block>
+
+
+<!-- =============================================================
+     DELETE SCRIPT
+     ============================================================= -->
+
+<script th:inline="javascript">
+
+    function confirmDeletePersonnel(id) {
+
+        const staticPassword =
+            /*[[${appSecretKey} ?: '']]*/ '';
+
+        Swal.fire({
+
+            title: 'Are you sure?',
+            text: 'This will permanently delete the Personnel.',
+            icon: 'warning',
+
+            showCancelButton: true,
+
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+
+            reverseButtons: true
+
+        }).then((result) => {
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            Swal.fire({
+
+                title: 'Enter your Secret Key',
+
+                input: 'password',
+
+                inputPlaceholder:
+                    'Enter your secret key',
+
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    autocorrect: 'off'
+                },
+
+                showCancelButton: true,
+
+                confirmButtonText: 'Confirm',
+
+                confirmButtonColor: '#2563eb',
+
+                preConfirm: (inputPassword) => {
+
+                    if (inputPassword !== staticPassword) {
+
+                        Swal.showValidationMessage(
+                            'Incorrect password'
+                        );
+
+                        return false;
+                    }
+
+                    return true;
+                }
+
+            }).then((result) => {
+
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                Swal.fire({
+
+                    title: 'Deleting...',
+                    text: 'Please wait while the personnel is being deleted.',
+
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+
+                    didOpen: () => {
+
+                        Swal.showLoading();
+
+                        window.location.href =
+                            `delete/${id}`;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    }
+
+</script>
+
+
+<!-- =============================================================
+     CUSTOM PERSONNEL TABLE ENGINE
+     NO JQUERY
+     NO DATATABLES
+     ============================================================= -->
+
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        
+            const table = document.getElementById('personnelTable');
+            const tbody = document.getElementById('personnelBody');
+        
+            const globalSearch = document.getElementById('globalSearch');
+        
+            const columnSearchInputs =
+                Array.from(document.querySelectorAll('.column-search'));
+        
+            const exportButton = document.getElementById('exportCsv');
+            const printButton = document.getElementById('printTable');
+        
+            const resetButton = document.getElementById('resetFilters');
+        
+            const columnButton = document.getElementById('columnButton');
+            const columnMenu = document.getElementById('columnMenu');
+            const columnList = document.getElementById('columnList');
+        
+            const pagination = document.getElementById('pagination');
+            const tableInfo = document.getElementById('tableInfo');
+        
+            const rows =
+                Array.from(tbody.querySelectorAll('.personnel-row'));
+        
+            const totalColumns =
+                table.querySelectorAll('thead tr:first-child th').length;
+        
+            const rowsPerPage = 10;
+        
+            let currentPage = 1;
+        
+            let filteredRows = [...rows];
+        
+            /*
+             * TRUE  = visible
+             * FALSE = hidden
+             */
+            const columnVisibility =
+                new Array(totalColumns).fill(true);
+        
+        
+            /* =========================================================
+               GET CELL TEXT
+               ========================================================= */
+        
+            function getCellText(row, index) {
+        
+                const cell = row.children[index];
+        
+                if (!cell) {
+                    return '';
+                }
+        
+                return cell.textContent
+                    .trim()
+                    .replace(/\s+/g, ' ');
+        
+            }
+        
+        
+            /* =========================================================
+               FILTER DATA
+               ========================================================= */
+        
+            function filterRows() {
+        
+                const globalValue =
+                    globalSearch.value
+                        .trim()
+                        .toLowerCase();
+        
+        
+                filteredRows = rows.filter(function (row) {
+        
+                    /*
+                     * GLOBAL SEARCH
+                     */
+        
+                    if (globalValue) {
+        
+                        const rowText =
+                            Array.from(row.children)
+                                .map(cell =>
+                                    cell.textContent
+                                        .trim()
+                                        .toLowerCase()
+                                )
+                                .join(' ');
+        
+        
+                        if (!rowText.includes(globalValue)) {
+                            return false;
+                        }
+        
+                    }
+        
+        
+                    /*
+                     * COLUMN SEARCH
+                     */
+        
+                    for (const input of columnSearchInputs) {
+        
+                        const column =
+                            Number(input.dataset.column);
+        
+                        const searchValue =
+                            input.value
+                                .trim()
+                                .toLowerCase();
+        
+        
+                        if (!searchValue) {
+                            continue;
+                        }
+        
+        
+                        const cellValue =
+                            getCellText(row, column)
+                                .toLowerCase();
+        
+        
+                        if (!cellValue.includes(searchValue)) {
+                            return false;
+                        }
+        
+                    }
+        
+        
+                    return true;
+        
+                });
+        
+        
+                currentPage = 1;
+        
+                renderTable();
+        
+            }
+        
+        
+            /* =========================================================
+               RENDER TABLE
+               ========================================================= */
+        
+            function renderTable() {
+        
+                /*
+                 * Hide all rows
+                 */
+        
+                rows.forEach(function (row) {
+                    row.style.display = 'none';
+                });
+        
+        
+                const totalRows =
+                    filteredRows.length;
+        
+        
+                const totalPages =
+                    Math.max(
+                        1,
+                        Math.ceil(totalRows / rowsPerPage)
+                    );
+        
+        
+                if (currentPage > totalPages) {
+                    currentPage = totalPages;
+                }
+        
+        
+                const start =
+                    (currentPage - 1) * rowsPerPage;
+        
+        
+                const end =
+                    Math.min(
+                        start + rowsPerPage,
+                        totalRows
+                    );
+        
+        
+                /*
+                 * Show current page
+                 */
+        
+                filteredRows
+                    .slice(start, end)
+                    .forEach(function (row) {
+        
+                        row.style.display = '';
+        
+                    });
+        
+        
+                /*
+                 * Apply visible columns
+                 */
+        
+                applyColumnVisibility();
+        
+        
+                /*
+                 * Information
+                 */
+        
+                if (totalRows === 0) {
+        
+                    tableInfo.textContent =
+                        'No personnel records found.';
+        
+                } else {
+        
+                    tableInfo.textContent =
+                        `Showing ${start + 1} to ${end} of ${totalRows} personnel`;
+        
+                }
+        
+        
+                renderPagination(totalPages);
+        
+            }
+        
+        
+            /* =========================================================
+               COLUMN VISIBILITY
+               ========================================================= */
+        
+            function applyColumnVisibility() {
+        
+                const headerRows =
+                    table.querySelectorAll('thead tr');
+        
+        
+                const bodyRows =
+                    table.querySelectorAll('tbody tr');
+        
+        
+                for (
+                    let column = 0;
+                    column < totalColumns;
+                    column++
+                ) {
+        
+                    const hidden =
+                        !columnVisibility[column];
+        
+        
+                    /*
+                     * Header
+                     */
+        
+                    headerRows.forEach(function (headerRow) {
+        
+                        const cell =
+                            headerRow.children[column];
+        
+        
+                        if (cell) {
+        
+                            cell.classList.toggle(
+                                'column-hidden',
+                                hidden
+                            );
+        
+                        }
+        
+                    });
+        
+        
+                    /*
+                     * Body
+                     */
+        
+                    bodyRows.forEach(function (row) {
+        
+                        const cell =
+                            row.children[column];
+        
+        
+                        if (cell) {
+        
+                            cell.classList.toggle(
+                                'column-hidden',
+                                hidden
+                            );
+        
+                        }
+        
+                    });
+        
+                }
+        
+            }
+        
+        
+            /* =========================================================
+               COLUMN MENU
+               ========================================================= */
+        
+            function buildColumnMenu() {
+        
+                columnList.innerHTML = '';
+        
+        
+                const headers =
+                    table.querySelectorAll(
+                        'thead tr:first-child th'
+                    );
+        
+        
+                headers.forEach(function (header, index) {
+        
+                    const label =
+                        header.textContent.trim();
+        
+        
+                    const wrapper =
+                        document.createElement('label');
+        
+                    wrapper.className =
+                        'flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-slate-100';
+        
+        
+                    const checkbox =
+                        document.createElement('input');
+        
+                    checkbox.type = 'checkbox';
+        
+                    checkbox.checked =
+                        columnVisibility[index];
+        
+                    checkbox.className =
+                        'h-4 w-4 rounded border-slate-300 text-blue-600';
+        
+        
+                    checkbox.addEventListener(
+                        'change',
+                        function () {
+        
+                            columnVisibility[index] =
+                                checkbox.checked;
+        
+                            applyColumnVisibility();
+        
+                        }
+                    );
+        
+        
+                    const text =
+                        document.createElement('span');
+        
+                    text.className =
+                        'text-sm text-slate-700';
+        
+                    text.textContent =
+                        label;
+        
+        
+                    wrapper.appendChild(checkbox);
+                    wrapper.appendChild(text);
+        
+                    columnList.appendChild(wrapper);
+        
+                });
+        
+            }
+        
+        
+            /* =========================================================
+               PAGINATION
+               ========================================================= */
+        
+            function renderPagination(totalPages) {
+        
+                pagination.innerHTML = '';
+        
+        
+                /*
+                 * PREVIOUS
+                 */
+        
+                const previous =
+                    createPageButton(
+                        '‹',
+                        currentPage > 1
+                    );
+        
+        
+                previous.addEventListener(
+                    'click',
+                    function () {
+        
+                        if (currentPage > 1) {
+        
+                            currentPage--;
+        
+                            renderTable();
+        
+                        }
+        
+                    }
+                );
+        
+        
+                pagination.appendChild(previous);
+        
+        
+                /*
+                 * PAGE NUMBERS
+                 */
+        
+                const maxVisiblePages = 5;
+        
+        
+                let startPage =
+                    Math.max(
+                        1,
+                        currentPage -
+                        Math.floor(maxVisiblePages / 2)
+                    );
+        
+        
+                let endPage =
+                    Math.min(
+                        totalPages,
+                        startPage + maxVisiblePages - 1
+                    );
+        
+        
+                if (
+                    endPage - startPage <
+                    maxVisiblePages - 1
+                ) {
+        
+                    startPage =
+                        Math.max(
+                            1,
+                            endPage - maxVisiblePages + 1
+                        );
+        
+                }
+        
+        
+                for (
+                    let page = startPage;
+                    page <= endPage;
+                    page++
+                ) {
+        
+                    const button =
+                        createPageButton(
+                            page,
+                            true,
+                            page === currentPage
+                        );
+        
+        
+                    button.addEventListener(
+                        'click',
+                        function () {
+        
+                            currentPage = page;
+        
+                            renderTable();
+        
+                        }
+                    );
+        
+        
+                    pagination.appendChild(button);
+        
+                }
+        
+        
+                /*
+                 * NEXT
+                 */
+        
+                const next =
+                    createPageButton(
+                        '›',
+                        currentPage < totalPages
+                    );
+        
+        
+                next.addEventListener(
+                    'click',
+                    function () {
+        
+                        if (currentPage < totalPages) {
+        
+                            currentPage++;
+        
+                            renderTable();
+        
+                        }
+        
+                    }
+                );
+        
+        
+                pagination.appendChild(next);
+        
+            }
+        
+        
+            function createPageButton(
+                text,
+                enabled = true,
+                active = false
+            ) {
+        
+                const button =
+                    document.createElement('button');
+        
+        
+                button.type = 'button';
+        
+                button.textContent = text;
+        
+        
+                button.className =
+                    'min-w-9 rounded-md px-3 py-2 text-sm font-medium transition';
+        
+        
+                if (active) {
+        
+                    button.classList.add(
+                        'bg-blue-600',
+                        'text-white'
+                    );
+        
+                } else if (enabled) {
+        
+                    button.classList.add(
+                        'border',
+                        'border-slate-300',
+                        'bg-white',
+                        'text-slate-700',
+                        'hover:bg-slate-100'
+                    );
+        
+                } else {
+        
+                    button.disabled = true;
+        
+                    button.classList.add(
+                        'cursor-not-allowed',
+                        'bg-slate-100',
+                        'text-slate-400'
+                    );
+        
+                }
+        
+        
+                return button;
+        
+            }
+        
+        
+            /* =========================================================
+               GLOBAL SEARCH
+               ========================================================= */
+        
+            globalSearch.addEventListener(
+                'input',
+                filterRows
+            );
+        
+        
+            /* =========================================================
+               COLUMN SEARCH
+               ========================================================= */
+        
+            columnSearchInputs.forEach(
+                function (input) {
+        
+                    input.addEventListener(
+                        'input',
+                        filterRows
+                    );
+        
+                }
+            );
+        
+        
+            /* =========================================================
+               COLUMN MENU TOGGLE
+               ========================================================= */
+        
+            columnButton.addEventListener(
+                'click',
+                function (event) {
+        
+                    event.stopPropagation();
+        
+                    columnMenu.classList.toggle('hidden');
+        
+                }
+            );
+        
+        
+            document.addEventListener(
+                'click',
+                function (event) {
+        
+                    if (
+                        !columnMenu.contains(event.target) &&
+                        !columnButton.contains(event.target)
+                    ) {
+        
+                        columnMenu.classList.add('hidden');
+        
+                    }
+        
+                }
+            );
+        
+        
+            /* =========================================================
+               RESET FILTERS
+               ========================================================= */
+        
+            resetButton.addEventListener(
+                'click',
+                function () {
+        
+                    globalSearch.value = '';
+        
+        
+                    columnSearchInputs.forEach(
+                        function (input) {
+        
+                            input.value = '';
+        
+                        }
+                    );
+        
+        
+                    /*
+                     * Reset column visibility
+                     */
+        
+                    for (
+                        let i = 0;
+                        i < columnVisibility.length;
+                        i++
+                    ) {
+        
+                        columnVisibility[i] = true;
+        
+                    }
+        
+        
+                    /*
+                     * Rebuild menu
+                     */
+        
+                    buildColumnMenu();
+        
+        
+                    filteredRows = [...rows];
+        
+                    currentPage = 1;
+        
+                    renderTable();
+        
+                }
+            );
+        
+        
+            /* =========================================================
+               CSV / EXCEL EXPORT
+               
+               IMPORTANT:
+               ONLY VISIBLE COLUMNS WILL BE EXPORTED.
+               
+               It also exports ALL FILTERED ROWS,
+               not just the current page.
+               ========================================================= */
+        
+            exportButton.addEventListener(
+                'click',
+                function () {
+        
+                    exportVisibleColumnsToCSV();
+        
+                }
+            );
+        
+        
+            function exportVisibleColumnsToCSV() {
+        
+                /*
+                 * Get original header row only.
+                 */
+        
+                const headers =
+                    Array.from(
+                        table.querySelectorAll(
+                            'thead tr:first-child th'
+                        )
+                    );
+        
+        
+                /*
+                 * Get ONLY visible columns.
+                 */
+        
+                const visibleColumns = [];
+        
+        
+                headers.forEach(
+                    function (header, index) {
+        
+                        if (columnVisibility[index]) {
+        
+                            visibleColumns.push(index);
+        
+                        }
+        
+                    }
+                );
+        
+        
+                /*
+                 * If nothing is visible
+                 */
+        
+                if (visibleColumns.length === 0) {
+        
+                    Swal.fire({
+        
+                        icon: 'warning',
+        
+                        title: 'No columns selected',
+        
+                        text:
+                            'Please show at least one column before exporting.'
+        
+                    });
+        
+                    return;
+        
+                }
+        
+        
+                /*
+                 * CSV DATA
+                 */
+        
+                const csvRows = [];
+        
+        
+                /*
+                 * HEADER
+                 */
+        
+                const headerRow =
+                    visibleColumns.map(
+                        function (index) {
+        
+                            return escapeCSV(
+                                headers[index].textContent.trim()
+                            );
+        
+                        }
+                    );
+        
+        
+                csvRows.push(headerRow.join(','));
+        
+        
+                /*
+                 * DATA
+                 *
+                 * Use filteredRows instead of only
+                 * the current page.
+                 */
+        
+                filteredRows.forEach(
+                    function (row) {
+        
+                        const rowData =
+                            visibleColumns.map(
+                                function (index) {
+        
+                                    return escapeCSV(
+                                        getCellTextForExport(
+                                            row,
+                                            index
+                                        )
+                                    );
+        
+                                }
+                            );
+        
+        
+                        csvRows.push(
+                            rowData.join(',')
+                        );
+        
+                    }
+                );
+        
+        
+                /*
+                 * Create CSV
+                 */
+        
+                const csvContent =
+                    '\uFEFF' +
+                    csvRows.join('\r\n');
+        
+        
+                const blob =
+                    new Blob(
+                        [csvContent],
+                        {
+                            type:
+                                'text/csv;charset=utf-8;'
+                        }
+                    );
+        
+        
+                const url =
+                    URL.createObjectURL(blob);
+        
+        
+                const downloadLink =
+                    document.createElement('a');
+        
+        
+                downloadLink.href = url;
+        
+        
+                downloadLink.download =
+                    'Personnel_List_Report.csv';
+        
+        
+                document.body.appendChild(
+                    downloadLink
+                );
+        
+        
+                downloadLink.click();
+        
+        
+                document.body.removeChild(
+                    downloadLink
+                );
+        
+        
+                URL.revokeObjectURL(url);
+        
+        
+                /*
+                 * Optional notification
+                 */
+        
+                Swal.fire({
+        
+                    icon: 'success',
+        
+                    title: 'Export Complete',
+        
+                    text:
+                        `${filteredRows.length} personnel record(s) exported.`,
+        
+                    timer: 1800,
+        
+                    showConfirmButton: false
+        
+                });
+        
+            }
+        
+        
+            /* =========================================================
+               CSV ESCAPE
+               ========================================================= */
+        
+            function escapeCSV(value) {
+        
+                const text =
+                    String(value ?? '')
+                        .replace(/\r?\n|\r/g, ' ');
+        
+        
+                /*
+                 * Escape quotation marks
+                 */
+        
+                const escaped =
+                    text.replace(
+                        /"/g,
+                        '""'
+                    );
+        
+        
+                /*
+                 * Always quote the value.
+                 *
+                 * This prevents problems with:
+                 * - commas
+                 * - names
+                 * - assignments
+                 * - units
+                 * - special characters
+                 */
+        
+                return `"${escaped}"`;
+        
+            }
+        
+        
+            /* =========================================================
+               GET CLEAN CELL TEXT
+               ========================================================= */
+        
+            function getCellTextForExport(
+                row,
+                columnIndex
+            ) {
+        
+                const cell =
+                    row.children[columnIndex];
+        
+        
+                if (!cell) {
+                    return '';
+                }
+        
+        
+                return cell.textContent
+                    .trim()
+                    .replace(/\s+/g, ' ');
+        
+            }
+        
+        
+            /* =========================================================
+               PRINT
+               
+               IMPORTANT:
+               ONLY VISIBLE COLUMNS WILL BE PRINTED.
+               
+               It also prints ALL FILTERED ROWS,
+               not just the current page.
+               ========================================================= */
+        
+            printButton.addEventListener(
+                'click',
+                function () {
+        
+                    printVisibleColumns();
+        
+                }
+            );
+        
+        
+            function printVisibleColumns() {
+        
+                /*
+                 * Get visible columns
+                 */
+        
+                const headers =
+                    Array.from(
+                        table.querySelectorAll(
+                            'thead tr:first-child th'
+                        )
+                    );
+        
+        
+                const visibleColumns = [];
+        
+        
+                headers.forEach(
+                    function (header, index) {
+        
+                        if (columnVisibility[index]) {
+        
+                            visibleColumns.push(index);
+        
+                        }
+        
+                    }
+                );
+        
+        
+                /*
+                 * No columns
+                 */
+        
+                if (visibleColumns.length === 0) {
+        
+                    Swal.fire({
+        
+                        icon: 'warning',
+        
+                        title: 'No columns selected',
+        
+                        text:
+                            'Please show at least one column before printing.'
+        
+                    });
+        
+                    return;
+        
+                }
+        
+        
+                /*
+                 * Create temporary print table.
+                 *
+                 * We do NOT print the original table.
+                 * This completely prevents hidden columns
+                 * from appearing in print.
+                 */
+        
+                const printWindow =
+                    window.open(
+                        '',
+                        '_blank',
+                        'width=1400,height=900'
+                    );
+        
+        
+                if (!printWindow) {
+        
+                    Swal.fire({
+        
+                        icon: 'error',
+        
+                        title: 'Print blocked',
+        
+                        text:
+                            'Please allow pop-ups for this page.'
+        
+                    });
+        
+                    return;
+        
+                }
+        
+        
+                /*
+                 * Build HTML
+                 */
+        
+                let html = `
+        
+                    <!DOCTYPE html>
+        
+                    <html>
+        
+                    <head>
+        
+                        <meta charset="UTF-8">
+        
+                        <title>Personnel List Report</title>
+        
+                        <style>
+        
+                            @page {
+                                size: landscape;
+                                margin: 10mm;
+                            }
+        
+                            * {
+                                box-sizing: border-box;
+                            }
+        
+                            body {
+                                font-family:
+                                    Arial,
+                                    Helvetica,
+                                    sans-serif;
+        
+                                color: #111827;
+        
+                                margin: 0;
+        
+                                padding: 0;
+        
+                                background: white;
+                            }
+        
+                            .report-header {
+                                margin-bottom: 15px;
+                            }
+        
+                            .report-title {
+                                font-size: 20px;
+                                font-weight: bold;
+                                margin-bottom: 4px;
+                            }
+        
+                            .report-date {
+                                color: #6b7280;
+                                font-size: 11px;
+                            }
+        
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                table-layout: auto;
+                            }
+        
+                            th {
+                                background: #1e293b;
+                                color: white;
+                                border: 1px solid #334155;
+                                padding: 7px 6px;
+                                font-size: 9px;
+                                text-align: left;
+                                vertical-align: middle;
+                            }
+        
+                            td {
+                                border: 1px solid #cbd5e1;
+                                padding: 6px;
+                                font-size: 8px;
+                                vertical-align: top;
+                            }
+        
+                            tbody tr:nth-child(even) {
+                                background: #f8fafc;
+                            }
+        
+                            .footer {
+                                margin-top: 12px;
+                                font-size: 9px;
+                                color: #64748b;
+                            }
+        
+                            @media print {
+        
+                                body {
+                                    -webkit-print-color-adjust: exact;
+                                    print-color-adjust: exact;
+                                }
+        
+                            }
+        
+                        </style>
+        
+                    </head>
+        
+                    <body>
+        
+                        <div class="report-header">
+        
+                            <div class="report-title">
+                                Personnel List Report
+                            </div>
+        
+                            <div class="report-date">
+                                Generated:
+                                ${new Date().toLocaleString()}
+                            </div>
+        
+                        </div>
+        
+                        <table>
+        
+                            <thead>
+        
+                                <tr>
+                `;
+        
+        
+                /*
+                 * HEADER
+                 */
+        
+                visibleColumns.forEach(
+                    function (index) {
+        
+                        html += `
+                            <th>
+                                ${escapeHTML(
+                                    headers[index].textContent.trim()
+                                )}
+                            </th>
+                        `;
+        
+                    }
+                );
+        
+        
+                html += `
+        
+                                </tr>
+        
+                            </thead>
+        
+                            <tbody>
+        
+                `;
+        
+        
+                /*
+                 * DATA
+                 *
+                 * ALL FILTERED ROWS
+                 */
+        
+                filteredRows.forEach(
+                    function (row) {
+        
+                        html += '<tr>';
+        
+        
+                        visibleColumns.forEach(
+                            function (index) {
+        
+                                html += `
+        
+                                    <td>
+                                        ${escapeHTML(
+                                            getCellTextForExport(
+                                                row,
+                                                index
+                                            )
+                                        )}
+                                    </td>
+        
+                                `;
+        
+                            }
+                        );
+        
+        
+                        html += '</tr>';
+        
+                    }
+                );
+        
+        
+                /*
+                 * No records
+                 */
+        
+                if (filteredRows.length === 0) {
+        
+                    html += `
+        
+                        <tr>
+        
+                            <td
+                                colspan="${visibleColumns.length}"
+                                style="
+                                    text-align:center;
+                                    padding:20px;
+                                ">
+        
+                                No personnel records found.
+        
+                            </td>
+        
+                        </tr>
+        
+                    `;
+        
+                }
+        
+        
+                html += `
+        
+                            </tbody>
+        
+                        </table>
+        
+                        <div class="footer">
+        
+                            Total Records:
+                            ${filteredRows.length}
+        
+                        </div>
+
+
+
+                        
+        
+                    </body>
+        
+                    </html>
+        
+                `;
+        
+        
+                /*
+                 * Write to new window
+                 */
+        
+                printWindow.document.open();
+        
+                printWindow.document.write(html);
+        
+                printWindow.document.close();
+        
+        
+                /*
+                 * Wait until page is ready
+                 */
+        
+                printWindow.onload =
+                    function () {
+        
+                        printWindow.focus();
+        
+                        setTimeout(
+                            function () {
+        
+                                printWindow.print();
+        
+                                printWindow.close();
+        
+                            },
+                            300
+                        );
+        
+                    };
+        
+            }
+        
+        
+            /* =========================================================
+               ESCAPE HTML
+               ========================================================= */
+        
+            function escapeHTML(value) {
+        
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+        
+            }
+        
+        
+            /* =========================================================
+               INITIALIZE
+               ========================================================= */
+        
+            buildColumnMenu();
+        
+            renderTable();
+        
+        });
+        
+        </script>
+
+        <script th:if="${infoMessage}" th:inline="javascript">
+                const infoMessage = /*[[${infoMessage}]]*/ '';
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: infoMessage,
+                    confirmButtonText: 'OK'
+                });
+        </script>
+
+
+<!-- =============================================================
+     EXISTING PROJECT SCRIPTS
+     ============================================================= -->
+
+<script src="/js/security.js"></script>
+
+<script src="/js/dateformat/date_personnelprofile.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,2673 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NIPMB | Personnel</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery - required by Select2 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+          rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+        }
+
+        /*
+        ==========================================
+        SELECT2 TAILWIND STYLE
+        ==========================================
+        */
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 42px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            background-color: white !important;
+        }
+
+        .select2-container .select2-selection--single
+        .select2-selection__rendered {
+            line-height: 40px !important;
+            padding-left: 14px !important;
+            color: #334155 !important;
+            font-size: 14px;
+        }
+
+        .select2-container .select2-selection--single
+        .select2-selection__arrow {
+            height: 40px !important;
+            right: 8px !important;
+        }
+
+        .select2-container--default.select2-container--focus
+        .select2-selection--single {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .select2-dropdown {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            overflow: hidden;
+        }
+
+        .select2-search__field {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.375rem !important;
+            padding: 8px !important;
+        }
+
+        .select2-results__option {
+            padding: 9px 12px !important;
+            font-size: 14px;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #2563eb !important;
+        }
+
+        /*
+        ==========================================
+        INPUT STYLE
+        ==========================================
+        */
+
+        .form-input {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #334155;
+            background: white;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="min-h-screen">
+
+    <!-- =========================================
+         TOP HEADER
+    ========================================== -->
+
+    <header class="bg-slate-900 text-white shadow-lg">
+
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="h-16 flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="w-10 h-10 rounded-lg bg-blue-600
+                                flex items-center justify-center">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </div>
+
+                    <div>
+                        <h1 class="font-bold text-lg">
+                            NIPMB
+                        </h1>
+
+                        <p class="text-xs text-slate-400">
+                            Personnel Management System
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="text-sm text-slate-300">
+
+                    <i class="fa-solid fa-database mr-1"></i>
+
+                    Personnel Record
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         BREADCRUMB
+    ========================================== -->
+
+    <div class="bg-white border-b">
+
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="h-14 flex items-center">
+
+                <a th:href="@{/protecteddata/mainpage}"
+                   class="text-sm text-blue-600 hover:text-blue-800">
+
+                    <i class="fa-solid fa-house mr-1"></i>
+
+                    Home
+
+                </a>
+
+                <i class="fa-solid fa-chevron-right
+                          text-xs text-slate-400 mx-3"></i>
+
+                <span class="text-sm text-slate-500">
+
+                    <span th:text="${personnel.id == null
+                                    ? 'Add Personnel'
+                                    : 'Edit Personnel'}">
+                    </span>
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="mb-6">
+
+            <div class="flex flex-col md:flex-row
+                        md:items-center md:justify-between gap-4">
+
+                <div>
+
+                    <h2 class="text-2xl font-bold text-slate-800">
+
+                        <i class="fa-solid fa-user-plus
+                                  text-blue-600 mr-2"></i>
+
+                        <span th:text="${personnel.id == null
+                                        ? 'Add Personnel'
+                                        : 'Edit Personnel'}">
+                        </span>
+
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mt-1">
+
+                        Enter and maintain personnel information.
+
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <span class="inline-flex items-center px-3 py-2
+                                 rounded-lg bg-blue-50 text-blue-700
+                                 text-xs font-semibold">
+
+                        <i class="fa-solid fa-circle-info mr-2"></i>
+
+                        Required fields are marked *
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================
+             FORM CARD
+        ========================================== -->
+
+        <div class="bg-white rounded-xl shadow-sm border
+                    border-slate-200 overflow-hidden">
+
+
+            <!-- FORM HEADER -->
+
+            <div class="px-6 py-5 border-b border-slate-200
+                        bg-slate-50">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="section-icon">
+
+                        <i class="fa-solid fa-id-card"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="font-bold text-slate-800">
+
+                            Personnel Information
+
+                        </h3>
+
+                        <p class="text-xs text-slate-500">
+
+                            Complete all applicable personnel details.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HIDDEN SAVED ADDRESS VALUES -->
+
+            <input type="hidden"
+                   id="savedRegion"
+                   th:value="${savedRegion}">
+
+            <input type="hidden"
+                   id="savedProvince"
+                   th:value="${savedProvince}">
+
+            <input type="hidden"
+                   id="savedMunicipality"
+                   th:value="${savedMunicipality}">
+
+            <input type="hidden"
+                   id="savedBarangay"
+                   th:value="${savedBarangay}">
+
+
+            <!-- =========================================
+                 FORM
+            ========================================== -->
+
+            <form
+                th:action="@{${personnel.id} == null
+                    ? '/protecteddata/save_add'
+                    : '/protecteddata/' + ${personnel.id} + '/save_edit'}"
+                th:object="${personnel}"
+                method="post">
+
+
+                <input type="hidden"
+                       th:field="*{id}">
+
+
+                <div class="p-6 space-y-8">
+
+
+                    <!-- =================================
+                         OFFICE / UNIT
+                    ================================== -->
+
+                    <section>
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-building"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Assignment
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Office and organizational assignment
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grid grid-cols-1
+                                    md:grid-cols-2
+                                    xl:grid-cols-3 gap-5">
+
+
+                            <!-- OFFICE ENCODER -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Office Encoder
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="userId"
+                                    id="userId"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="office : ${offices}">
+
+                                        <option
+                                            th:value="${office.id}"
+                                            th:selected="${personnel != null
+                                                and personnel.userId != null
+                                                and personnel.userId.toString()
+                                                == office.id.toString()}"
+                                            th:text="${office.name}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- UNIT -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Unit
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="unit"
+                                    id="unit"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="unit : ${units}">
+
+                                        <option
+                                            th:value="${unit.id}"
+                                            th:text="${unit.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.unit != null
+                                                and personnel.unit.id == unit.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- SUB UNIT -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Sub-Unit
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="subunit"
+                                    name="subunit"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="subunit : ${subunit}">
+
+                                        <option
+                                            th:value="${subunit.id}"
+                                            th:text="${subunit.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.subunit != null
+                                                and personnel.subunit.id == subunit.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- OTHER SUB UNIT -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Other Sub-Unit
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    th:field="*{otherSubunit}"
+                                    id="otherSubunit"
+                                    class="form-input"
+                                    pattern="^[a-zA-ZñÑ- ]+$">
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================
+                         PERSONAL INFORMATION
+                    ================================== -->
+
+                    <section class="border-t pt-8">
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-user"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Personal Information
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Basic personal information
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grid grid-cols-1
+                                    md:grid-cols-2
+                                    xl:grid-cols-3 gap-5">
+
+
+                            <!-- RANK -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Rank
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    th:field="*{rank}"
+                                    name="rank"
+                                    id="rank"
+                                    onchange="updateRankWithoutRating()"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="rank : ${ranks}">
+
+                                        <option
+                                            th:value="${rank.name}"
+                                            th:text="${rank.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.rank != null
+                                                and personnel.rank == rank.name}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- FIRST NAME -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    First Name
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="firstname"
+                                    th:field="*{firstname}"
+                                    pattern="^[a-zA-ZñÑ\- ]*$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- MIDDLE NAME -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Middle Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="middlename"
+                                    th:field="*{middlename}"
+                                    pattern="^[a-zA-ZñÑ\- ]*$">
+
+                            </div>
+
+
+                            <!-- LAST NAME -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Last Name
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="lastname"
+                                    th:field="*{lastname}"
+                                    pattern="^[a-zA-ZñÑ\- ]*$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- EXTENSION -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Extension
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="extension"
+                                    th:field="*{extension}"
+                                    pattern="^[a-zA-Z .]+$">
+
+                            </div>
+
+
+                            <!-- AFPSN -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Serial Number
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="afpsn"
+                                    th:field="*{afpsn}"
+                                    pattern="[oO0-9-]+"
+                                    title="Allow only O, -, and numbers 0-9"
+                                    required>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    id="emailAddress"
+                                    th:field="*{emailAddress}">
+
+                            </div>
+
+
+                            <!-- MOBILE -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Phone Number
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-input"
+                                    id="mobileNumber"
+                                    th:field="*{mobileNumber}"
+                                    required>
+
+                            </div>
+
+
+                            <!-- BIRTHDAY -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Birthday
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="formatteddate"
+                                    class="form-input"
+                                    placeholder="DD-MMM-YYYY"
+                                    maxlength="11"
+                                    autocomplete="off"
+                                    required>
+
+                                <input
+                                    type="hidden"
+                                    id="birthdate"
+                                    th:field="*{birthdate}">
+
+                                <div id="dateError"
+                                     class="error">
+
+                                    Invalid date format.
+                                    Use DD-MMM-YYYY
+                                    (e.g. 03-Mar-1996)
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- GENDER -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Gender
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="sex"
+                                    id="sex"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="gender : ${gender}">
+
+                                        <option
+                                            th:value="${gender.id}"
+                                            th:text="${gender.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.sex != null
+                                                and personnel.sex.id == gender.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- CIVIL STATUS -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Civil Status
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="civilStatus"
+                                    name="civilStatus"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="civilstatus : ${civilstatus}">
+
+                                        <option
+                                            th:value="${civilstatus.id}"
+                                            th:text="${civilstatus.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.civilStatus != null
+                                                and personnel.civilStatus.id == civilstatus.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- BLOOD TYPE -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Blood Type
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="bloodType"
+                                    name="bloodType"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="bloodtype : ${bloodtype}">
+
+                                        <option
+                                            th:value="${bloodtype.id}"
+                                            th:text="${bloodtype.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.bloodType != null
+                                                and personnel.bloodType.id == bloodtype.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- RELIGION -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Religion
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="religion"
+                                    th:field="*{religion}"
+                                    pattern="^[a-zA-ZñÑ ]+$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- ETHNICITY -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Ethnicity
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="ethnicity"
+                                    th:field="*{ethnicity}"
+                                    pattern="^[a-zA-ZñÑ ]+$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- SERVICE PROVIDER -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Service Provider
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="serviceProvider"
+                                    name="serviceProvider">
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="serviceprovider : ${serviceprovider}">
+
+                                        <option
+                                            th:value="${serviceprovider.id}"
+                                            th:text="${serviceprovider.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.serviceProvider != null
+                                                and personnel.serviceProvider.id == serviceprovider.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================
+                         ADDRESS
+                    ================================== -->
+
+                    <section class="border-t pt-8">
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-location-dot"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Address
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Current residential address
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grid grid-cols-1
+                                    md:grid-cols-2
+                                    xl:grid-cols-4 gap-5">
+
+
+                            <!-- REGION -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Region
+                                    <span class="required">*</span>
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="regionDropdown"
+                                    onchange="loadProvinces()"
+                                    th:field="*{region}"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- PROVINCE -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Province
+                                    <span class="required">*</span>
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="provinceDropdown"
+                                    onchange="loadMunicipalities()"
+                                    th:field="*{province}"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- MUNICIPALITY -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Municipality
+                                    <span class="required">*</span>
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="municipalityDropdown"
+                                    onchange="loadBarangays()"
+                                    th:field="*{municipality}"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- BARANGAY -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Barangay
+                                    <span class="required">*</span>
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    id="barangayDropdown"
+                                    th:field="*{barangay}"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- HOUSE NUMBER -->
+
+                            <div class="md:col-span-2 xl:col-span-4">
+
+                                <label class="form-label">
+                                    Street / House Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    th:field="*{houseNumber}"
+                                    id="houseNumber"
+                                    pattern="^[a-zA-Z0-9ñÑ ,\-.]+$">
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================
+                         MILITARY INFORMATION
+                    ================================== -->
+
+                    <section class="border-t pt-8">
+
+                        <div class="section-title mb-5">
+
+                            <div class="section-icon">
+
+                                <i class="fa-solid fa-shield-halved"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-800">
+                                    Military Information
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Service and military classification
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="grid grid-cols-1
+                                    md:grid-cols-2
+                                    xl:grid-cols-3 gap-5">
+
+
+                            <!-- BOS -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Branch Of Service
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="bos"
+                                    id="bos"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="bos : ${bos}">
+
+                                        <option
+                                            th:value="${bos.id}"
+                                            th:text="${bos.bosname}"
+                                            th:selected="${personnel != null
+                                                and personnel.bos != null
+                                                and personnel.bos.id == bos.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- SOURCE COMMISSION -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Source Commissions
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    th:field="*{sourceComms}"
+                                    id="sourceComms"
+                                    pattern="^[a-zA-ZñÑ ]+$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- CLASS -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Class
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    th:field="*{classType}"
+                                    id="classType"
+                                    pattern="^[a-zA-ZñÑ0-9- ]+$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- FOS RATING -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    FOS & Rating
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="fosRating"
+                                    id="fosRating"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="fosrating : ${fosrating}">
+
+                                        <option
+                                            th:value="${fosrating.id}"
+                                            th:text="${fosrating.fosratingname}"
+                                            th:selected="${personnel != null
+                                                and personnel.fosRating != null
+                                                and personnel.fosRating.id == fosrating.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- AUTHORITY -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Authority
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    th:field="*{authority}"
+                                    id="authority"
+                                    pattern="^[a-zA-Z0-9#ñÑ/ ]+$"
+                                    required>
+
+                            </div>
+
+
+                            <!-- MILITARY CATEGORY -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Military Category
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="militaryStatus"
+                                    id="militaryStatus"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="militarystatus : ${militarystatus}">
+
+                                        <option
+                                            th:value="${militarystatus.id}"
+                                            th:text="${militarystatus.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.militaryStatus != null
+                                                and personnel.militaryStatus.id == militarystatus.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- STAFF SPECIALIZATION -->
+
+                            <div id="staffSpecializationContainer">
+
+                                <label class="form-label">
+
+                                    Staff Specialization
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="staffSpecialization"
+                                    id="staffSpecialization">
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="staffspecialization : ${staffspecialization}">
+
+                                        <option
+                                            th:value="${staffspecialization.name}"
+                                            th:text="${staffspecialization.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.staffSpecialization != null
+                                                and personnel.staffSpecialization == staffspecialization.name}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- SUB SPECIALIZATION -->
+
+                            <div id="subSpecializationContainer">
+
+                                <label class="form-label">
+
+                                    Sub-Specialization
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="subSpecialization"
+                                    id="subSpecialization">
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="subspecialization : ${subspecialization}">
+
+                                        <option
+                                            th:value="${subspecialization.name}"
+                                            th:text="${subspecialization.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.subSpecialization != null
+                                                and personnel.subSpecialization == subspecialization.name}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- PHYSICAL PROFILE -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Physical Profile
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="physicalProfile"
+                                    id="physicalProfile"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="physicalprofile : ${physicalprofile}">
+
+                                        <option
+                                            th:value="${physicalprofile.id}"
+                                            th:text="${physicalprofile.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.physicalProfile != null
+                                                and personnel.physicalProfile.id == physicalprofile.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- ENTERED MILITARY SERVICE -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Entered Military Service
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="dateEnterMilitaryServiceForamtted"
+                                    placeholder="DD-MMM-YYYY"
+                                    maxlength="11"
+                                    autocomplete="off"
+                                    required>
+
+                                <input
+                                    type="hidden"
+                                    th:field="*{dateEnterMilitaryService}"
+                                    id="dateEnterMilitaryService">
+
+                                <div
+                                    id="dateErrorEnterMilitaryService"
+                                    class="error">
+
+                                    Invalid date format.
+                                    Use DD-MMM-YYYY.
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ETE / ETAD -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Date ETE / ETAD
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-input"
+                                    id="dateEteEtadFormatted"
+                                    placeholder="DD-MMM-YYYY"
+                                    maxlength="11"
+                                    autocomplete="off">
+
+                                <input
+                                    type="hidden"
+                                    th:field="*{dateEteEtad}"
+                                    id="dateEteEtad">
+
+                                <div
+                                    id="dateErrordateEteEtad"
+                                    class="error">
+
+                                    Invalid date format.
+                                    Use DD-MMM-YYYY.
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- RANK CODE -->
+
+                            <div>
+
+                                <label class="form-label">
+                                    Rank Code
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="rankcode"
+                                    th:field="*{rankCode}"
+                                    class="form-input"
+                                    readonly>
+
+                            </div>
+
+
+                            <!-- COMPULSORY RETIREMENT -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Compulsory Retirement
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="compulsoryRetirementFormatted"
+                                    class="form-input"
+                                    readonly>
+
+                                <input
+                                    type="hidden"
+                                    id="compulsoryRetirement"
+                                    th:field="*{compulsoryRetirement}">
+
+                            </div>
+
+
+                            <!-- SECURITY LEVEL -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Security Clearance Level
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    name="securityLevel"
+                                    id="securityLevel"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block th:each="securitylevel : ${securitylevel}">
+
+                                        <option
+                                            th:value="${securitylevel.id}"
+                                            th:text="${securitylevel.name}"
+                                            th:selected="${personnel != null
+                                                and personnel.securityLevel != null
+                                                and personnel.securityLevel.id == securitylevel.id}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- STATUS -->
+
+                            <div>
+
+                                <label class="form-label">
+
+                                    Personnel Status in Service
+                                    <span class="required">*</span>
+
+                                </label>
+
+                                <select
+                                    class="searchable"
+                                    th:field="*{status_definition_category}"
+                                    required>
+
+                                    <option value="">
+                                        Choose...
+                                    </option>
+
+                                    <th:block
+                                        th:each="personnelstatusinmilitary :
+                                        ${personnelstatusinmilitary}">
+
+                                        <option
+                                            th:value="${personnelstatusinmilitary.data_value}"
+                                            th:text="${personnelstatusinmilitary.name}">
+                                        </option>
+
+                                    </th:block>
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================
+                         HIDDEN SYSTEM FIELDS
+                    ================================== -->
+
+                    <input type="hidden"
+                           id="rankwithoutrating"
+                           th:field="*{rankwithoutrating}">
+
+                    <input type="hidden"
+                           id="fieldduty"
+                           th:field="*{fieldduty}">
+
+                    <input type="hidden"
+                           id="seadduty"
+                           th:field="*{seadduty}">
+
+                    <input type="hidden"
+                           id="presentassignment"
+                           th:field="*{presentassignment}">
+
+                    <input type="hidden"
+                           id="requiredduty"
+                           th:field="*{requiredduty}">
+
+                    <input type="hidden"
+                           id="sortednumber"
+                           th:field="*{sortednumber}">
+
+
+                </div>
+
+
+                <!-- =================================
+                     FORM FOOTER
+                ================================== -->
+
+                <div class="px-6 py-5 border-t border-slate-200
+                            bg-slate-50">
+
+                    <div class="flex flex-col sm:flex-row
+                                justify-end gap-3">
+
+
+                        <a th:href="@{/protecteddata/mainpage}"
+                           class="inline-flex items-center
+                                  justify-center gap-2
+                                  px-5 py-2.5
+                                  rounded-lg
+                                  border border-slate-300
+                                  bg-white
+                                  text-slate-700
+                                  text-sm font-semibold
+                                  hover:bg-slate-100">
+
+                            <i class="fa-solid fa-arrow-left"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center
+                                   justify-center gap-2
+                                   px-6 py-2.5
+                                   rounded-lg
+                                   bg-blue-600
+                                   text-white
+                                   text-sm font-bold
+                                   hover:bg-blue-700
+                                   focus:ring-4
+                                   focus:ring-blue-200
+                                   transition">
+
+                            <i class="fa-solid"
+                               th:classappend="${personnel.id == null}
+                                    ? ' fa-floppy-disk'
+                                    : ' fa-pen-to-square'">
+                            </i>
+
+                            <span
+                                th:text="${personnel.id == null
+                                    ? 'Submit Form'
+                                    : 'Update Form'}">
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     ERROR MODAL
+========================================== -->
+
+<div
+    id="errorModal"
+    class="fixed inset-0 z-50 hidden
+           bg-black/50
+           items-center justify-center
+           p-4">
+
+    <div class="bg-white rounded-xl shadow-2xl
+                w-full max-w-md overflow-hidden">
+
+
+        <div class="bg-red-600 px-5 py-4
+                    flex items-center justify-between">
+
+            <div class="flex items-center gap-3 text-white">
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <h3 class="font-bold">
+                    Personnel Exists
+                </h3>
+
+            </div>
+
+            <button
+                type="button"
+                onclick="closeErrorModal()"
+                class="text-white hover:text-red-200">
+
+                <i class="fa-solid fa-xmark text-xl"></i>
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="errorModalBody"
+            class="px-5 py-6
+                   text-red-700
+                   text-sm
+                   font-semibold">
+
+        </div>
+
+
+        <div class="px-5 py-4 bg-slate-50
+                    flex justify-end">
+
+            <button
+                type="button"
+                onclick="closeErrorModal()"
+                class="px-5 py-2
+                       rounded-lg
+                       bg-red-600
+                       text-white
+                       text-sm font-semibold
+                       hover:bg-red-700">
+
+                OK
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     RANK API
+========================================== -->
+
+<script>
+
+function updateRankWithoutRating() {
+
+    const selectedRank =
+        document.getElementById("rank").value;
+
+    fetch('/api/rank')
+        .then(response => response.json())
+        .then(ranks => {
+
+            for (let i = 0; i < ranks.length; i++) {
+
+                if (ranks[i].name === selectedRank) {
+
+                    document.getElementById(
+                        "rankwithoutrating"
+                    ).value =
+                        ranks[i].rankwithoutrating;
+
+                    document.getElementById(
+                        "rankcode"
+                    ).value =
+                        ranks[i].rankcode;
+
+                    break;
+                }
+
+            }
+
+        })
+        .catch(error => {
+
+            console.error(
+                "Error loading rank:",
+                error
+            );
+
+        });
+
+}
+
+</script>
+
+
+<!-- =========================================
+     PSGC ADDRESS API
+========================================== -->
+
+<script th:inline="javascript">
+
+let regionCode =
+    /*[[${personnel.region} ?: '']]*/ '';
+
+let provinceCode =
+    /*[[${personnel.province} ?: '']]*/ '';
+
+let municipalityCode =
+    /*[[${personnel.municipality} ?: '']]*/ '';
+
+let barangayCode =
+    /*[[${personnel.barangay} ?: '']]*/ '';
+
+
+/*
+==========================================
+INITIALIZE SELECT2
+==========================================
+*/
+
+function initializeSelect2(element) {
+
+    if (!element) {
+        return;
+    }
+
+    if ($(element).hasClass("select2-hidden-accessible")) {
+        $(element).select2("destroy");
+    }
+
+    $(element).select2({
+        width: "100%",
+        placeholder: "Search or choose...",
+        allowClear: true
+    });
+
+}
+
+
+/*
+==========================================
+INITIALIZE ALL SEARCHABLE DROPDOWNS
+==========================================
+*/
+
+function initializeAllSelect2() {
+
+    $(".searchable").each(function () {
+
+        initializeSelect2(this);
+
+    });
+
+}
+
+
+/*
+==========================================
+REGIONS
+==========================================
+*/
+
+function loadRegions() {
+
+    return fetch(
+        "https://psgc.gitlab.io/api/regions.json"
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        const dropdown =
+            document.getElementById(
+                "regionDropdown"
+            );
+
+        dropdown.innerHTML =
+            "<option value=''></option>";
+
+        data.forEach(region => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                region.code;
+
+            option.text =
+                region.regionName;
+
+            dropdown.appendChild(option);
+
+        });
+
+        initializeSelect2(dropdown);
+
+    });
+
+}
+
+
+/*
+==========================================
+PROVINCES
+==========================================
+*/
+
+function loadProvinces() {
+
+    const selectedRegion =
+        document.getElementById(
+            "regionDropdown"
+        ).value;
+
+    const provinceDropdown =
+        document.getElementById(
+            "provinceDropdown"
+        );
+
+    const municipalityDropdown =
+        document.getElementById(
+            "municipalityDropdown"
+        );
+
+    const barangayDropdown =
+        document.getElementById(
+            "barangayDropdown"
+        );
+
+
+    provinceDropdown.innerHTML =
+        "<option value=''></option>";
+
+    municipalityDropdown.innerHTML =
+        "<option value=''></option>";
+
+    barangayDropdown.innerHTML =
+        "<option value=''></option>";
+
+
+    initializeSelect2(provinceDropdown);
+    initializeSelect2(municipalityDropdown);
+    initializeSelect2(barangayDropdown);
+
+
+    /*
+    NCR
+    */
+
+    if (selectedRegion === "130000000") {
+
+        return loadMunicipalities();
+
+    }
+
+
+    if (!selectedRegion) {
+
+        return Promise.resolve();
+
+    }
+
+
+    return fetch(
+        `https://psgc.gitlab.io/api/regions/${selectedRegion}/provinces.json`
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        data.forEach(province => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                province.code;
+
+            option.text =
+                province.name;
+
+            provinceDropdown.appendChild(
+                option
+            );
+
+        });
+
+        initializeSelect2(
+            provinceDropdown
+        );
+
+    });
+
+}
+
+
+/*
+==========================================
+MUNICIPALITIES
+==========================================
+*/
+
+function loadMunicipalities() {
+
+    const selectedRegion =
+        document.getElementById(
+            "regionDropdown"
+        ).value;
+
+    const selectedProvince =
+        document.getElementById(
+            "provinceDropdown"
+        ).value;
+
+
+    const municipalityDropdown =
+        document.getElementById(
+            "municipalityDropdown"
+        );
+
+    const barangayDropdown =
+        document.getElementById(
+            "barangayDropdown"
+        );
+
+
+    municipalityDropdown.innerHTML =
+        "<option value=''></option>";
+
+    barangayDropdown.innerHTML =
+        "<option value=''></option>";
+
+
+    initializeSelect2(
+        municipalityDropdown
+    );
+
+    initializeSelect2(
+        barangayDropdown
+    );
+
+
+    let url = "";
+
+
+    /*
+    NCR
+    */
+
+    if (selectedRegion === "130000000") {
+
+        url =
+            "https://psgc.gitlab.io/api/regions/130000000/cities-municipalities.json";
+
+    }
+
+    /*
+    Other Regions
+    */
+
+    else if (selectedProvince) {
+
+        url =
+            `https://psgc.gitlab.io/api/provinces/${selectedProvince}/cities-municipalities.json`;
+
+    }
+
+    else {
+
+        return Promise.resolve();
+
+    }
+
+
+    return fetch(url)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            data.forEach(municipality => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    municipality.code;
+
+                option.text =
+                    municipality.name;
+
+                municipalityDropdown
+                    .appendChild(option);
+
+            });
+
+            initializeSelect2(
+                municipalityDropdown
+            );
+
+        });
+
+}
+
+
+/*
+==========================================
+BARANGAYS
+==========================================
+*/
+
+function loadBarangays() {
+
+    const selectedMunicipality =
+        document.getElementById(
+            "municipalityDropdown"
+        ).value;
+
+    const barangayDropdown =
+        document.getElementById(
+            "barangayDropdown"
+        );
+
+
+    barangayDropdown.innerHTML =
+        "<option value=''></option>";
+
+
+    initializeSelect2(
+        barangayDropdown
+    );
+
+
+    if (!selectedMunicipality) {
+
+        return Promise.resolve();
+
+    }
+
+
+    return fetch(
+        `https://psgc.gitlab.io/api/cities-municipalities/${selectedMunicipality}/barangays.json`
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        data.forEach(barangay => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                barangay.code;
+
+            option.text =
+                barangay.name;
+
+            barangayDropdown
+                .appendChild(option);
+
+        });
+
+        initializeSelect2(
+            barangayDropdown
+        );
+
+    });
+
+}
+
+
+/*
+==========================================
+LOAD SAVED ADDRESS
+==========================================
+*/
+
+async function initializeAddress() {
+
+    await loadRegions();
+
+
+    const savedRegion =
+        document.getElementById(
+            "savedRegion"
+        ).value;
+
+
+    if (!savedRegion) {
+
+        return;
+
+    }
+
+
+    $("#regionDropdown")
+        .val(savedRegion)
+        .trigger("change");
+
+
+    /*
+    NCR
+    */
+
+    if (savedRegion === "130000000") {
+
+        await loadMunicipalities();
+
+
+        const savedMunicipality =
+            document.getElementById(
+                "savedMunicipality"
+            ).value;
+
+
+        if (savedMunicipality) {
+
+            $("#municipalityDropdown")
+                .val(savedMunicipality)
+                .trigger("change");
+
+
+            await loadBarangays();
+
+
+            const savedBarangay =
+                document.getElementById(
+                    "savedBarangay"
+                ).value;
+
+
+            if (savedBarangay) {
+
+                $("#barangayDropdown")
+                    .val(savedBarangay)
+                    .trigger("change");
+
+            }
+
+        }
+
+        return;
+
+    }
+
+
+    /*
+    NON-NCR
+    */
+
+    await loadProvinces();
+
+
+    const savedProvince =
+        document.getElementById(
+            "savedProvince"
+        ).value;
+
+
+    if (!savedProvince) {
+
+        return;
+
+    }
+
+
+    $("#provinceDropdown")
+        .val(savedProvince)
+        .trigger("change");
+
+
+    await loadMunicipalities();
+
+
+    const savedMunicipality =
+        document.getElementById(
+            "savedMunicipality"
+        ).value;
+
+
+    if (!savedMunicipality) {
+
+        return;
+
+    }
+
+
+    $("#municipalityDropdown")
+        .val(savedMunicipality)
+        .trigger("change");
+
+
+    await loadBarangays();
+
+
+    const savedBarangay =
+        document.getElementById(
+            "savedBarangay"
+        ).value;
+
+
+    if (savedBarangay) {
+
+        $("#barangayDropdown")
+            .val(savedBarangay)
+            .trigger("change");
+
+    }
+
+}
+
+
+/*
+==========================================
+PAGE LOAD
+==========================================
+*/
+
+$(document).ready(function () {
+
+    initializeAllSelect2();
+
+    initializeAddress();
+
+});
+
+</script>
+
+
+<!-- =========================================
+     AFPSN LOGIC
+========================================== -->
+
+<script>
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        function checkAfpsn() {
+
+            const input =
+                document.getElementById(
+                    "afpsn"
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const value =
+                input.value.trim();
+
+
+            const staffDiv =
+                document.getElementById(
+                    "staffSpecializationContainer"
+                );
+
+
+            const subDiv =
+                document.getElementById(
+                    "subSpecializationContainer"
+                );
+
+
+            if (value.length > 0) {
+
+                const firstChar =
+                    value.charAt(0);
+
+
+                /*
+                ENLISTED
+                */
+
+                if (!isNaN(firstChar)) {
+
+                    staffDiv.style.display =
+                        "none";
+
+                    subDiv.style.display =
+                        "block";
+
+                }
+
+
+                /*
+                OFFICER
+                */
+
+                else if (
+                    firstChar.toLowerCase()
+                    === "o"
+                ) {
+
+                    subDiv.style.display =
+                        "none";
+
+                    staffDiv.style.display =
+                        "block";
+
+                }
+
+
+                /*
+                OTHER
+                */
+
+                else {
+
+                    staffDiv.style.display =
+                        "block";
+
+                    subDiv.style.display =
+                        "block";
+
+                }
+
+            }
+
+            else {
+
+                staffDiv.style.display =
+                    "block";
+
+                subDiv.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        const afpsnInput =
+            document.getElementById(
+                "afpsn"
+            );
+
+
+        checkAfpsn();
+
+
+        if (afpsnInput) {
+
+            afpsnInput.addEventListener(
+                "input",
+                checkAfpsn
+            );
+
+            afpsnInput.addEventListener(
+                "change",
+                checkAfpsn
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================================
+     EXISTING PERSONNEL ERROR
+========================================== -->
+
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+
+let personnelExistsMessage =
+    /*[[${existingdataerror} ?: '']]*/ '';
+
+
+function showErrorModal() {
+
+    const modal =
+        document.getElementById(
+            "errorModal"
+        );
+
+
+    const body =
+        document.getElementById(
+            "errorModalBody"
+        );
+
+
+    body.textContent =
+        personnelExistsMessage;
+
+
+    modal.classList.remove(
+        "hidden"
+    );
+
+    modal.classList.add(
+        "flex"
+    );
+
+}
+
+
+function closeErrorModal() {
+
+    const modal =
+        document.getElementById(
+            "errorModal"
+        );
+
+
+    modal.classList.add(
+        "hidden"
+    );
+
+    modal.classList.remove(
+        "flex"
+    );
+
+}
+
+
+if (personnelExistsMessage !== '') {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            showErrorModal();
+
+        }
+    );
+
+}
+
+/*]]>*/
+
+</script>
+
+
+<!-- =========================================
+     YOUR EXISTING JAVASCRIPT
+========================================== -->
+
+<script src="/js/security.js"></script>
+
+<script src="/js/dateformat/date_add_personnel.js"></script>
+
+<script src="/js/afpsn/afpsn.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>NIPMB | Personnel Profile</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>NIPMB | Personnel Profile</title>
+  <!--begin::Primary Meta Tags-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="NIPMB | Personnel Profile" />
+  <meta name="author" content="ColorlibHQ" />
+  <meta name="description"
+    content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
+  <meta name="keywords"
+    content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard" />
+  <!--end::Primary Meta Tags-->
+  <!--begin::Fonts-->
+  <link rel="stylesheet" href="/css/fonts.css">
+  <!--end::Fonts-->
+  <!--begin::Third Party Plugin(OverlayScrollbars)-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+    integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!--end::Third Party Plugin(OverlayScrollbars)-->
+  <!--begin::Third Party Plugin(Bootstrap Icons)-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!--end::Third Party Plugin(Bootstrap Icons)-->
+  <!--begin::Required Plugin(AdminLTE)-->
+  <link rel="stylesheet" href="/css/adminlte.css" />
+  <!--end::Required Plugin(AdminLTE)-->
+  <!-- apexcharts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+    integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+  <!-- jsvectormap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+    integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+
+
+  <!--fontawesome-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+  <link rel="stylesheet" href="/css/datatables/jquery.dataTables.min.css">
+  <script src="/js/datatables/jquery-3.6.0.min.js"></script>
+  <script src="/js/datatables/jquery.dataTables.min.js"></script>
+  <!-- jQuery and DataTables -->
+  
+  <!-- Bootstrap JS bundle (required for toast) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeo7FQH6gKQc5aa8hZf9kOPOuKkfj2mof1rX5w7f5T3zO7b2"
+    crossorigin="anonymous"></script>
+
+  <style>
+    /* Customize the search input field */
+    .dataTables_filter input {
+
+      margin-bottom: 15px;
+
+    }
+
+    .custom-green {
+      background-color: #65d96a;
+      /* Your desired green */
+      color: white;
+    }
+
+    .custom-bg-secondary {
+      background-color: #6c757d !important;
+      /* Default Bootstrap 5 Secondary Color */
+      color: white !important;
+      /* Ensures text is white */
+    }
+
+    /* Toast styles */
+    .toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #4CAF50;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      top: 20px;
+      right: 20px;
+      font-size: 17px;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(-20px);
+    }
+
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    #loadingOverlay {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(18, 16, 16, 0.9);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* background: rgba(255, 255, 255, 0.9); */
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="app-content-header" id="mainContent" style="display:none;">
+    <!--begin::Container-->
+    <div class="container-fluid">
+      <!--begin::Row-->
+      <div class="row mt-2 p-2">
+        <div class="col-sm-6">
+          <h3 class="mb-0">Notifications</h3>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-end">
+            <li class="breadcrumb-item mt-2"><a th:href="@{/protecteddata/mainpage}">Home</a></li>
+            <li class="breadcrumb-item active mt-2" aria-current="page">Notifications</li>
+          </ol>
+        </div>
+      </div>
+      <!--end::Row-->
+    </div>
+    <!--end::Container-->
+  </div>
+  <!--end::App Content Header-->
+  <!--begin::App Content-->
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content p-10">
+      <div class="container-fluid ">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills mailbox-controls">
+                  <li class="nav-item"><a class="nav-link active" href="#longpay" data-toggle="tab">Long Pay</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#militaryschooling" data-toggle="tab">Military
+                      Schooling</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#promotion" data-toggle="tab">Promotion</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#cadeteetad" data-toggle="tab">Cad Etad_Ete&
+                      Re_enlistment</a></li>
+
+                </ul>
+
+              </div><!-- /.card-header -->
+
+              <div class="card-body">
+
+                <div class="tab-content">
+                  <div class="active tab-pane" id="longpay">
+                    <!-- Post -->
+                    <div class="post">
+                      <div class="user-block">
+                        <!--start coding here-->
+                        <p>
+                        <div class="container-fluid">
+                          <!--begin::Row-->
+
+                          <div class="">
+                            <div class="card rounded-2 border border-1 shadow-sm">
+                              <div class="mb-4">
+                                <div class="card-header">
+                                  <h3 class="card-title">Records</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive">
+                                  <table  class="datatbl display">
+                                    <thead>
+                                      <tr class="table-active">
+                                        <th>Name</th>
+                                        <th>Assigned Office</th>
+                                        <th>Remarks</th>
+                                        <th>Action</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <tr th:each="notification : ${notifications}">
+                                        <td
+                                          th:text="${notification.personnelid.rankwithoutrating} +' '+${notification.personnelid.firstname}+' '+${notification.personnelid.middlename}+' '+${notification.personnelid.lastname}+' '+${notification.personnelid.extension}+' '+${notification.personnelid.afpsn}+' '+${notification.personnelid.bos.bosname}">
+                                        </td>
+                                        <td><span
+                                            th:text="${notification.personnelid.otherSubunit}+' '+${notification.personnelid.subunit.name}+', '+${notification.personnelid.unit.name}"></span>
+                                        </td>
+                                        <td><span class="badge bg-info" th:text="${notification.remarks}"></span>
+                                        </td>
+                                        <td>
+                                          <button type="submit" class="btn btn-sm bg-success bg-gradient text-white"
+                                            th:onclick="'confirmCompliedPersonnel(' + ${notification.id} + ')'">Complied</button>
+                                        </td>
+                                      </tr>
+
+                                    </tbody>
+
+                                  </table>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </p>
+
+                      </div>
+                      <!-- /.user-block -->
+                    </div>
+                    <!-- /.post -->
+
+                  </div>
+
+                  <div class="tab-pane" id="promotion">
+                    <div class="post">
+                      <div class="user-block">
+                        <!--start coding here-->
+
+                      </div>
+                      <!-- /.user-block -->
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="cadeteetad">
+                    <div class="post">
+                      <div class="user-block">
+                        <!--start coding here-->
+
+
+                      </div>
+                      <!-- /.user-block -->
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="militaryschooling">
+                    <div class="post">
+                      <div class="user-block">
+                        <!--start coding here-->
+                        <section class="content p-10">
+                          <div class="container-fluid ">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class="">
+                                  <div class=" p-2">
+                                    <ul class="nav nav-pills mailbox-controls">
+                                      <li class="nav-item"><a class="nav-link active" href="#waiting"
+                                          data-toggle="tab">Waiting List</a></li>
+                                      <li class="nav-item"><a class="nav-link" href="#program" data-toggle="tab">Program
+                                          List</a></li>
+                                      <li class="nav-item"><a class="nav-link" href="#ongoing" data-toggle="tab">Ongoing
+                                          List</a></li>
+                                      <li class="nav-item"><a class="nav-link" href="#complied"
+                                          data-toggle="tab">Complied List</a></li>
+                                          
+                                    </ul>
+
+                                  </div>
+                                  <!-- /.card-header -->
+
+                                  <div class="card-body">
+
+                                    <div class="tab-content">
+                                      <div class="active tab-pane" id="waiting">
+                                        <!-- Post -->
+                                        <div class="post">
+                                          <div class="user-block">
+                                            <!--start coding here-->
+                                            <p>
+                                            <div class="container-fluid">
+                                              <!--begin::Row-->
+
+                                              <div class="">
+                                                <div class="card rounded-2 border border-1 shadow-sm">
+                                                  <div class="mb-4">
+                                                    <div class="card-header">
+                                                      <h3 class="card-title">Records</h3>
+                                                    </div>
+                                                    <!-- /.card-header -->
+                                                    <div class="card-body table-responsive">
+                                                      <table  class="datatbl display">
+                                                        <thead>
+                                                          <tr class="table-active">
+                                                            <th>Name</th>
+                                                            <th>Assigned Office</th>
+                                                            <th>Remarks</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                          <tr th:each="notification : ${militaryschoolingnotification}">
+                                                            <td
+                                                              th:text="${notification.personnelid.rankwithoutrating} +' '+${notification.personnelid.firstname}+' '+${notification.personnelid.middlename}+' '+${notification.personnelid.lastname}+' '+${notification.personnelid.extension}+' '+${notification.personnelid.afpsn}+' '+${notification.personnelid.bos.bosname}">
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${notification.personnelid.otherSubunit}+' '+${notification.personnelid.subunit.name}+', '+${notification.personnelid.unit.name}"></span>
+                                                            </td>
+                                                            <td th:title="${notification.remarks}"><span
+                                                                class="badge bg-info fs-6"
+                                                                th:text="${notification.abbrevation}"></span></td>
+                                                            <td><span class="badge bg-success fs-6"
+                                                                th:if="${notification.status == 0}"
+                                                                th:text="'Waiting'"></span></td>
+                                                            <td>
+                                                              <div class="btn-group">
+                                                                <button type="submit" class="btn btn-default btn-sm"
+                                                                  th:onclick="'confirmRemoveFromWaitingList(' + ${notification.id} + ')'"
+                                                                  data-bs-toggle="tooltip" title="Program"><i
+                                                                    class="bi bi-calendar-event-fill"></i></button>
+                                                                <button type="submit" class="btn btn-default btn-sm"
+                                                                  th:onclick="'confirmCompliedPersonnel(' + ${notification.id} + ')'"
+                                                                  data-bs-toggle="tooltip" title="For Resignation"><i
+                                                                    class="bi bi-person-x-fill"></i></button>
+                                                                <button type="submit" class="btn btn-default btn-sm"
+                                                                  th:onclick="'confirmCompliedPersonnel(' + ${notification.id} + ')'"
+                                                                  data-bs-toggle="tooltip" title="For Retirement"><i
+                                                                    class="bi bi-person-vcard-fill"></i></button>
+
+                                                              </div>
+                                                            </td>
+                                                          </tr>
+
+                                                        </tbody>
+
+                                                      </table>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            </p>
+
+                                          </div>
+                                          <!-- /.user-block -->
+                                        </div>
+                                        <!-- /.post -->
+
+                                      </div>
+                                      <div class="tab-pane" id="program">
+                                        <div class="post">
+                                          <div class="user-block">
+                                            <!--start coding here-->
+                                            <p>
+                                            <div class="container-fluid">
+                                              <!--begin::Row-->
+
+                                              <div class="row">
+                                                <div class="card rounded-2 border border-1 shadow-sm">
+                                                  <div class="mb-4">
+                                                    <div class="card-header">
+                                                      <h3 class="card-title">Records</h3>
+                                                    </div>
+                                                    <!-- /.card-header -->
+                                                    <div class="card-body table-responsive">
+                                                      <table  class="datatbl display">
+                                                        <thead>
+                                                          <tr class="table-active">
+                                                            <th>Name</th>
+                                                            <th>Assigned Office</th>
+                                                            <th>Tentative Date</th>
+                                                            <th>Remarks</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                          <tr
+                                                            th:each="notification : ${militaryschoolingnotificationprogram}">
+                                                            <td
+                                                              th:text="${notification.personnelid.rankwithoutrating} +' '+${notification.personnelid.firstname}+' '+${notification.personnelid.middlename}+' '+${notification.personnelid.lastname}+' '+${notification.personnelid.extension}+' '+${notification.personnelid.bos.bosname}+' '+${notification.personnelid.afpsn}">
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${notification.personnelid.otherSubunit}+' '+${notification.personnelid.subunit.name}+', '+${notification.personnelid.unit.name}"></span>
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${T(java.time.LocalDate).parse(notification.tentativedate_at).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                                            </td>
+                                                            <td><span class="badge bg-info fs-6"
+                                                                th:text="${notification.remarks}"></span></td>
+                                                            <td><span class="badge bg-success fs-6"
+                                                                th:if="${notification.status == 1}"
+                                                                th:text="'Program'"></span></td>
+
+                                                            <td>
+                                                              <div class="btn-group">
+                                                                <button type="submit" class="btn btn-default btn-sm"
+                                                                  th:onclick="'confirmRemoveFromProgramList(' + ${notification.id} + ')'"
+                                                                  data-bs-toggle="tooltip" title="Start Schooling"><i
+                                                                    class="bi bi-skip-start-btn-fill"></i></button>
+
+                                                              </div>
+                                                            </td>
+                                                          </tr>
+
+                                                        </tbody>
+
+                                                      </table>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            </p>
+                                          </div>
+                                          <!-- /.user-block -->
+                                        </div>
+                                      </div>
+
+                                      <div class="tab-pane" id="ongoing">
+                                        <div class="post">
+                                          <div class="user-block">
+                                            <!--start coding here-->
+                                            <p>
+                                            <div class="container-fluid">
+                                              <!--begin::Row-->
+
+                                              <div class="row">
+                                                <div class="card rounded-2 border border-1 shadow-sm">
+                                                  <div class="mb-4">
+                                                    <div class="card-header">
+                                                      <h3 class="card-title">Records</h3>
+                                                    </div>
+                                                    <!-- /.card-header -->
+                                                    <div class="card-body table-responsive">
+                                                      <table  class="datatbl display">
+                                                        <thead>
+                                                          <tr class="table-active">
+                                                            <th>Name</th>
+                                                            <th>Assigned Office</th>
+                                                            <th>Date Started</th>
+                                                            <th>Remarks</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                          <tr
+                                                            th:each="notification : ${militaryschoolingnotificationongoing}">
+                                                            <td
+                                                              th:text="${notification.personnelid.rankwithoutrating} +' '+${notification.personnelid.firstname}+' '+${notification.personnelid.middlename}+' '+${notification.personnelid.lastname}+' '+${notification.personnelid.extension}+' '+${notification.personnelid.bos.bosname}+' '+${notification.personnelid.afpsn}">
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${notification.personnelid.otherSubunit}+' '+${notification.personnelid.subunit.name}+', '+${notification.personnelid.unit.name}"></span>
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${T(java.time.LocalDate).parse(notification.start_date).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                                            </td>
+                                                            <td><span class="badge bg-info fs-6"
+                                                                th:text="${notification.remarks}"></span></td>
+                                                            <td><span class="badge bg-success fs-6"
+                                                                th:if="${notification.status == 2}"
+                                                                th:text="'Ongoing'"></span></td>
+
+                                                            <td>
+                                                              <div class="btn-group">
+                                                                <button type="submit" class="btn btn-default btn-sm"
+                                                                  th:onclick="'confirmRemoveFromOngoingList(' + ${notification.id} + ')'"
+                                                                  data-bs-toggle="tooltip" title="Stop Schooling"><i
+                                                                    class="bi bi-sign-stop-fill"></i></button>
+
+                                                              </div>
+                                                            </td>
+                                                          </tr>
+
+                                                        </tbody>
+
+                                                      </table>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            </p>
+                                          </div>
+                                          <!-- /.user-block -->
+                                        </div>
+                                      </div>
+                                      <div class="tab-pane" id="complied">
+                                        <div class="post">
+                                          <div class="user-block">
+                                            <!--start coding here-->
+                                            <p>
+                                            <div class="container-fluid">
+                                              <!--begin::Row-->
+
+                                              <div class="row">
+                                                <div class="card rounded-2 border border-1 shadow-sm">
+                                                  <div class="mb-4">
+                                                    <div class="card-header">
+                                                      <h3 class="card-title">Records</h3>
+                                                    </div>
+                                                    <!-- /.card-header -->
+                                                    <div class="card-body table-responsive">
+                                                      <table  class="datatbl display">
+                                                        <thead>
+                                                          <tr class="table-active">
+                                                            <th>Name</th>
+                                                            <th>Assigned Office</th>
+                                                            <th>Date Started</th>
+                                                            <th>Date End</th>
+                                                            <th>Remarks</th>
+                                                            <th>Status</th>
+                                                            <th>Compliance</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                          <tr
+                                                            th:each="notification : ${militaryschoolingnotificationcomplied}">
+                                                            <td
+                                                              th:text="${notification.personnelid.rankwithoutrating} +' '+${notification.personnelid.firstname}+' '+${notification.personnelid.middlename}+' '+${notification.personnelid.lastname}+' '+${notification.personnelid.extension}+' '+${notification.personnelid.bos.bosname}+' '+${notification.personnelid.afpsn}">
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${notification.personnelid.otherSubunit}+' '+${notification.personnelid.subunit.name}+', '+${notification.personnelid.unit.name}"></span>
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${T(java.time.LocalDate).parse(notification.start_date).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                                            </td>
+                                                            <td><span
+                                                                th:text="${T(java.time.LocalDate).parse(notification.end_date).format(T(java.time.format.DateTimeFormatter).ofPattern('MMM dd, yyyy'))}"></span>
+                                                            </td>
+                                                            <td><span class="badge bg-info fs-6"
+                                                                th:text="${notification.remarks}"></span></td>
+                                                            <td><span class="badge bg-success fs-6"
+                                                                th:if="${notification.status == 3}"
+                                                                th:text="'Completed'"></span></td>
+
+                                                            <td>
+                                                              <div class="btn-group">
+                                                                <form th:action="@{/uploadfile/scholastic}"
+                                                                  method="get">
+                                                                  <input type="hidden" name="personId"
+                                                                    th:value="${notification.personnelid.id}" />
+                                                                    <input type="hidden" name="abbrevation"
+                                                                    th:value="${notification.abbrevation}" />
+                                                                  <button type="submit" class="btn btn-primary btn-sm"
+                                                                    title="Upload Scholastic"
+                                                                    th:disabled="${notification.scholastic_btn_stat == 'disabled'}">
+                                                                    Upload Scholastic
+                                                                  </button>
+                                                                </form>
+
+                                                                <form th:action="@{/uploadfile/diploma}" method="get">
+                                                                  <input type="hidden" name="personId"
+                                                                    th:value="${notification.personnelid.id}" />
+                                                                    <input type="hidden" name="abbrevation"
+                                                                    th:value="${notification.abbrevation}" />
+                                                                  <button type="submit" class="btn btn-info btn-sm"
+                                                                    title="Upload Diploma"
+                                                                    th:disabled="${notification.diploma_btn_stat == 'disabled'}">
+                                                                    Upload Diploma
+                                                                  </button>
+                                                                </form>
+
+                                                                <form th:action="@{/uploadfile/order}" method="get">
+                                                                  <input type="hidden" name="personId"
+                                                                    th:value="${notification.personnelid.id}" />
+                                                                  <input type="hidden" name="abbrevation"
+                                                                    th:value="${notification.abbrevation}" />
+                                                                  <button type="submit" class="btn btn-warning btn-sm"
+                                                                    title="Upload Order"
+                                                                    th:disabled="${notification.order_btn_stat == 'disabled'}">
+                                                                    Upload Order
+                                                                  </button>
+                                                                </form>
+                                                              </div>
+                                                            </td>
+                                                          </tr>
+
+                                                        </tbody>
+
+                                                      </table>
+                                                    </div>
+
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            </p>
+
+                                          </div>
+                                          <!-- /.user-block -->
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                    <!-- /.tab-content -->
+                                  </div><!-- /.card-body -->
+                                </div>
+                                <!-- /.card -->
+                              </div>
+                              <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                          </div><!-- /.container-fluid -->
+                        </section>
+                        <!-- /.content -->
+
+
+                      </div>
+                      <!-- /.user-block -->
+                    </div>
+                  </div>
+
+                </div>
+                <!-- /.tab-content -->
+              </div><!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+
+
+  <!-- Confirm Complied Modal -->
+  <div class="modal fade" id="confirmCompliedModal" tabindex="-1" aria-labelledby="confirmCompliedModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="confirmCompliedForm">
+          <div class="modal-header bg-success text-dark">
+            <h5 class="modal-title" id="confirmCompliedModalLabel">Confirm Personnel Compliance</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to mark this personnel as complied?</p>
+
+            <input type="hidden" id="compliedPersonnelId" />
+
+            <div class="mb-3">
+              <label for="compliedSecretKey" class="form-label fw-bold">Enter your secret key:</label>
+              <input type="password" class="form-control" id="compliedSecretKey" placeholder="Enter your password"
+                required>
+              <div id="compliedError" class="text-danger mt-2" style="display: none;"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Remove from Waiting List Modal -->
+  <div class="modal fade" id="removeFromWaitingModal" tabindex="-1" aria-labelledby="removeWaitingModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="removeWaitingForm">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="removeWaitingModalLabel">Remove From Waiting List</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <input type="hidden" id="waitingId">
+
+            <div class="mb-3">
+              <label for="tentativeDate" class="form-label fw-bold">Tentative Date of Schooling</label>
+              <input type="date" class="form-control" id="tentativeDate" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="waitingSecretKey" class="form-label fw-bold">Secret Key</label>
+              <input type="password" class="form-control" id="waitingSecretKey" placeholder="Enter your secret key"
+                required>
+            </div>
+
+            <div id="waitingFormError" class="text-danger mt-2" style="display: none;"></div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remove from Program List Modal -->
+  <div class="modal fade" id="removeFromProgramModal" tabindex="-1" aria-labelledby="removeProgramLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="removeProgramForm">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="removeProgramLabel">Remove From Program List</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <input type="hidden" id="programId" />
+
+            <div class="mb-3">
+              <label for="startDate" class="form-label fw-bold">Start Date of Schooling</label>
+              <input type="date" class="form-control" id="startDate" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="programSecretKey" class="form-label fw-bold">Secret Key</label>
+              <input type="password" class="form-control" id="programSecretKey" placeholder="Enter your secret key"
+                required>
+            </div>
+
+            <div id="programFormError" class="text-danger mt-2" style="display: none;"></div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Remove from Ongoing List Modal -->
+  <div class="modal fade" id="removeFromOngoingModal" tabindex="-1" aria-labelledby="removeOngoingLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="removeOngoingForm">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="removeOngoingLabel">Remove From Ongoing List</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <input type="hidden" id="ongoingId" />
+
+            <div class="mb-3">
+              <label for="stopDate" class="form-label fw-bold">Stop Date of Schooling</label>
+              <input type="date" class="form-control" id="stopDate" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="ongoingSecretKey" class="form-label fw-bold">Secret Key</label>
+              <input type="password" class="form-control" id="ongoingSecretKey" placeholder="Enter your secret key"
+                required>
+            </div>
+
+            <div id="ongoingFormError" class="text-danger mt-2" style="display: none;"></div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Confirm</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<script>
+  $(document).ready(function () {
+    const commonOptions = {
+      stateSave: true,
+      ordering: false,
+      searching: true,
+      pageLength: 50,
+      autoWidth: false,
+      responsive: false,
+      lengthMenu: [50, 100, 150, 200, 250]
+    };
+
+    // Initialize DataTables on all tables with class 'datatbl'
+    $('.datatbl').each(function () {
+      $(this).DataTable(commonOptions);
+    });
+  });
+</script>
+
+
+<script>
+  window.addEventListener('load', function () {
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  }, 2000); // 2 second delay
+});
+</script>
+
+
+  <!--boostrap js-->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- jQuery (MUST be first) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- DataTables JS (AFTER jQuery) -->
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.js"></script>
+
+  
+
+  <script>
+    // Wait for document to be ready
+    $(document).ready(function () {
+
+      // Tab switching logic
+      $('a[data-toggle="tab"]').on('click', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+
+        // Activate the selected tab and its corresponding content
+        $(this).tab('show');
+      });
+
+      // Handle comment input focus
+      $(".form-control.form-control-sm").on('focus', function () {
+        $(this).addClass('focus-input');
+      });
+
+      $(".form-control.form-control-sm").on('blur', function () {
+        $(this).removeClass('focus-input');
+      });
+
+      // Handle form submission in the "Post" section
+      $(".post .form-horizontal").on('submit', function (e) {
+        e.preventDefault(); // Prevent form submission to server
+
+        // Get the comment text (can be extended with further logic)
+        var comment = $(this).find('input[type="text"]').val();
+
+      });
+
+      // Handle form submission in "Settings" tab
+      $("#settings form").on('submit', function (e) {
+        e.preventDefault(); // Prevent form submission to server
+
+
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+    integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+  <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+  <script src="/js/adminlte.js"></script>
+  <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+  <script>
+    const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+    const Default = {
+      scrollbarTheme: 'os-theme-light',
+      scrollbarAutoHide: 'leave',
+      scrollbarClickScroll: true,
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+      if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+        OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+          scrollbars: {
+            theme: Default.scrollbarTheme,
+            autoHide: Default.scrollbarAutoHide,
+            clickScroll: Default.scrollbarClickScroll,
+          },
+        });
+      }
+    });
+
+  </script>
+
+
+
+  <!--end::OverlayScrollbars Configure-->
+  <!-- OPTIONAL SCRIPTS -->
+  <!-- sortablejs -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+    integrity="sha256-ipiJrswvAR4VAx/th+6zWsdeYmVae0iJuiR+6OqHJHQ=" crossorigin="anonymous"></script>
+  <!-- sortablejs -->
+  <script>
+    const connectedSortables = document.querySelectorAll('.connectedSortable');
+    connectedSortables.forEach((connectedSortable) => {
+      let sortable = new Sortable(connectedSortable, {
+        group: 'shared',
+        handle: '.card-header',
+      });
+    });
+
+    const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
+    cardHeaders.forEach((cardHeader) => {
+      cardHeader.style.cursor = 'move';
+    });
+  </script>
+
+  <script th:inline="javascript">
+    function confirmCompliedPersonnel(id) {
+      document.getElementById('compliedPersonnelId').value = id;
+      document.getElementById('confirmCompliedForm').reset();
+      document.getElementById('compliedError').style.display = 'none';
+
+      const modal = new bootstrap.Modal(document.getElementById('confirmCompliedModal'));
+      modal.show();
+    }
+
+    document.getElementById('confirmCompliedForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const staticPassword = /*[[${appSecretKey} ?: '']]*/ '';
+      const id = document.getElementById('compliedPersonnelId').value;
+      const inputPassword = document.getElementById('compliedSecretKey').value;
+      const errorBox = document.getElementById('compliedError');
+
+      if (!inputPassword || inputPassword !== staticPassword) {
+        errorBox.textContent = 'Incorrect password';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      errorBox.style.display = 'none';
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('confirmCompliedModal'));
+      modal.hide();
+
+      // Proceed to confirmation (redirect or AJAX)
+      Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while the personnel is being marked as complied.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          window.location.href = `/complied/notifications/${id}`;
+        }
+      });
+    });
+  </script>
+
+
+  <!-- start: script for program -->
+  <script th:inline="javascript">
+    function confirmRemoveFromWaitingList(id) {
+      document.getElementById('waitingId').value = id;
+      document.getElementById('removeWaitingForm').reset();
+      document.getElementById('waitingFormError').style.display = 'none';
+
+      new bootstrap.Modal(document.getElementById('removeFromWaitingModal')).show();
+    }
+
+    document.getElementById('removeWaitingForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const staticPassword = /*[[${appSecretKey} ?: '']]*/ '';
+      const id = document.getElementById('waitingId').value;
+      const date = document.getElementById('tentativeDate').value;
+      const password = document.getElementById('waitingSecretKey').value;
+      const errorBox = document.getElementById('waitingFormError');
+
+      if (!date) {
+        errorBox.textContent = 'Please select a date.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      if (!password || password !== staticPassword) {
+        errorBox.textContent = 'Incorrect secret key.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      errorBox.style.display = 'none';
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('removeFromWaitingModal'));
+      modal.hide();
+
+      // Show loading feedback then redirect
+      Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while the request is being processed.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          window.location.href = `/notifications/waiting/notifications/${id}?date=${encodeURIComponent(date)}`;
+        }
+      });
+    });
+
+  </script>
+  <!-- end: script for program button-->
+  <!-- start: script for start ongoing schooling -->
+  <script th:inline="javascript">
+    function confirmRemoveFromProgramList(id) {
+      document.getElementById('programId').value = id;
+      document.getElementById('removeProgramForm').reset();
+      document.getElementById('programFormError').style.display = 'none';
+
+      const modal = new bootstrap.Modal(document.getElementById('removeFromProgramModal'));
+      modal.show();
+    }
+
+    document.getElementById('removeProgramForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const staticPassword = /*[[${appSecretKey} ?: '']]*/ '';
+      const id = document.getElementById('programId').value;
+      const date = document.getElementById('startDate').value;
+      const password = document.getElementById('programSecretKey').value;
+      const errorBox = document.getElementById('programFormError');
+
+      if (!date) {
+        errorBox.textContent = 'Please select a date.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      if (!password || password !== staticPassword) {
+        errorBox.textContent = 'Incorrect secret key.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      errorBox.style.display = 'none';
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('removeFromProgramModal'));
+      modal.hide();
+
+      // Use SweetAlert2 to show loading feedback
+      Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while the request is being processed.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          window.location.href = `/notifications/program/notifications/${id}?date=${encodeURIComponent(date)}`;
+        }
+      });
+    });
+
+  </script>
+  <!-- end: script for start ongoing schooling -->
+
+  <!-- start: script for stop ongoing schooling -->
+  <script th:inline="javascript">
+    function confirmRemoveFromOngoingList(id) {
+      document.getElementById('ongoingId').value = id;
+      document.getElementById('removeOngoingForm').reset();
+      document.getElementById('ongoingFormError').style.display = 'none';
+
+      const modal = new bootstrap.Modal(document.getElementById('removeFromOngoingModal'));
+      modal.show();
+    }
+
+    document.getElementById('removeOngoingForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const staticPassword = /*[[${appSecretKey} ?: '']]*/ '';
+      const id = document.getElementById('ongoingId').value;
+      const date = document.getElementById('stopDate').value;
+      const password = document.getElementById('ongoingSecretKey').value;
+      const errorBox = document.getElementById('ongoingFormError');
+
+
+      if (!date) {
+        errorBox.textContent = 'Please select a stop date.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      if (!password || password !== staticPassword) {
+        errorBox.textContent = 'Incorrect secret key.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      errorBox.style.display = 'none';
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('removeFromOngoingModal'));
+      modal.hide();
+
+      Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while the request is being processed.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          window.location.href = `/notifications/ongoing/notifications/${id}?date=${encodeURIComponent(date)}`;
+        }
+      });
+    });
+  </script>
+
+  <!-- end: script for stop ongoing schooling -->
+
+  <!-- script for tooltips -->
+  <script>
+    // Initialize all tooltips on the page
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  </script>
+<script src="/js/security.js"></script>
+<script src="/js/tabpanescript.js"></script>
+
+
+
+</body>
+
+</html>

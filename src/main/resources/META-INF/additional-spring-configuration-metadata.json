@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "app.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.secret-key'"
+  },
+  {
+    "name": "file.upload-dir",
+    "type": "java.lang.String",
+    "description": "A description for 'file.upload-dir'"
+  },
+  {
+    "name": "api.key.ipthreat",
+    "type": "java.lang.String",
+    "description": "A description for 'api.key.ipthreat'"
+  },
+  {
+    "name": "file.upload-dir-profilepicture_",
+    "type": "java.lang.String",
+    "description": "A description for 'file.upload-dir-profilepicture_'"
+  },
+  {
+    "name": "file.upload-dir-profilepicture",
+    "type": "java.lang.String",
+    "description": "A description for 'file.upload-dir-profilepicture'"
+  },
+ {
+    "name": "upload.directory",
+    "type": "java.lang.String",
+    "description": "A description for 'upload.directory'"
+  }
+]}

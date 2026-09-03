@@ -1,0 +1,1015 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@2.3.11/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@2.3.11/dist/css/skins/_all-skins.min.css">
+
+  <!-- Include jQuery and DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="/css/soi.css">
+
+<style>
+    :root {
+        --border-color: #000;
+        --text-color: #111;
+        --font-base: 14px;
+    }
+
+    body {
+        margin: 0;
+        padding: 2em 1em;
+        font-family: Arial, sans-serif;
+        font-size: var(--font-base);
+        color: var(--text-color);
+        background-color: #fff;
+    }
+
+    .container {
+        max-width: 750px;
+        margin: 7em auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+        
+    }
+
+    .thumbs {
+        display: flex;
+        justify-content: flex-start;
+        gap: 3em;
+    }
+
+    .thumbmark {
+        border: 1px solid var(--border-color);
+        width: 120px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .thumb-caption {
+        margin-top: 0.3em;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .signature-block {
+        display: flex;
+        justify-content: flex-end;
+        text-align: center;
+        margin-top: -2em;
+    }
+
+    .signature-line {
+    border-top: 1px solid var(--border-color); 
+    width: 250px;
+    padding-top: 0.3em;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.statement {
+    text-align: justify;
+    text-indent: 50px;
+    line-height: 1.6;
+}
+
+.endorsed {
+    display: flex;
+    justify-content: flex-end;
+    text-align: center;
+}
+
+.endorsed .signature-line {
+    width: 300px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+
+    .note-block {
+        font-size: 13px;
+    }
+
+    .note-block p {
+        margin: 0.5em 0;
+    }
+
+    .note-block b {
+        display: inline-block;
+        width: 120px;
+    }
+
+    .asterisk-note {
+        font-size: 12px;
+        margin-top: 1.5em;
+        font-style: italic;
+    }
+
+    @media print {
+        body {
+            padding: 0;
+            color: #000;
+            background-color: #fff;
+        }
+
+        .container {
+            padding: 0;
+        }
+    }
+
+    /* Hide the section normally */
+    #print-section {
+      display: none;
+    }
+
+    /* Only show when printing */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #print-section, #print-section * {
+        visibility: visible;
+      }
+
+      #print-section {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+  @media print {
+    .print-page {
+      page-break-after: always;
+    }
+
+    .header {
+      margin-top: 0;
+      margin-bottom: 5px;
+      font-size: 18px;
+      letter-spacing: 3px;
+      font-weight: bold;
+      text-align: center;
+      color: rgba(6, 60, 105, 0.5);
+    }
+  }
+
+  .border{
+     margin-bottom:0.3in;
+  }
+
+  @page {
+    background-color: white;
+    font-family: Arial, sans-serif;
+    margin: 0.5in;
+    margin-bottom:0.5in;
+   
+  }
+
+  .keep-together {
+    break-inside: avoid;
+    
+
+  }
+
+  .headerconfidential {
+    margin-top: 0;
+    font-size: 18px;
+    letter-spacing: 3px;
+    font-weight: bold;
+    text-align: center;
+    color: rgba(6, 60, 105, 0.5);
+    text-align: center
+
+  }
+  .header {
+  display: flex;
+  align-items: center;          /* vertically center image and text */
+  justify-content: center;      /* horizontally center the whole row */
+  gap: 15px;                    /* space between image and heading */
+  margin: 0 auto 5px auto;
+  font-size: 18px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  text-align: center;
+  color: rgba(6, 60, 105, 0.8); /* slight increase in opacity for clarity */
+}
+
+  .certification {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .thumbmark-container {
+            display: flex;;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .thumbmark-box {
+            border: 1px solid #000;
+            width: 100px;
+            height: 120px;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .signature {
+            margin-top: 40px;
+            text-align: right;
+        }
+
+        .signature .line {
+            width: 300px;
+            height: 1px;
+            background-color: #009FE3;
+            margin-bottom: 3px;
+            margin-left: auto;
+        }
+
+        .signature-name {
+            font-weight: bold;
+        }
+
+        .certify-text {
+            text-align: justify;
+            margin: 40px 0;
+        }
+
+        .verifier {
+            
+            margin-top: 60px;
+            text-align: end;
+        }
+
+        .verifier .line {
+            width: 300px;
+            height: 1px;
+            background-color: #009FE3;
+            margin-left: auto;
+        }
+
+        .note {
+            font-size: 13px;
+            margin-top: 30px;
+        }
+
+        .note b {
+            font-weight: bold;
+        }
+
+        .info {
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        .info span {
+            display: inline-block;
+            min-width: 160px;
+        }
+
+        .asterisk {
+            margin-top: 20px;
+            font-size: 12px;
+            font-style: italic;
+        }
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+</style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title"><i class="fa fa-users"></i> Personnel List</h3>
+            </div>
+      
+            <div class="box-body table-responsive">
+              <table id="personnelTable" class="table table-striped table-hover">
+                <thead class="bg-primary">
+                  <tr>
+                    <th style="width: 70%;">Name</th>
+                    <th style="width: 30%;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Juan Dela Cruz</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary pl-2 pr-2" onclick="printHidden()">
+                        <i class="fa fa-print"></i> Print
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+
+      <main id="print-section">
+        <div class="headerconfidential">CONFIDENTIAL</div>
+        <div class="header">
+            <img src="/images/signal-2025-01-20-115314.png" height="70" width="70" alt="">
+            <h1>Naval Intelligence Personnel Information</h1>
+        </div>
+
+        <p class="center" style="margin-bottom: 1em; font-size: 14px;">As of (21 January 2025)</p>
+        <!-- 1st section -->
+        <table>
+            <tbody class="uppercase">
+                <tr>
+                    <td rowspan="4" style="width: 25%;"><img class="dp" src="/images/profile.jpg" height="150" alt=""></td>
+                    <td colspan="2" class="center">rank/name/afpsn/bos</td>
+                    <td class="center" style="width: 20%;">due for resignation</td>
+                    <td class="center" style="width: 10%;"></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="2" class="center" style="width: 25%;">date of last <br>promotion </td>
+                    <td rowspan="2" class="center"></td>
+                    <td class="center">active</td>
+                    <td class="center"></td>
+
+                <tr>
+                    <td class="center">date of compulsory <br> retirement</td>
+                    <td class="center"></td>
+                </tr>
+                </tr>
+
+                <tr>
+                    <td class="center">physical profile:</td>
+                    <td class="center"></td>
+                    <td class="center">security clearance:</td>
+                    <td class="center"></td>
+                </tr>
+
+                <tr>
+                    <td>contact nr:</td>
+                    <td></td>
+                    <td>nr of years in mil svc:</td>
+                    <td colspan="2"></td>
+                </tr>
+
+                <tr>
+                    <td>signal:</td>
+                    <td></td>
+                    <td>source of <br> commision:</td>
+                    <td colspan="2"></td>
+                </tr>
+
+                <tr>
+                    <td>gmail account:</td>
+                    <td></td>
+                    <td>ethnicity:</td>
+                    <td colspan="2"></td>
+                </tr>
+
+                <tr>
+                    <td>social media accounts:</td>
+                    <td colspan="4"></td>
+                </tr>
+
+                <tr>
+                    <td>present duty <br> assignment:</td>
+                    <td></td>
+                    <td class="center">address:</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 2nd Section -->
+        <h4>military background</h4>
+        <table>
+            <tbody class="uppercase">
+                <tr>
+                    <td>date assigned:</td>
+                    <td></td>
+                    <td>total nr ass:</td>
+                    <td colspan="3"></td>
+                </tr>
+
+                <tr>
+                    <td>date cad:</td>
+                    <td style="width: 20%;"></td>
+                    <td>sot:</td>
+                    <td style="width: 10%;"></td>
+                    <td>etad:</td>
+                    <td style="width: 10%;"></td>
+                </tr>
+
+                <tr>
+                    <td>date enlisted:</td>
+                    <td></td>
+                    <td>date of latest <br> reen:</td>
+                    <td></td>
+                    <td>date of mid term <br> reen:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>date entered <br> mil svc:</td>
+                    <td></td>
+                    <td>nr of long pay:</td>
+                    <td></td>
+                    <td>effective <br> date</td>
+                </tr>
+
+                <tr>
+                    <td>field of specialization:</td>
+                    <td></td>
+                    <td>staff specialization:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>sub specialization:</td>
+                    <td class="br-0"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 3rd Section -->
+        
+        <h4>skills and abilities</h4>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Combat Skills:</td>
+                    <td>Hand to hand combat</td>
+                    <td>Technical Skills:</td>
+                    <td>Pyschological Skills</td>
+                    <td>Liguistic Skills</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 4th Section -->
+         <br/>
+        <div class="headerconfidential">CONFIDENTIAL</div>
+        <br>
+        <h4>notable missions</h4>
+        <table>
+            <tbody>
+                <tr>
+                    <td>2008</td>
+                    <td>Magdalo, Manila Peninsula</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 5th Section -->
+        <h4>Personal Information</h4>
+        <table>
+            <tbody class="uppercase">
+                <tr>
+                    <td class="end">gender:</td>
+                    <td style="width: 20%;"></td>
+                    <td class="end">blood type:</td>
+                    <td style="width: 30%;"></td>
+                </tr>
+
+                <tr>
+                    <td class="end">religion:</td>
+                    <td></td>
+                    <td class="end">pag-ibig nr:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">sss nr:</td>
+                    <td></td>
+                    <td class="end">philhealth nr:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">body built:</td>
+                    <td></td>
+                    <td class="end">nationality:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">shoe size:</td>
+                    <td></td>
+                    <td class="end">complexion:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">head gear <br>size:</td>
+                    <td></td>
+                    <td class="end">code name:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">date of birth:</td>
+                    <td></td>
+                    <td class="end">place of birth</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="2" class="center">address</td>
+                    <td class="end">permanent:</td>
+                    <td colspan="2"></td>
+                </tr>
+
+                <tr>
+                    <td class="end">current</td>
+                    <td colspan="2"></td>
+                </tr>
+
+                <tr>
+                    <td class="end">local languages <br>spoken:</td>
+                    <td colspan="3"></td>
+                </tr>
+
+                <tr>
+                    <td class="end">foreign languages <br>spoken:</td>
+                    <td colspan="3"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 6th Section -->
+        <h4>physical description</h4>
+        <table>
+            <tbody class="uppercase">
+                <tr>
+                    <td>height:</td>
+                    <td>centimeter:(cm)</td>
+                    <td style="width: 30%;" class="center"></td>
+                    <td style="width: 30%;" class="end">inches</td>
+                    <td class="center"></td>
+                </tr>
+
+                <tr>
+                    <td>weight:</td>
+                    <td>pounds:(lbs)</td>
+                    <td class="center"></td>
+                    <td class="end">kilos</td>
+                    <td class="center"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="width: 25%;" class="end">hair color:</td>
+                    <td></td>
+                    <td class="end">eye color:</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="center" colspan="2">distinguish features:</td>
+                    <td colspan="3"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 7th Section -->
+        <h4>professional background</h4>
+        <table>
+            <tbody class="uppercase">
+                <tr>
+                    <th style="width: 20%;">degree</th>
+                    <th>course</th>
+                    <th>school name</th>
+                    <th>year graduated</th>
+                </tr>
+
+                <tr>
+                    <td class="end">doctorate <br> degree:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">masters <br> degree:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">college:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">vocational:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="end">k-12 course:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 8th Section -->
+        <br/>
+        <div class="headerconfidential">CONFIDENTIAL</div>
+        <br/>
+        <h4>appointment/cad/etad/sot/enlistment re-enlistment</h4>
+        <table>
+            <tbody class="uppercase center">
+                <tr class="">
+                    <th style="width: 20%;">category</th>
+                    <th>effective date</th>
+                    <th style="width: 40%;">authority</th>
+                    <th>rank</th>
+                </tr>
+
+                <tr>
+                    <td>appointment</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>cad/enlistment</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>(3 yrs 5 mos) <br> etad/re- <br> enlistment</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>(2 yrs 5 mos) <br> etad/re- <br> enlistment</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>sot</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 9th Section -->
+        <h4>promotion/demotion/reinstatement</h4>
+        <table>
+            <tbody class="uppercase center">
+                <tr>
+                    <th>category</th>
+                    <th>effective</th>
+                    <th>authority</th>
+                    <th>rank</th>
+                </tr>
+
+                <tr>
+                    <td>promotion</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>promotion</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>demotion</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>reverted</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 10th Section -->
+        <h4>military schooling/training</h4>
+        <table>
+            <tbody class="uppercase center">
+                <tr>
+                    <th>career courses</th>
+                    <th>type</th>
+                    <th>school name</th>
+                    <th>grade</th>
+                    <th class="start">duration</th>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="start"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 11th Section -->
+        <h4>intelligence schooling</h4>
+        <table>
+            <tbody class="uppercase center">
+                <tr>
+                    <th>intelligence <br> courses</th>
+                    <th>type</th>
+                    <th>school name</th>
+                    <th>grade</th>
+                    <th class="start">duration</th>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="start"></td>
+                </tr>
+
+                <tr>
+                    <th>non-career <br>course</th>
+                    <th>school name</th>
+                    <th>grade</th>
+                    <th colspan="2">duration</th>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 12th Section -->
+        <h4>workshop, seminar or trainings</h4>
+        <table>
+            <tbody class="uppercase center">
+                <tr>
+                    <th>course</th>
+                    <th colspan="5">school name</th>
+                </tr>
+
+                <tr class="r">
+                    <td></td>
+                    <td colspan="4"></td>
+                </tr>
+
+                <tr>
+                    <td rowspan="110" class="bg-primary">primary previous assignments:</td>
+                    <td class="bg-primary" rowspan="2">total years in intel community</td>
+                    <td class="bg-primary">yy</td>
+                    <td class="bg-primary">mm</td>
+                    <td class="bg-primary">dd</td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tr>
+
+                <tr>
+                    <td class="bg-primary" rowspan="2">total field duty</td>
+                    <td class="bg-primary">yy</td>
+                    <td class="bg-primary">mm</td>
+                    <td class="bg-primary">dd</td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tr>
+
+                <tr>
+                    <td class="bg-primary" rowspan="2">total nr of combat duty</td>
+                    <td class="bg-primary">yy</td>
+                    <td class="bg-primary">mm</td>
+                    <td class="bg-primary">dd</td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tr>
+
+                <tr>
+                    <td class="bg-primary" rowspan="2">total number of sea duty</td>
+                    <td class="bg-primary">yy</td>
+                    <td class="bg-primary">mm</td>
+                    <td class="bg-primary">dd</td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tr>
+                
+                <tr>
+                    <td class="bg-primary" rowspan="2">total nr of garrison duty</td>
+                    <td class="bg-primary">yy</td>
+                    <td class="bg-primary">mm</td>
+                    <td class="bg-primary">dd</td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table>
+            <tbody class="uppercase center">
+                <tr>
+                    <th>unit</th>
+                    <th>from</th>
+                    <th>to</th>
+                    <th>designation</th>
+                    <th>yy</th>
+                    <th>mm</th>
+                    <th>dd</th>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 13th Section -->
+        <h4>awards/decorations/commendation and recognitions</h4>
+        <table>
+            <tbody>
+                <tr class="uppercase center">
+                    <th>type of award</th>
+                    <th>achievement</th>
+                    <th>authority</th>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 14th Section -->
+        <h4>dependents</h4>
+        <table>
+            <tbody>
+                <tr class="uppercase center">
+                    <th>name</th>
+                    <th>relationship</th>
+                    <th>contact number</th>
+                    <th>address</th>
+                </tr>
+
+                <tr>
+                    <td class="center uppercase"></td>
+                    <td class="center"></td>
+                    <td center="center"></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Certification -->
+       
+         <div class="">
+            
+            
+           
+          
+            <section class="certification keep-together">
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <div class="flex">
+                    <div class="thumbmark-container">
+                    <div class="thumbmark-box">Left Thumbmark</div>
+                    <div class="thumbmark-box">Right Thumbmark</div>
+                </div>
+        
+                <div class="signature">
+                    <div class="line"></div>
+                    <div class="signature-name">LTJG JUAN DJ DELA CRUZ O-54321 PN</div>
+                </div>
+        
+                </div>
+                
+                <div class="certify-text">
+                    I HEREBY CERTIFY that all entries in this document are true and correct according to my personal knowledge
+                    and that failure on my part to report any discrepancy or false entries contained herein be considered as a
+                    deliberate omission or falsification and shall be ground for filing criminal, Court-Martial as well as other
+                    administrative charges against me.
+                </div>
+        
+                <div class="verifier">
+                    <div class="line"></div>
+                    <div class="signature-name">MARIA ANA P STA MONICA</div>
+                </div>
+        
+                <div class="note">
+                    <b>Note:</b> Any discrepancy noted in this document must be brought to the attention of the Naval
+                    Intelligence Personnel Management Branch, Office of the Intelligence Staff for Personnel, IS-1. Request for
+                    updates or alteration must be supported with appropriate documents.
+                </div>
+        
+                <div class="info">
+                    <div><span>Purpose</span>: for local schooling</div>
+                    <div><span>Date and Time Updated</span>: 21 January 2025</div>
+                    <div><span>Updated by</span>: 869627</div>
+                </div>
+        
+                <div class="asterisk">
+                    * Asterisk represents that the data has no supporting document but need to be corrected once document
+                    presented to encoder.
+                </div>
+            </section>
+         </div>
+       
+     
+    </main>
+
+
+<!-- JavaScript for print -->
+<script>
+    function printHidden() {
+      window.print();
+    }
+  </script>
+  
+  
+  <!-- Initialize DataTable -->
+  <script>
+    $(document).ready(function () {
+      $('#personnelTable').DataTable();
+    });
+  </script>
+
+</body>
+
+</html>

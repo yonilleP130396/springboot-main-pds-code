@@ -1,0 +1,1885 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NIPMB | Personnel Profile</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    },
+                    fontFamily: {
+                        arial: ['Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- SweetAlert2 - DELETE ONLY -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .tab-button {
+            color: #64748b;
+            border-bottom: 2px solid transparent;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .tab-button.active-tab {
+            color: #2563eb;
+            background: #eff6ff;
+            border-bottom-color: #2563eb;
+        }
+
+        .record-table th {
+            white-space: nowrap;
+        }
+
+        .record-table td {
+            vertical-align: middle;
+        }
+
+        .profile-image-button {
+            cursor: pointer;
+            outline: none;
+        }
+
+        .profile-image-button img {
+            transition:
+                transform .3s ease,
+                opacity .3s ease,
+                box-shadow .3s ease;
+        }
+
+        .profile-image-button:hover img {
+            transform: scale(1.05);
+            opacity: .92;
+        }
+
+        .profile-image-button:active img {
+            transform: scale(.98);
+        }
+
+        .profile-picture-popup {
+            padding: 20px !important;
+            border-radius: 20px !important;
+        }
+
+        .profile-picture-image {
+            max-width: min(80vw, 700px) !important;
+            max-height: 75vh !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            border-radius: 14px !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .35) !important;
+        }
+
+        /* INLINE EDIT */
+
+        .inline-edit {
+            animation: editOpen .2s ease;
+        }
+
+        @keyframes editOpen {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body class="font-arial min-h-screen bg-slate-100 text-slate-800">
+
+
+<div id="mainContent" class="min-h-screen">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="border-b border-slate-200 bg-white shadow-sm">
+
+        <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+                <div>
+
+                    <div class="flex items-center gap-2">
+
+                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow">
+
+                            <i class="fas fa-user-shield"></i>
+
+                        </div>
+
+                        <span class="text-sm font-bold uppercase tracking-wider text-blue-600">
+                            NIPMB
+                        </span>
+
+                    </div>
+
+                    <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                        Personnel Profile
+                    </h1>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Personnel information and service records
+                    </p>
+
+                </div>
+
+
+                <nav class="flex items-center gap-2 text-sm">
+
+                    <a href="/protecteddata/mainpage"
+                       class="font-semibold text-blue-600 transition hover:text-blue-800">
+
+                        <i class="fas fa-home mr-1"></i>
+
+                        Home
+
+                    </a>
+
+                    <i class="fas fa-chevron-right text-xs text-slate-400"></i>
+
+                    <span class="font-medium text-slate-500">
+                        Profile
+                    </span>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="w-full px-4 py-6 sm:px-6 lg:px-8">
+
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+
+
+            <!-- =================================================
+                 LEFT COLUMN
+            ================================================== -->
+
+            <aside class="space-y-6 xl:col-span-3">
+
+
+                <!-- PROFILE CARD -->
+
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+                    <div class="h-28 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700">
+
+                        <div class="flex justify-end p-4">
+
+                            <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+
+                                <i class="fas fa-id-card mr-1"></i>
+
+                                PERSONNEL
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="-mt-14 px-5 pb-6">
+
+
+                        <!-- PROFILE PICTURE -->
+
+                        <div class="flex justify-center">
+
+                            <button
+                                type="button"
+                                onclick="viewProfilePicture('/images/profile.jpg')"
+                                class="profile-image-button group rounded-full border-4 border-white bg-white shadow-xl focus:outline-none"
+                                title="Click to view profile picture">
+
+                                <img
+                                    class="h-28 w-28 rounded-full object-cover"
+                                    src="/images/profile.jpg"
+                                    alt="User profile picture">
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- NAME -->
+
+                        <div class="mt-4 text-center">
+
+                            <h2 class="text-lg font-bold leading-snug text-slate-900" th:text="${personnel.rank +' '+personnel.firstname +' '+ personnel.middlename+' '+ personnel.lastname+' '+ personnel.extension+' '+ personnel.bos}">
+                                Personnel Name
+                            </h2>
+
+                            <p class="mt-1 text-sm font-medium text-slate-500">
+
+                                AFP Serial No.
+
+                                <span th:text="${personnel.afpsn}">
+                                    000000
+                                </span>
+
+                            </p>
+
+                            <div class="mt-3">
+
+                                <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700" th:text="${personnel.fosRating}">
+
+                                    <i class="fas fa-star text-[10px]"></i>
+
+                                    FOS Rating
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- UPLOAD PICTURE -->
+
+                        <form
+                            action="/api/profilepicture/edit-profile-picture"
+                            method="post"
+                            enctype="multipart/form-data"
+                            class="mt-6">
+
+                            <input
+                                type="hidden"
+                                name="personnelID"
+                                value="">
+
+                            <input
+                                type="file"
+                                id="fileInput"
+                                name="file"
+                                accept=".png,.jpg,.jpeg"
+                                class="hidden"
+                                required>
+
+                            <button
+                                type="button"
+                                onclick="document.getElementById('fileInput').click()"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">
+
+                                <i class="fas fa-camera text-blue-600"></i>
+
+                                Change 2x2 Picture
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- PERSONNEL DETAILS -->
+
+                        <div class="mt-6 overflow-hidden rounded-xl border border-slate-200">
+
+
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Entered Service
+                                </p>
+
+                                <span class="date-dd-mmm-yyyy text-right text-sm font-semibold text-slate-800" th:text="${personnel.dateEnterMilitaryService}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Compulsory
+                                </p>
+
+                                <span class="date-dd-mmm-yyyy text-right text-sm font-semibold text-slate-800" th:text="${personnel.compulsory}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Birthday
+                                </p>
+
+                                <span class="date-dd-mmm-yyyy text-right text-sm font-semibold text-slate-800" th:text="${personnel.birthdate}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class=" text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    ETAD ETE
+                                </p>
+
+                                <span class="date-dd-mmm-yyyy text-sm font-semibold text-slate-800" th:text="${personnel.etadEte}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                          
+
+                            <div class="flex items-center justify-between gap-3 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Status
+                                </p>
+
+                                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+
+                                    Active
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+
+                        <div class="mt-5 grid grid-cols-2 gap-2">
+
+                            <div class="relative">
+
+                                <button
+                                    type="button"
+                                    onclick="toggleStatusMenu()"
+                                    class="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700">
+
+                                    <i class="fas fa-exchange-alt"></i>
+
+                                    Mark As
+
+                                    <i class="fas fa-chevron-down text-[10px]"></i>
+
+                                </button>
+
+
+                                <div
+                                    id="statusMenu"
+                                    class="absolute bottom-full left-0 z-50 mb-2 hidden w-64 overflow-hidden rounded-xl border border-slate-200 bg-white py-2 shadow-2xl">
+
+                                    <p class="px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                        Change Personnel Status
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        onclick="showStatusConfirmation('resign', 'resign')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-sign-out-alt mr-2 w-4 text-orange-500"></i>
+
+                                        Resigned
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="showStatusConfirmation('retired', 'retired')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-user-clock mr-2 w-4 text-purple-500"></i>
+
+                                        Retired
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="showStatusConfirmation('active', 'active')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-check-circle mr-2 w-4 text-emerald-500"></i>
+
+                                        Active
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="handleEntitySelection('Due For Retirement')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-calendar-alt mr-2 w-4 text-blue-500"></i>
+
+                                        Due For Retirement
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="showStatusConfirmation('awol', 'AWOL')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-user-slash mr-2 w-4 text-red-500"></i>
+
+                                        AWOL
+
+                                    </button>
+
+
+                                    <div class="my-1 border-t border-slate-100"></div>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="handleChangeFOS()"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-star mr-2 w-4 text-yellow-500"></i>
+
+                                        Change FOS Rating
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="showStatusConfirmation('disease', 'deceased')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-heartbeat mr-2 w-4 text-red-500"></i>
+
+                                        Deceased
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="showStatusConfirmation('discharge', 'Discharged')"
+                                        class="w-full px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+
+                                        <i class="fas fa-file-export mr-2 w-4 text-slate-500"></i>
+
+                                        Discharged
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <a
+                                href="#"
+                                class="flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700">
+
+                                <i class="fas fa-user-edit"></i>
+
+                                Update
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+    
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+                    <!-- HEADER -->
+                    <div class="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white px-5 py-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+
+                            <div>
+                                <h3 class="font-bold text-slate-900">
+                                    Field Duty Information
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Additional personnel details
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMATION -->
+                    <div class="p-5">
+
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+
+                            <!-- COMBAT SUPPORT DUTY -->
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Combat Support Duty
+                                </p>
+
+                                <span class="text-right text-sm font-semibold text-slate-800"
+                                    th:text="${personnel.garrisonDuty}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <!-- GEOGRAPHICAL DUTY ASSIGNMENT -->
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Geographical Duty
+                                </p>
+
+                                <span class="text-right text-sm font-semibold text-slate-800"
+                                    th:text="${personnel.fieldDuty}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <!-- COMBAT DUTY -->
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Combat Duty
+                                </p>
+
+                                <span class="text-right text-sm font-semibold text-slate-800"
+                                    th:text="${personnel.combatDuty}">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <!-- SEA DUTY -->
+                            <div class="flex items-center justify-between gap-3 px-4 py-3">
+
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                    Sea Duty
+                                </p>
+
+                                <span class="text-right text-sm font-semibold text-slate-800"
+                                    th:text="${personnel.seaDuty}">
+                                    —
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+                <!-- =================================================
+                     OTHER INFORMATION
+                ================================================== -->
+
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+
+                    <!-- HEADER -->
+
+                    <div class="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white px-5 py-4">
+
+                        <div class="flex items-center gap-3">
+
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+
+                                <i class="fas fa-info-circle"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-bold text-slate-900">
+                                    Other Information
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Additional personnel details
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMATION -->
+
+                    <div class="p-5">
+
+                        <div class="space-y-4">
+
+
+                            <!-- ADDRESS -->
+
+                            <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+
+                                <div class="flex items-start justify-between gap-4">
+
+                                    <div class="flex min-w-0 items-start gap-3">
+
+                                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+
+                                            <i class="fas fa-map-marker-alt text-sm"></i>
+
+                                        </div>
+
+                                        <div class="min-w-0">
+
+                                            <p class="text-sm font-bold text-slate-700">
+                                                Address
+                                            </p>
+
+                                            <p
+                                                id="personnelAddress"
+                                                class="mt-1 text-sm leading-6 text-slate-500">
+
+                                                Address
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-blue-700">
+
+                                        <i class="fas fa-edit"></i>
+
+                                        <span class="hidden sm:inline">
+                                            Update Address
+                                        </span>
+
+                                        <span class="sm:hidden">
+                                            Edit
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+
+                                
+
+                            </div>
+
+
+                            <!-- CLASS / SOURCE -->
+
+                            <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+
+                                <div class="flex items-start gap-3">
+
+                                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+
+                                        <i class="fas fa-graduation-cap text-sm"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <p class="text-sm font-bold text-slate-700">
+                                            Class / Source
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-slate-500" th:text="${personnel.sourceComms+' '+personnel.personnelClass}">
+                                            Class / Source
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- SPECIALIZATION -->
+
+                            <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+
+                                <div class="flex items-start justify-between gap-4">
+
+                                    <div class="flex min-w-0 items-start gap-3">
+
+                                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+
+                                            <i class="fas fa-star text-sm"></i>
+
+                                        </div>
+
+                                        <div class="min-w-0">
+
+                                            <p class="text-sm font-bold text-slate-700">
+                                                Specialization
+                                            </p>
+
+                                            <p
+                                                id="personnelSpecialization"
+                                                class="mt-1 text-sm text-slate-500">
+
+                                                Specialization
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-purple-700">
+
+                                        <i class="fas fa-edit"></i>
+
+                                        <span class="hidden sm:inline">
+                                            Edit Specialization
+                                        </span>
+
+                                        <span class="sm:hidden">
+                                            Edit
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+
+                                <!-- SPECIALIZATION EDIT -->
+
+                            </div>
+
+
+                            <!-- SECURITY LEVEL -->
+
+                            <div class="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+
+                                <div class="flex items-center gap-3">
+
+                                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
+
+                                        <i class="fas fa-shield-alt text-sm"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <p class="text-sm font-bold text-slate-700">
+                                            Security Level
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-slate-500" th:text="${personnel.securityLevel}">
+                                            Security Level
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =================================================
+                 RIGHT COLUMN
+            ================================================== -->
+
+            <section class="min-w-0 xl:col-span-9">
+
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+
+                    <!-- TABS -->
+
+                    <div class="border-b border-slate-200 bg-white">
+
+                        <div class="overflow-x-auto">
+
+                            <div
+                                id="profileTabs"
+                                class="flex min-w-max items-center px-3 pt-3">
+
+                                <button
+                                    type="button"
+                                    onclick="showTab('assignment', this)"
+                                    class="tab-button active-tab rounded-t-xl px-4 py-3 text-sm font-semibold">
+
+                                    <i class="fas fa-briefcase mr-1"></i>
+
+                                    Assignment
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="showTab('militaryschooling', this)"
+                                    class="tab-button rounded-t-xl px-4 py-3 text-sm font-semibold">
+
+                                    <i class="fas fa-university mr-1"></i>
+
+                                    Military Career History
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="showTab('civilianschooling', this)"
+                                    class="tab-button rounded-t-xl px-4 py-3 text-sm font-semibold">
+
+                                    <i class="fas fa-graduation-cap mr-1"></i>
+
+                                    Education
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOOLBAR -->
+
+                    <div class="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+
+                        <div>
+
+                            <h2
+                                id="currentTabTitle"
+                                class="text-lg font-bold text-slate-900">
+
+                                Assignment Records
+
+                            </h2>
+
+                            <p class="text-xs text-slate-500">
+                                Manage personnel service records
+                            </p>
+
+                        </div>
+
+
+                        <div >
+
+                            <button
+                                type="button"
+                                onclick="toggleAddMenu()"
+                                class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700">
+
+                                <i class="fas fa-plus"></i>
+
+                                Add Data
+
+                                <i class="fas fa-chevron-down text-[10px]"></i>
+
+                            </button>
+
+
+                            <div
+                                id="addDataMenu"
+                                class="absolute right-0 z-50 mt-2 hidden w-72 overflow-hidden rounded-xl border border-slate-200 bg-white py-2 shadow-2xl">
+
+                                <div class="px-4 py-2">
+
+                                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                        Add Personnel Record
+                                    </p>
+
+                                </div>
+
+
+                                <a
+                                    href="#"
+                                    class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">
+
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+
+                                        <i class="fas fa-briefcase"></i>
+
+                                    </span>
+
+                                    Assignment
+
+                                </a>
+
+
+                                <a
+                                    href="#"
+                                    class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">
+
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+
+                                        <i class="fas fa-university"></i>
+
+                                    </span>
+
+                                    Military Schooling
+
+                                </a>
+
+
+                                <a
+                                    href="#"
+                                    class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">
+
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-100 text-cyan-600">
+
+                                        <i class="fas fa-graduation-cap"></i>
+
+                                    </span>
+
+                                    Educational Attainment
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TAB CONTENT -->
+
+                    <div class="p-5 sm:p-6">
+
+
+                        <!-- ASSIGNMENT -->
+
+                        <div id="assignment" class="tab-content">
+
+                            <div class="overflow-hidden rounded-xl border border-slate-200">
+
+                                <div class="overflow-x-auto">
+
+                                    <table class="record-table min-w-[1300px] w-full text-left text-sm">
+
+                                        <thead class="bg-slate-50">
+
+                                        <tr class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+
+                                            <th class="px-4 py-3">Rank</th>
+                                            <th class="px-4 py-3">Unit</th>
+                                            <th class="px-4 py-3">Subunit</th>
+                                            <th class="px-4 py-3">Office</th>
+                                            <th class="px-4 py-3">Branch</th>
+                                            <th class="px-4 py-3">Designation</th>
+                                            <th class="px-4 py-3">Assign</th>
+                                            <th class="px-4 py-3">Assume Billet</th>
+                                            <th class="px-4 py-3">Relieve</th>
+                                            <th class="px-4 py-3">Status</th>
+                                            <th class="px-4 py-3">Kind of Duty</th>
+                                            <th class="px-4 py-3 text-center">Actions</th>
+
+                                        </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            id="assignmentTableBody"
+                                            class="divide-y divide-slate-100">
+
+                                        <tr class="transition hover:bg-blue-50/40">
+
+                                            <td class="px-4 py-3 font-bold text-slate-900">—</td>
+                                            <td class="px-4 py-3">—</td>
+                                            <td class="px-4 py-3">—</td>
+                                            <td class="px-4 py-3">—</td>
+                                            <td class="px-4 py-3">—</td>
+                                            <td class="max-w-[220px] px-4 py-3 font-medium">—</td>
+                                            <td class="date-dd-mmm-yyyy whitespace-nowrap px-4 py-3">—</td>
+                                            <td class="date-dd-mmm-yyyy whitespace-nowrap px-4 py-3">—</td>
+                                            <td class="date-dd-mmm-yyyy whitespace-nowrap px-4 py-3">—</td>
+
+                                            <td class="px-4 py-3">
+
+                                                <span class="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
+                                                    —
+                                                </span>
+
+                                            </td>
+
+                                            <td class="px-4 py-3">
+                                                —
+                                            </td>
+
+
+                                            <td class="px-4 py-3">
+
+                                                <div class="flex justify-center gap-2">
+
+                                                    <button
+                                                        type="button"
+                                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition hover:bg-blue-100 hover:text-blue-700">
+
+                                                        <i class="fas fa-edit text-xs"></i>
+
+                                                    </button>
+
+
+                                                    <button
+                                                        type="button"
+                                                        onclick="confirmDeleteRecord('This will permanently delete the assignment.')"
+                                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 transition hover:bg-red-100">
+
+                                                        <i class="fas fa-trash text-xs"></i>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- MILITARY SCHOOLING -->
+
+                        <div id="militaryschooling" class="tab-content hidden">
+
+                            <div class="overflow-x-auto rounded-xl border border-slate-200">
+
+                                <table class="record-table min-w-[1200px] w-full text-left text-sm">
+
+                                    <thead class="bg-slate-50">
+
+                                    <tr class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+
+                                        
+                                        <th class="px-4 py-3">Category</th>
+                                        <th class="px-4 py-3">Transaction Date</th>
+                                        <th class="px-4 py-3">Special Order</th>
+                                        <th class="px-4 py-3">Rank</th>
+                                        <th class="px-4 py-3 text-center">Actions</th>
+
+                                    </tr>
+
+                                    </thead>
+
+
+                                    <tbody class="divide-y divide-slate-100">
+
+                                    <tr th:each="data : ${proreen}" class="hover:bg-blue-50/40">
+
+                                         
+                                        <td class="px-4 py-3" th:text="${data.category}">—</td>
+                                        <td class="px-4 py-3 date-dd-mmm-yyyy" th:text="${data.transactionDate}">—</td>
+                                        <td class="px-4 py-3" th:text="${data.specialOrder}">—</td>
+                                        <td class="px-4 py-3 font-bold" th:text="${data.permanentRank}">—</td>
+
+                                        <td class="px-4 py-3">
+
+                                            <div class="flex justify-center gap-2">
+
+                                                <button
+                                                    type="button"
+                                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 hover:bg-blue-100">
+
+                                                    <i class="fas fa-edit text-xs"></i>
+
+                                                </button>
+
+
+                                                <button
+                                                    type="button"
+                                                    onclick="confirmDeleteRecord('This will permanently delete the military schooling record.')"
+                                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100">
+
+                                                    <i class="fas fa-trash text-xs"></i>
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CIVILIAN SCHOOLING -->
+
+                        <div id="civilianschooling" class="tab-content hidden">
+
+                            <div class="overflow-x-auto rounded-xl border border-slate-200">
+
+                                <table class="record-table min-w-[1100px] w-full text-left text-sm">
+
+                                    <thead class="bg-slate-50">
+
+                                    <tr class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+
+                                        <th class="px-4 py-3">Course Level</th>
+                                        <th class="px-4 py-3">Course</th>
+                                        <th class="px-4 py-3">School</th>
+                                        <th class="px-4 py-3">School Address</th>
+                                        <th class="px-4 py-3">Start Year</th>
+                                        <th class="px-4 py-3">End Year</th>
+                                        <th class="px-4 py-3">Batch</th>
+                                        <th class="px-4 py-3">Rating</th>
+                                        <th class="px-4 py-3">Remarks</th>
+                                        <th class="px-4 py-3 text-center">Actions</th>
+
+                                    </tr>
+
+                                    </thead>
+
+
+                                    <tbody class="divide-y divide-slate-100">
+
+                                    <tr class="hover:bg-blue-50/40">
+
+                                        <td class="px-4 py-3 font-semibold">—</td>
+                                        <td class="px-4 py-3">—</td>
+                                        <td class="px-4 py-3">—</td>
+                                        <td class="px-4 py-3">—</td>
+                                        <td class="date-dd-mmm-yyyy whitespace-nowrap px-4 py-3">—</td>
+                                        <td class="date-dd-mmm-yyyy whitespace-nowrap px-4 py-3">—</td>
+                                        <td class="px-4 py-3">—</td>
+                                        <td class="px-4 py-3">—</td>
+                                        <td class="px-4 py-3">—</td>
+
+                                        <td class="px-4 py-3">
+
+                                            <div class="flex justify-center gap-2">
+
+                                                <button
+                                                    type="button"
+                                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 hover:bg-blue-100">
+
+                                                    <i class="fas fa-edit text-xs"></i>
+
+                                                </button>
+
+
+                                                <button
+                                                    type="button"
+                                                    onclick="confirmDeleteRecord('This will permanently delete the civilian schooling record.')"
+                                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100">
+
+                                                    <i class="fas fa-trash text-xs"></i>
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+
+/* =========================================================
+   PROFILE PICTURE
+========================================================= */
+
+function viewProfilePicture(imageUrl) {
+
+    Swal.fire({
+
+        imageUrl: imageUrl,
+
+        imageAlt: 'Personnel Profile Picture',
+
+        showConfirmButton: false,
+
+        showCloseButton: true,
+
+        background: '#ffffff',
+
+        width: 'auto',
+
+        padding: '20px',
+
+        customClass: {
+
+            popup: 'profile-picture-popup',
+
+            image: 'profile-picture-image'
+
+        },
+
+        backdrop: `
+            rgba(15, 23, 42, 0.88)
+            backdrop-filter: blur(8px)
+        `
+
+    });
+
+}
+
+
+/* =========================================================
+   UPLOAD PICTURE
+========================================================= */
+
+const fileInput =
+    document.getElementById('fileInput');
+
+if (fileInput) {
+
+    fileInput.addEventListener(
+        'change',
+        function () {
+
+            if (this.files.length > 0) {
+
+                this.form.submit();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   STATUS MENU
+========================================================= */
+
+function toggleStatusMenu() {
+
+    const menu =
+        document.getElementById('statusMenu');
+
+    if (menu) {
+
+        menu.classList.toggle('hidden');
+
+    }
+
+}
+
+
+/* =========================================================
+   ADD DATA MENU
+========================================================= */
+
+function toggleAddMenu() {
+
+    const menu =
+        document.getElementById('addDataMenu');
+
+    if (menu) {
+
+        menu.classList.toggle('hidden');
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE DROPDOWNS
+========================================================= */
+
+document.addEventListener(
+    'click',
+    function (event) {
+
+        const statusMenu =
+            document.getElementById('statusMenu');
+
+        const addDataMenu =
+            document.getElementById('addDataMenu');
+
+
+        if (
+            statusMenu &&
+            !event.target.closest('#statusMenu') &&
+            !event.target.closest('[onclick="toggleStatusMenu()"]')
+        ) {
+
+            statusMenu.classList.add('hidden');
+
+        }
+
+
+        if (
+            addDataMenu &&
+            !event.target.closest('#addDataMenu') &&
+            !event.target.closest('[onclick="toggleAddMenu()"]')
+        ) {
+
+            addDataMenu.classList.add('hidden');
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function showTab(tabId, button) {
+
+    document
+        .querySelectorAll('.tab-content')
+        .forEach(function (tab) {
+
+            tab.classList.add('hidden');
+
+        });
+
+
+    document
+        .querySelectorAll('.tab-button')
+        .forEach(function (tab) {
+
+            tab.classList.remove(
+                'active-tab',
+                'bg-blue-50',
+                'text-blue-700'
+            );
+
+            tab.classList.add('text-slate-500');
+
+        });
+
+
+    const selectedTab =
+        document.getElementById(tabId);
+
+
+    if (selectedTab) {
+
+        selectedTab.classList.remove('hidden');
+
+    }
+
+
+    button.classList.remove('text-slate-500');
+
+    button.classList.add(
+        'active-tab',
+        'bg-blue-50',
+        'text-blue-700'
+    );
+
+
+    updateTabTitle(tabId);
+
+}
+
+
+/* =========================================================
+   TAB TITLE
+========================================================= */
+
+function updateTabTitle(tabId) {
+
+    const title =
+        document.getElementById('currentTabTitle');
+
+
+    if (!title) {
+        return;
+    }
+
+
+    const titles = {
+
+        assignment:
+            'Assignment Records',
+
+        militaryschooling:
+            'Military Schooling Records',
+
+        civilianschooling:
+            'Educational Attainment Records'
+
+    };
+
+
+    title.textContent =
+        titles[tabId] || 'Personnel Records';
+
+}
+
+
+/* =========================================================
+   UPDATE ADDRESS
+   NO SWEETALERT
+========================================================= */
+
+function editAddress() {
+
+    const editBox =
+        document.getElementById('addressEdit');
+
+    const input =
+        document.getElementById('addressInput');
+
+    const currentAddress =
+        document.getElementById('personnelAddress')
+            .textContent
+            .trim();
+
+
+    if (currentAddress !== 'Address') {
+
+        input.value = currentAddress;
+
+    } else {
+
+        input.value = '';
+
+    }
+
+
+    editBox.classList.remove('hidden');
+
+    input.focus();
+
+}
+
+
+function cancelAddressEdit() {
+
+    document
+        .getElementById('addressEdit')
+        .classList.add('hidden');
+
+}
+
+
+function saveAddress() {
+
+    const input =
+        document.getElementById('addressInput');
+
+    const address =
+        input.value.trim();
+
+
+    if (!address) {
+
+        input.focus();
+
+        return;
+
+    }
+
+
+    /*
+     * BACKEND INTEGRATION
+     *
+     * Example:
+     *
+     * fetch('/api/personnel/update-address', {
+     *
+     *     method: 'POST',
+     *
+     *     headers: {
+     *         'Content-Type': 'application/json'
+     *     },
+     *
+     *     body: JSON.stringify({
+     *         address: address
+     *     })
+     *
+     * });
+     *
+     */
+
+
+    document
+        .getElementById('personnelAddress')
+        .textContent = address;
+
+
+    document
+        .getElementById('addressEdit')
+        .classList.add('hidden');
+
+}
+
+
+/* =========================================================
+   EDIT SPECIALIZATION
+   NO SWEETALERT
+========================================================= */
+
+function editSpecialization() {
+
+    const editBox =
+        document.getElementById('specializationEdit');
+
+    const input =
+        document.getElementById('specializationInput');
+
+    const currentSpecialization =
+        document
+            .getElementById('personnelSpecialization')
+            .textContent
+            .trim();
+
+
+    if (currentSpecialization !== 'Specialization') {
+
+        input.value = currentSpecialization;
+
+    } else {
+
+        input.value = '';
+
+    }
+
+
+    editBox.classList.remove('hidden');
+
+    input.focus();
+
+}
+
+
+function cancelSpecializationEdit() {
+
+    document
+        .getElementById('specializationEdit')
+        .classList.add('hidden');
+
+}
+
+
+function saveSpecialization() {
+
+    const input =
+        document.getElementById('specializationInput');
+
+    const specialization =
+        input.value.trim();
+
+
+    if (!specialization) {
+
+        input.focus();
+
+        return;
+
+    }
+
+
+    /*
+     * BACKEND INTEGRATION
+     *
+     * Example:
+     *
+     * fetch('/api/personnel/update-specialization', {
+     *
+     *     method: 'POST',
+     *
+     *     headers: {
+     *         'Content-Type': 'application/json'
+     *     },
+     *
+     *     body: JSON.stringify({
+     *         specialization: specialization
+     *     })
+     *
+     * });
+     *
+     */
+
+
+    document
+        .getElementById('personnelSpecialization')
+        .textContent = specialization;
+
+
+    document
+        .getElementById('specializationEdit')
+        .classList.add('hidden');
+
+}
+
+
+/* =========================================================
+   RETIREMENT
+========================================================= */
+
+function handleEntitySelection(entity) {
+
+    if (entity !== 'Due For Retirement') {
+        return;
+    }
+
+
+    /*
+     * This can later be connected
+     * to your backend.
+     */
+
+    console.log('Selected:', entity);
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function showStatusConfirmation(
+    endpoint,
+    status
+) {
+
+    console.log(
+        'Status:',
+        endpoint,
+        status
+    );
+
+}
+
+
+/* =========================================================
+   CHANGE FOS
+========================================================= */
+
+function handleChangeFOS() {
+
+    console.log(
+        'Change FOS Rating'
+    );
+
+}
+
+
+/* =========================================================
+   DELETE
+   SWEETALERT IS USED HERE ONLY
+========================================================= */
+
+function confirmDeleteRecord(message) {
+
+    Swal.fire({
+
+        title:
+            'Are you sure?',
+
+        text:
+            message,
+
+        icon:
+            'warning',
+
+        showCancelButton:
+            true,
+
+        confirmButtonColor:
+            '#dc2626',
+
+        cancelButtonColor:
+            '#2563eb',
+
+        confirmButtonText:
+            'Yes, delete it!'
+
+    }).then(function (result) {
+
+        if (result.isConfirmed) {
+
+            console.log(
+                'Delete confirmed'
+            );
+
+            /*
+             * Connect your DELETE endpoint here.
+             */
+
+        }
+
+    });
+
+}
+
+</script>
+
+
+<!-- Date Formatting -->
+<script src="/js/dateformat/date_personnelprofile.js"></script>
+
+<!-- Security -->
+<script src="/js/security.js"></script>
+
+</body>
+
+</html>
+
